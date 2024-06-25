@@ -1,0 +1,9 @@
+{
+  "name": "schemata-ts",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/schemata-ts/src",
+  "projectType": "application",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project schemata-ts --web",
+  "targets": {}
+}
