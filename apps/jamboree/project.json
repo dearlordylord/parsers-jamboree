@@ -1,0 +1,9 @@
+{
+  "name": "jamboree",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/jamboree/src",
+  "projectType": "application",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project jamboree --web",
+  "targets": {}
+}

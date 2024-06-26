@@ -1,0 +1,19 @@
+{
+  "name": "schemata-ts",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/schemata-ts/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/schemata-ts",
+        "main": "libs/schemata-ts/src/index.ts",
+        "tsConfig": "libs/schemata-ts/tsconfig.lib.json",
+        "assets": ["libs/schemata-ts/*.md"]
+      }
+    }
+  }
+}

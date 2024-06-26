@@ -14,7 +14,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@parsers-jamboree/checker": ["libs/checker/src/index.ts"],
+      "@parsers-jamboree/common": ["libs/common/src/index.ts"],
+      "@parsers-jamboree/schemata-ts/*": ["libs/schemata-ts/src/lib/*"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
