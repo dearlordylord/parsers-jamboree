@@ -60,9 +60,9 @@ export const SchemataPage = (): React.ReactElement => {
       <div>
         {parsed._tag === 'left' ? <span>{JSON.stringify(parsed.error, null, 2)}</span> : <JSONTree data={parsed.value} sortObjectKeys={printKeyOrderF} hideRoot valueRenderer={(s, v) => {
           if (v instanceof Date) {
-            return `JS Date('${s}')`;
+            return <span>{`JS Date('${s}')`}</span>;
           }
-          return s;
+          return <span>{JSON.stringify(s)}</span>;
         }} />}
       </div>
       <h2>Encoded back to JSON</h2>
