@@ -2,9 +2,9 @@ import React, { useMemo, useState } from 'react';
 import { igor } from '@parsers-jamboree/checker';
 import { encodeUser, parseUser } from '@parsers-jamboree/schemata-ts/schemata-ts';
 import code from '../../../../../../libs/schemata-ts/src/lib/schemata-ts.ts?raw';
-
 // import common from '../../../../../../libs/common/src/lib/common.ts?raw';
 import Editor from '@monaco-editor/react';
+import { JSONTree } from 'react-json-tree';
 import { Highlighter } from '../../highlighter';
 import { showParseResult } from '../../utils';
 import { Result } from '@parsers-jamboree/common';
@@ -33,6 +33,7 @@ export const SchemataPage = (): React.ReactElement => {
   }, [input]);
   // to pretty print output to match the editor input key order
   const printKeyOrder = parsedInputJson._tag === 'left' ? [] : Object.keys(parsedInputJson.value as Record<string, unknown>);
+  const printKeyOrderF = (k1: unknown, k2: unknown) => printKeyOrder.indexOf(k1 as string) - printKeyOrder.indexOf(k2 as string);
   const [parserCode, setParserCode] = useState(code);
   const parsed = useMemo(() => parsedInputJson._tag === 'left' ? parsedInputJson : parseUser(parsedInputJson.value), [parsedInputJson]);
   const encoded = useMemo(() => parsed._tag === 'left' ? 'Parse step resulted in an error' : encodeUser(parsed.value), [parsed]);
@@ -56,7 +57,12 @@ export const SchemataPage = (): React.ReactElement => {
       </div>
       <h2>Parsed result</h2>
       <div>
-        <Highlighter content={showParseResult(parsed)} language="json" />
+        {parsed._tag === 'left' ? <span>{JSON.stringify(parsed.error, null, 2)}</span> : <JSONTree data={parsed.value} sortObjectKeys={printKeyOrderF} hideRoot valueRenderer={(s, v) => {
+          if (v instanceof Date) {
+            return `JS Date('${s}')`;
+          }
+          return s;
+        }} />}
       </div>
       <h2>Encoded result</h2>
       <div>
