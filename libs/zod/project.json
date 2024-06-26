@@ -1,0 +1,19 @@
+{
+  "name": "zod",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/zod/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/zod",
+        "main": "libs/zod/src/index.ts",
+        "tsConfig": "libs/zod/tsconfig.lib.json",
+        "assets": ["libs/zod/*.md"]
+      }
+    }
+  }
+}

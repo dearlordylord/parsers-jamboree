@@ -1,22 +1,14 @@
-import React, { useMemo, useState } from 'react';
-import { igor } from '@parsers-jamboree/checker';
-import { encodeUser, parseUser } from '@parsers-jamboree/schemata-ts/schemata-ts';
-import code from '../../../../../../libs/schemata-ts/src/lib/schemata-ts.ts?raw';
-// import common from '../../../../../../libs/common/src/lib/common.ts?raw';
-import Editor from '@monaco-editor/react';
-import { JSONTree } from 'react-json-tree';
-import { Highlighter } from '../../highlighter';
-import { showParseResult } from '../../utils';
+import React, { useId, useMemo, useState } from 'react';
 import { Result } from '@parsers-jamboree/common';
+import Editor from '@monaco-editor/react';
+import { Highlighter } from '../highlighter';
+import { JSONTree } from 'react-json-tree';
+import { igor } from '@parsers-jamboree/checker';
 
-const defaultInput = JSON.stringify(igor, null, 2);
-// monaco.languages.typescript.typescriptDefaults.addExtraLib(
-//   common,
-//   'schemata-ts/schemata/index');
+type Props<T, E, EE> = {code: string, encodeUser: (u: T) => Result<EE, unknown>, decodeUser: (u: unknown) => Result<E, T>, defaultInput: unknown, validUser: typeof igor}
 
-// const code = code_.replace(/import .+ from '@parsers-jamboree\/common'/g, common);
-
-export const SchemataPage = (): React.ReactElement => {
+export const ParserComponent = <T, E, EE>({code, encodeUser, decodeUser, validUser}: Props<T, E, EE>): React.ReactElement => {
+  const defaultInput = JSON.stringify(validUser, null, 2);
   const [input, setInput] = useState(defaultInput);
   const parsedInputJson = useMemo((): Result<unknown, unknown> => {
     try {
@@ -35,13 +27,20 @@ export const SchemataPage = (): React.ReactElement => {
   const printKeyOrder = parsedInputJson._tag === 'left' ? [] : Object.keys(parsedInputJson.value as Record<string, unknown>);
   const printKeyOrderF = (k1: unknown, k2: unknown) => printKeyOrder.indexOf(k1 as string) - printKeyOrder.indexOf(k2 as string);
   const [parserCode, setParserCode] = useState(code);
-  const parsed = useMemo(() => parsedInputJson._tag === 'left' ? parsedInputJson : parseUser(parsedInputJson.value), [parsedInputJson]);
-  const encoded = useMemo(() => parsed._tag === 'left' ? 'Parse step resulted in an error' : JSON.stringify(encodeUser(parsed.value), printKeyOrder, 2), [parsed]);
+  const parsed = useMemo(() => parsedInputJson._tag === 'left' ? parsedInputJson : decodeUser(parsedInputJson.value), [parsedInputJson, decodeUser]);
+  const encoded = useMemo(() => parsed._tag === 'left' ? 'Parse step resulted in an error' : (() => {
+    const result = encodeUser(parsed.value);
+    if (result._tag === 'left') {
+      return `Encode step resulted in an error ${JSON.stringify(result.error)}`;
+    } else {
+      return JSON.stringify(result.value, printKeyOrder, 2);
+    }
+  })(), [parsed, encodeUser]);
   const encodedMatchesInput = encoded === input;
+  const inputId = useId();
   return (
     <div>
-      <h1>Schemata Page</h1>
-      <h2 id="input">Input</h2>
+      <h2 id={inputId}>Input</h2>
       <form onSubmit={() => setInput(defaultInput)}>
         {input !== defaultInput ? <button type="submit">Reset input</button> : null}
         <div>
@@ -69,10 +68,10 @@ export const SchemataPage = (): React.ReactElement => {
       <div>
         <Highlighter content={encoded} language="json" />
       </div>
-      {encodedMatchesInput ? <span> ✅ Matches <a href="#input" onClick={(e) => {
+      {encodedMatchesInput ? <span> ✅ Matches <button onClick={(e) => {
         e.preventDefault();
-        document.getElementById('input')?.scrollIntoView()
-      }}>input</a></span> : null}
+        document.getElementById(inputId)?.scrollIntoView()
+      }}>input</button></span> : null}
     </div>
   );
 };

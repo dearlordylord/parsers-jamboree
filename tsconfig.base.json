@@ -17,7 +17,8 @@
     "paths": {
       "@parsers-jamboree/checker": ["libs/checker/src/index.ts"],
       "@parsers-jamboree/common": ["libs/common/src/index.ts"],
-      "@parsers-jamboree/schemata-ts/*": ["libs/schemata-ts/src/lib/*"]
+      "@parsers-jamboree/schemata-ts/*": ["libs/schemata-ts/src/lib/*"],
+      "@parsers-jamboree/zod/*": ["libs/zod/src/lib/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

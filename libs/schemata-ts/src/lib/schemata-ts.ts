@@ -65,7 +65,10 @@ export const parseUser = (user: unknown): Result<TranscodeErrors, User> => {
   return mapResult(result);
 }
 
-export const encodeUser = (user: User): unknown => unwrapEither/*we don't care about the encoding errors here*/(userTranscoder.encode(user));
+export const encodeUser = (user: User): Result<TranscodeErrors, unknown> => {
+  const result = userTranscoder.encode(user);
+  return mapResult(result);
+};
 
 const namelessUserTranscoder = deriveTranscoder(NamelessUserSchema);
 
@@ -83,7 +86,10 @@ export const parseTree = (node: unknown): Result<TranscodeErrors, TreeNode> => {
   return mapResult(result);
 }
 
-export const encodeTree = (node: TreeNode): unknown => treeNodeTranscoder.encode(node);
+export const encodeTree = (node: TreeNode): Result<TranscodeErrors, TreeNode> => {
+  const result = treeNodeTranscoder.encode(node);
+  return mapResult(result);
+};
 
 // helpers, unrelated to the library
 const mapResult = <E, T>(e: Either<E, T>): Result<E, T> => isRight(e) ? { _tag: 'right', value: e.right } : { _tag: 'left', error: e.left };

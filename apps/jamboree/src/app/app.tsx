@@ -2,10 +2,11 @@
 import styles from './app.module.css';
 
 import { Route, Routes, Link } from 'react-router-dom';
-import { SchemataPage } from './parsers/schemata-ts/page';
+import { SchemataPage } from './parsers/pages/schemata-ts';
+import { ZodPage } from './parsers/pages/zod';
 import React from 'react';
 
-const LIBS = ['schemata-ts'] as const;
+const LIBS = ['schemata-ts', 'zod'] as const;
 
 type Rogues = {
   [K in typeof LIBS[number]]: {
@@ -20,8 +21,13 @@ const rogues: Rogues = {
     label: 'schemata-ts',
     link: 'https://github.com/jamband/schemata-ts',
     page: SchemataPage,
+  },
+  'zod': {
+    label: 'zod',
+    link: 'https://github.com/colinhacks/zod',
+    page: ZodPage,
   }
-}
+};
 
 export function App() {
   return (
