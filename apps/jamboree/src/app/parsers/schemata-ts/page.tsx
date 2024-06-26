@@ -31,6 +31,8 @@ export const SchemataPage = (): React.ReactElement => {
       };
     }
   }, [input]);
+  // to pretty print output to match the editor input key order
+  const printKeyOrder = parsedInputJson._tag === 'left' ? [] : Object.keys(parsedInputJson.value as Record<string, unknown>);
   const [parserCode, setParserCode] = useState(code);
   const parsed = useMemo(() => parsedInputJson._tag === 'left' ? parsedInputJson : parseUser(parsedInputJson.value), [parsedInputJson]);
   const encoded = useMemo(() => parsed._tag === 'left' ? 'Parse step resulted in an error' : encodeUser(parsed.value), [parsed]);
@@ -58,7 +60,7 @@ export const SchemataPage = (): React.ReactElement => {
       </div>
       <h2>Encoded result</h2>
       <div>
-        <Highlighter content={JSON.stringify(encoded, null, 2)} language="json" />
+        <Highlighter content={JSON.stringify(encoded, printKeyOrder, 2)} language="json" />
       </div>
     </div>
   );
