@@ -36,11 +36,12 @@ export const SchemataPage = (): React.ReactElement => {
   const printKeyOrderF = (k1: unknown, k2: unknown) => printKeyOrder.indexOf(k1 as string) - printKeyOrder.indexOf(k2 as string);
   const [parserCode, setParserCode] = useState(code);
   const parsed = useMemo(() => parsedInputJson._tag === 'left' ? parsedInputJson : parseUser(parsedInputJson.value), [parsedInputJson]);
-  const encoded = useMemo(() => parsed._tag === 'left' ? 'Parse step resulted in an error' : encodeUser(parsed.value), [parsed]);
+  const encoded = useMemo(() => parsed._tag === 'left' ? 'Parse step resulted in an error' : JSON.stringify(encodeUser(parsed.value), printKeyOrder, 2), [parsed]);
+  const encodedMatchesInput = encoded === input;
   return (
     <div>
       <h1>Schemata Page</h1>
-      <h2>Input</h2>
+      <h2 id="input">Input</h2>
       <form onSubmit={() => setInput(defaultInput)}>
         {input !== defaultInput ? <button type="submit">Reset input</button> : null}
         <div>
@@ -64,10 +65,14 @@ export const SchemataPage = (): React.ReactElement => {
           return s;
         }} />}
       </div>
-      <h2>Encoded result</h2>
+      <h2>Encoded back to JSON</h2>
       <div>
-        <Highlighter content={JSON.stringify(encoded, printKeyOrder, 2)} language="json" />
+        <Highlighter content={encoded} language="json" />
       </div>
+      {encodedMatchesInput ? <span> ✅ Matches <a href="#input" onClick={(e) => {
+        e.preventDefault();
+        document.getElementById('input')?.scrollIntoView()
+      }}>input</a></span> : null}
     </div>
   );
 };
