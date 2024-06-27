@@ -2,6 +2,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "rootDir": ".",
+    "strict": true,
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
@@ -15,6 +16,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@parsers-jamboree/arktype/*": ["libs/arktype/src/lib/*"],
       "@parsers-jamboree/checker": ["libs/checker/src/index.ts"],
       "@parsers-jamboree/common": ["libs/common/src/index.ts"],
       "@parsers-jamboree/schemata-ts/*": ["libs/schemata-ts/src/lib/*"],

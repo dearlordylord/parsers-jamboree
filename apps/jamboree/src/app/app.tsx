@@ -5,8 +5,9 @@ import { Route, Routes, Link } from 'react-router-dom';
 import { SchemataPage } from './parsers/pages/schemata-ts';
 import { ZodPage } from './parsers/pages/zod';
 import React from 'react';
+import { ArktypePage } from './parsers/pages/arktype';
 
-const LIBS = ['schemata-ts', 'zod'] as const;
+const LIBS = ['schemata-ts', 'zod', 'arktype'] as const;
 
 type Rogues = {
   [K in typeof LIBS[number]]: {
@@ -26,6 +27,11 @@ const rogues: Rogues = {
     label: 'zod',
     link: 'https://github.com/colinhacks/zod',
     page: ZodPage,
+  },
+  'arktype': {
+    label: 'arktype',
+    link: 'https://github.com/arktypeio/arktype',
+    page: ArktypePage,
   }
 };
 
