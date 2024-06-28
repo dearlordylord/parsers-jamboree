@@ -5,14 +5,18 @@ import hljs from 'highlight.js';
 type HighlighterProps = {
   content: string;
   language: 'typescript' | 'json';
-}
+};
 export const Highlighter = ({
-                              content,
+  content,
   language,
-                            }: HighlighterProps): React.ReactElement => {
+}: HighlighterProps): React.ReactElement => {
   return (
     <pre className="hljs">
-      <code dangerouslySetInnerHTML={{ __html: hljs.highlight(language, content).value }} />
+      <code
+        dangerouslySetInnerHTML={{
+          __html: hljs.highlight(language, content).value,
+        }}
+      />
     </pre>
   );
-}
+};

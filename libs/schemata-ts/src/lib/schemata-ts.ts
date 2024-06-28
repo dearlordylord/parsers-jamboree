@@ -12,17 +12,23 @@ import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
 
 // by the pattern of schemata/UUID.ts
 type StripeIdBrand = {
-  readonly StripeId: unique symbol
-}
+  readonly StripeId: unique symbol;
+};
 
 export type StripeId = Nt.Newtype<StripeIdBrand, string>;
 
-const isoStripeId = Nt.iso<StripeId>()
+const isoStripeId = Nt.iso<StripeId>();
 
 const StripeIdSchema: Schema<string, StripeId> = pipe(
-    S.Pattern(k.sequence(k.exactString('cus_'), k.atLeast('NffrFeUfNV2Hib'.length)(k.alnum)), `Stripe Id of format cus_XXXXXXXXXXXXXX`),
-    S.Newtype(isoStripeId, `Stripe Id`),
-  )
+  S.Pattern(
+    k.sequence(
+      k.exactString('cus_'),
+      k.atLeast('NffrFeUfNV2Hib'.length)(k.alnum)
+    ),
+    `Stripe Id of format cus_XXXXXXXXXXXXXX`
+  ),
+  S.Newtype(isoStripeId, `Stripe Id`)
+);
 
 const ColourSchema = S.Union(S.Literal(...COLOURS), S.HexColor);
 
@@ -51,7 +57,7 @@ export type NamelessUser = OutputOf<typeof NamelessUserSchema>;
 type TreeNode = {
   name: string;
   children: readonly TreeNode[];
-}
+};
 
 export const TreeNodeSchema: Schema<TreeNode, TreeNode> = S.Struct({
   name: S.String(),
@@ -63,7 +69,7 @@ const userTranscoder = deriveTranscoder(UserSchema);
 export const parseUser = (user: unknown): Result<TranscodeErrors, User> => {
   const result = userTranscoder.decode(user);
   return mapResult(result);
-}
+};
 
 export const encodeUser = (user: User): Result<TranscodeErrors, unknown> => {
   const result = userTranscoder.encode(user);
@@ -72,31 +78,39 @@ export const encodeUser = (user: User): Result<TranscodeErrors, unknown> => {
 
 const namelessUserTranscoder = deriveTranscoder(NamelessUserSchema);
 
-export const parseNamelessUser = (user: unknown): Result<TranscodeErrors, NamelessUser> => {
+export const parseNamelessUser = (
+  user: unknown
+): Result<TranscodeErrors, NamelessUser> => {
   const result = namelessUserTranscoder.decode(user);
   return mapResult(result);
-}
+};
 
-export const encodeNamelessUser = (user: NamelessUser): unknown => namelessUserTranscoder.encode(user);
+export const encodeNamelessUser = (user: NamelessUser): unknown =>
+  namelessUserTranscoder.encode(user);
 
 const treeNodeTranscoder = deriveTranscoder(TreeNodeSchema);
 
 export const parseTree = (node: unknown): Result<TranscodeErrors, TreeNode> => {
   const result = treeNodeTranscoder.decode(node);
   return mapResult(result);
-}
+};
 
-export const encodeTree = (node: TreeNode): Result<TranscodeErrors, TreeNode> => {
+export const encodeTree = (
+  node: TreeNode
+): Result<TranscodeErrors, TreeNode> => {
   const result = treeNodeTranscoder.encode(node);
   return mapResult(result);
 };
 
 // helpers, unrelated to the library
-const mapResult = <E, T>(e: Either<E, T>): Result<E, T> => isRight(e) ? { _tag: 'right', value: e.right } : { _tag: 'left', error: e.left };
+const mapResult = <E, T>(e: Either<E, T>): Result<E, T> =>
+  isRight(e)
+    ? { _tag: 'right', value: e.right }
+    : { _tag: 'left', error: e.left };
 const unwrapEither = <E, T>(e: Either<E, T>): T => {
   if (isRight(e)) {
     return e.right;
   } else {
     throw new Error(JSON.stringify(e.left));
   }
-}
+};

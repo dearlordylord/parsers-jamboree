@@ -11,7 +11,13 @@ export const ZodPage = (): React.ReactElement => {
   return (
     <div>
       <h1>Zod Page</h1>
-      <ParserComponent code={code} encodeUser={encodeUser} decodeUser={decodeUser} defaultInput={defaultInput} validUser={igor} />
+      <ParserComponent
+        code={code}
+        encodeUser={encodeUser}
+        decodeUser={decodeUser}
+        defaultInput={defaultInput}
+        validUser={igor}
+      />
     </div>
   );
 };

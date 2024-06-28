@@ -1,10 +1,7 @@
-
 import { ArkErrors, type } from 'arktype';
 import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
 import { Objects, Pipe, Strings, Tuples } from 'hotscript';
 import Mutable = Objects.Mutable;
-
-
 
 /*
 {
@@ -36,33 +33,41 @@ const palindromicContact = type({
  */
 
 // had to use hotscript to type the literal union imported from a const array
-type TupleToLiteral<T extends readonly unknown[]> = Pipe<T, [
-  Mutable,
-  Tuples.Map<Strings.Prepend<"'">>,
-  Tuples.Map<Strings.Append<"'">>,
-  Tuples.Join<'|'>
-]>;
+type TupleToLiteral<T extends readonly unknown[]> = Pipe<
+  T,
+  [
+    Mutable,
+    Tuples.Map<Strings.Prepend<"'">>,
+    Tuples.Map<Strings.Append<"'">>,
+    Tuples.Join<'|'>
+  ]
+>;
 
 type SubscriptionTypeLiteral = TupleToLiteral<typeof SUBSCRIPTION_TYPES>;
 
-const SUBSCRIPTION_TYPES_LITERAL = SUBSCRIPTION_TYPES.map(t => `'${t}'` as const).join('|') as SubscriptionTypeLiteral;
+const SUBSCRIPTION_TYPES_LITERAL = SUBSCRIPTION_TYPES.map(
+  (t) => `'${t}'` as const
+).join('|') as SubscriptionTypeLiteral;
 
-type ColourTypeLiteral = TupleToLiteral<typeof COLOURS>
+type ColourTypeLiteral = TupleToLiteral<typeof COLOURS>;
 
-const COLOURS_LITERAL = COLOURS.map(t => `'${t}'` as const).join('|') as ColourTypeLiteral;
+const COLOURS_LITERAL = COLOURS.map((t) => `'${t}'` as const).join(
+  '|'
+) as ColourTypeLiteral;
 const hexColorRegexString = `^#[a-fA-F0-9]{6}$`;
-const COLOURS_WITH_CODES_LITERAL = `(${COLOURS_LITERAL})|/${hexColorRegexString}/` as const;
+const COLOURS_WITH_CODES_LITERAL =
+  `(${COLOURS_LITERAL})|/${hexColorRegexString}/` as const;
 
 const user = type({
   // TODO how to do compatibility? e.g. convert io-ts into name
   // TODO add user id to all the libs
-  name: "0<string<255",
-  email: "email",
-  createdAt: "parse.date",
-  updatedAt: "parse.date",
+  name: '0<string<255',
+  email: 'email',
+  createdAt: 'parse.date',
+  updatedAt: 'parse.date',
   subscription: SUBSCRIPTION_TYPES_LITERAL,
   stripeId: /cus_[a-zA-Z0-9]{14,}/,
-  visits: "integer>0",
+  visits: 'integer>0',
   // TODO represent a set?
   favouriteColours: `(${COLOURS_WITH_CODES_LITERAL})[]`,
 });
@@ -70,7 +75,7 @@ const user = type({
 type User = typeof user.infer;
 
 export const decodeUser = (u: unknown): Result<ArkErrors, User> => {
-  const result = user(u)
+  const result = user(u);
   return mapResult(result);
 };
 
@@ -80,6 +85,7 @@ export const encodeUser = (_u: User): Result<'the lib cannot do it', never> => {
 
 // utils
 
-const mapResult = <E, T>(r: T | ArkErrors): Result<ArkErrors, T> => r instanceof ArkErrors ? { _tag: 'left', error: r } : { _tag: 'right', value: r };
-
-
+const mapResult = <E, T>(r: T | ArkErrors): Result<ArkErrors, T> =>
+  r instanceof ArkErrors
+    ? { _tag: 'left', error: r }
+    : { _tag: 'right', value: r };

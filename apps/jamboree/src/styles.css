@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
 body {
-/* dark theme for background and appropriate fonts */
+  /* dark theme for background and appropriate fonts */
 
   background-color: #1e1e1e;
   color: #d4d4d4;
@@ -17,4 +17,3 @@ body {
     text-decoration: underline;
   }
 }
-

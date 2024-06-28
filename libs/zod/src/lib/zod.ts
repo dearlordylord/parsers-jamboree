@@ -1,4 +1,4 @@
-import {z} from 'zod';
+import { z } from 'zod';
 import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
 import { SafeParseReturnType } from 'zod/lib/types';
 
@@ -42,15 +42,21 @@ datetime.parse("2020-01-01T00:00:00.123456Z"); // pass
 - which makes it possible to encode into a different format that the input is in
 
 *  */
-export const encodeUser = (_u: User): Result<'the lib cannot do it', never> => ({ _tag: 'left', error: 'the lib cannot do it' });
+export const encodeUser = (
+  _u: User
+): Result<'the lib cannot do it', never> => ({
+  _tag: 'left',
+  error: 'the lib cannot do it',
+});
 
 // utils
 
-const mapResult = (r: SafeParseReturnType<unknown, User>): Result<unknown, User> => {
+const mapResult = (
+  r: SafeParseReturnType<unknown, User>
+): Result<unknown, User> => {
   if (r.success) {
     return { _tag: 'right', value: r.data };
   } else {
     return { _tag: 'left', error: r.error };
   }
 };
-

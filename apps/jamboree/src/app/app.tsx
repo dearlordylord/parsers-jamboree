@@ -11,12 +11,12 @@ import { EffectSchemaPage } from './parsers/pages/effect-schema';
 const LIBS = ['schemata-ts', 'zod', 'arktype', 'effect-schema'] as const;
 
 type Rogues = {
-  [K in typeof LIBS[number]]: {
+  [K in (typeof LIBS)[number]]: {
     label: string;
     link: string;
     page: React.FC;
   };
-}
+};
 
 const rogues: Rogues = {
   'schemata-ts': {
@@ -24,12 +24,12 @@ const rogues: Rogues = {
     link: 'https://github.com/jamband/schemata-ts',
     page: SchemataPage,
   },
-  'zod': {
+  zod: {
     label: 'zod',
     link: 'https://github.com/colinhacks/zod',
     page: ZodPage,
   },
-  'arktype': {
+  arktype: {
     label: 'arktype',
     link: 'https://github.com/arktypeio/arktype',
     page: ArktypePage,
@@ -38,14 +38,12 @@ const rogues: Rogues = {
     label: 'effect-schema',
     link: 'https://github.com/effect-ts/effect/tree/main/packages/schema',
     page: EffectSchemaPage,
-  }
+  },
 };
 
 export function App() {
   return (
     <div>
-
-
       {/* START: routes */}
       {/* These routes and navigation have been generated for you */}
       {/* Feel free to move and update them to fit your needs */}
@@ -65,24 +63,10 @@ export function App() {
         </ul>
       </div>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <div>
-              Main Page
-            </div>
-          }
-        />
+        <Route path="/" element={<div>Main Page</div>} />
         {Object.entries(rogues).map(([name, { label, link, page: Page }]) => (
-          <Route
-            key={name}
-            path={`/${name}`}
-            element={
-              <Page />
-            }
-          />
+          <Route key={name} path={`/${name}`} element={<Page />} />
         ))}
-
       </Routes>
       {/* END: routes */}
     </div>

@@ -1,34 +1,40 @@
-import { SUBSCRIPTION_TYPE_FREE, SUBSCRIPTION_TYPE_PRO } from '@parsers-jamboree/common';
+import {
+  SUBSCRIPTION_TYPE_FREE,
+  SUBSCRIPTION_TYPE_PRO,
+} from '@parsers-jamboree/common';
 
-
-export const igor = JSON.parse(JSON.stringify({
-  name: 'igor',
-  email: 'igor@loskutoff.com',
-  createdAt: '1990-01-01T00:00:00.000Z',
-  updatedAt: '2000-01-01T00:00:00.000Z',
-  subscription: SUBSCRIPTION_TYPE_PRO,
-  stripeId: 'cus_NffrFeUfNV2Hib',
-  visits: 10,
-  favouriteColours: ['red', 'green', 'blue', '#ac0200'].sort(),
-}));
+export const igor = JSON.parse(
+  JSON.stringify({
+    name: 'igor',
+    email: 'igor@loskutoff.com',
+    createdAt: '1990-01-01T00:00:00.000Z',
+    updatedAt: '2000-01-01T00:00:00.000Z',
+    subscription: SUBSCRIPTION_TYPE_PRO,
+    stripeId: 'cus_NffrFeUfNV2Hib',
+    visits: 10,
+    favouriteColours: ['red', 'green', 'blue', '#ac0200'].sort(),
+  })
+);
 
 // to test errored types
-export const harry = JSON.parse(JSON.stringify({
-  name: '',
-  email: null,
-  createdAt: '1990-01-01T00:00:00.000Z',
-  updatedAt: '1900-01-01T00:00:00.000Z',
-  subscription: SUBSCRIPTION_TYPE_FREE,
-  stripeId: 'big boss',
-  visits: -1,
-  favouriteColours: ['cars', null, []],
-  extraField: 'extra',
-}));
+export const harry = JSON.parse(
+  JSON.stringify({
+    name: '',
+    email: null,
+    createdAt: '1990-01-01T00:00:00.000Z',
+    updatedAt: '1900-01-01T00:00:00.000Z',
+    subscription: SUBSCRIPTION_TYPE_FREE,
+    stripeId: 'big boss',
+    visits: -1,
+    favouriteColours: ['cars', null, []],
+    extraField: 'extra',
+  })
+);
 
 type TreeNode = {
   name: string;
   children: TreeNode[];
-}
+};
 
 // to test recursive types
 const tree_: TreeNode = {
@@ -71,10 +77,12 @@ const tree_: TreeNode = {
     },
     {
       name: 'child3',
-      children: [{
-        name: 'leaf1',
-        children: [],
-      }],
+      children: [
+        {
+          name: 'leaf1',
+          children: [],
+        },
+      ],
     },
   ],
 };

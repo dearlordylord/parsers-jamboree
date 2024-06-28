@@ -1,38 +1,46 @@
 import { Schema, TreeFormatter } from '@effect/schema';
-import * as Either from 'effect/Either'
+import * as Either from 'effect/Either';
 import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
 import { ParseError } from '@effect/schema/ParseResult';
 
-const NonEmptyStringBrand = Symbol.for("NonEmptyString");
+const NonEmptyStringBrand = Symbol.for('NonEmptyString');
 
-const NonEmptyString = Schema.String
-  .pipe(Schema.filter(s => s.length > 0))
-  .pipe(Schema.brand(NonEmptyStringBrand))
+const NonEmptyString = Schema.String.pipe(
+  Schema.filter((s) => s.length > 0)
+).pipe(Schema.brand(NonEmptyStringBrand));
 
-const EmailBrand = Symbol.for("Email");
+const EmailBrand = Symbol.for('Email');
 
 // no built-in email combinator by-design (lot of definitions out there)
-const Email = NonEmptyString.pipe(Schema.pattern(
-  /^(?!\.)(?!.*\.\.)([A-Z0-9_+-.]*)[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i
-)).pipe(Schema.brand(EmailBrand));
+const Email = NonEmptyString.pipe(
+  Schema.pattern(
+    /^(?!\.)(?!.*\.\.)([A-Z0-9_+-.]*)[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i
+  )
+).pipe(Schema.brand(EmailBrand));
 
-const StripeIdBrand = Symbol.for("StripeId");
+const StripeIdBrand = Symbol.for('StripeId');
 
-const StripeId = Schema.String.pipe(Schema.pattern(/^cus_[a-zA-Z0-9]{14,}$/)).pipe(Schema.brand(StripeIdBrand));
+const StripeId = Schema.String.pipe(
+  Schema.pattern(/^cus_[a-zA-Z0-9]{14,}$/)
+).pipe(Schema.brand(StripeIdBrand));
 
-const ColourBrand = Symbol.for("Colour");
+const ColourBrand = Symbol.for('Colour');
 
 const Colour = Schema.Literal(...COLOURS).pipe(Schema.brand(ColourBrand));
 
-const HexBrand = Symbol.for("Hex");
+const HexBrand = Symbol.for('Hex');
 
-const Hex = Schema.String.pipe(Schema.pattern(/^#[a-fA-F0-9]{6}$/)).pipe(Schema.brand(HexBrand));
+const Hex = Schema.String.pipe(Schema.pattern(/^#[a-fA-F0-9]{6}$/)).pipe(
+  Schema.brand(HexBrand)
+);
 
 const ColourOrHex = Schema.Union(Colour, Hex);
 
-const SubscriptionBrand = Symbol.for("Subscription");
+const SubscriptionBrand = Symbol.for('Subscription');
 
-const Subscription = Schema.Literal(...SUBSCRIPTION_TYPES).pipe(Schema.brand(SubscriptionBrand));
+const Subscription = Schema.Literal(...SUBSCRIPTION_TYPES).pipe(
+  Schema.brand(SubscriptionBrand)
+);
 
 const User = Schema.Struct({
   // name: Schema.NonEmpty, exists but it doesn't brand the string and also what's up with its name?...
@@ -60,4 +68,6 @@ export const encodeUser = (u: User): Result<string, unknown> => {
 // utils
 
 const mapResult = <T>(r: Either.Either<T, ParseError>): Result<string, T> =>
-  Either.isLeft(r) ? { _tag: 'left', error: TreeFormatter.formatErrorSync(r.left) } : { _tag: 'right', value: r.right };
+  Either.isLeft(r)
+    ? { _tag: 'left', error: TreeFormatter.formatErrorSync(r.left) }
+    : { _tag: 'right', value: r.right };
