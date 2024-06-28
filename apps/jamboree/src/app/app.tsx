@@ -6,8 +6,9 @@ import { SchemataPage } from './parsers/pages/schemata-ts';
 import { ZodPage } from './parsers/pages/zod';
 import React from 'react';
 import { ArktypePage } from './parsers/pages/arktype';
+import { EffectSchemaPage } from './parsers/pages/effect-schema';
 
-const LIBS = ['schemata-ts', 'zod', 'arktype'] as const;
+const LIBS = ['schemata-ts', 'zod', 'arktype', 'effect-schema'] as const;
 
 type Rogues = {
   [K in typeof LIBS[number]]: {
@@ -32,6 +33,11 @@ const rogues: Rogues = {
     label: 'arktype',
     link: 'https://github.com/arktypeio/arktype',
     page: ArktypePage,
+  },
+  'effect-schema': {
+    label: 'effect-schema',
+    link: 'https://github.com/effect-ts/effect/tree/main/packages/schema',
+    page: EffectSchemaPage,
   }
 };
 

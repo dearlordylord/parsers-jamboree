@@ -1,0 +1,19 @@
+{
+  "name": "effect-ts-schema",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/effect-ts-schema/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/effect-ts-schema",
+        "main": "libs/effect-ts-schema/src/index.ts",
+        "tsConfig": "libs/effect-ts-schema/tsconfig.lib.json",
+        "assets": ["libs/effect-ts-schema/*.md"]
+      }
+    }
+  }
+}

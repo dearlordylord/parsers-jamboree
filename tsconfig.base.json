@@ -19,6 +19,9 @@
       "@parsers-jamboree/arktype/*": ["libs/arktype/src/lib/*"],
       "@parsers-jamboree/checker": ["libs/checker/src/index.ts"],
       "@parsers-jamboree/common": ["libs/common/src/index.ts"],
+      "@parsers-jamboree/effect-ts-schema/*": [
+        "libs/effect-ts-schema/src/lib/*"
+      ],
       "@parsers-jamboree/schemata-ts/*": ["libs/schemata-ts/src/lib/*"],
       "@parsers-jamboree/zod/*": ["libs/zod/src/lib/*"]
     }

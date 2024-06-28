@@ -5,6 +5,7 @@
   "scripts": {},
   "private": true,
   "dependencies": {
+    "@effect/schema": "^0.68.12",
     "@monaco-editor/react": "^4.6.0",
     "arktype": "^2.0.0-dev.26",
     "highlight.js": "^11.9.0",

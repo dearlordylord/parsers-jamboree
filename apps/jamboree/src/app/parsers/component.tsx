@@ -2,8 +2,9 @@ import React, { useId, useMemo, useState } from 'react';
 import { Result } from '@parsers-jamboree/common';
 import Editor from '@monaco-editor/react';
 import { Highlighter } from '../highlighter';
-import { JSONTree } from 'react-json-tree';
+import { JSONTree, KeyPath } from 'react-json-tree';
 import { igor } from '@parsers-jamboree/checker';
+import { get } from '../utils';
 
 type Props<T, E, EE> = {code: string, encodeUser: (u: T) => Result<EE, unknown>, decodeUser: (u: unknown) => Result<E, T>, defaultInput: unknown, validUser: typeof igor}
 
@@ -62,6 +63,15 @@ export const ParserComponent = <T, E, EE>({code, encodeUser, decodeUser, validUs
             return <span>{`JS Date('${s}')`}</span>;
           }
           return <span>{JSON.stringify(s)}</span>;
+        }} labelRenderer={( keyPath: KeyPath,
+                            nodeType: string,
+                            expanded: boolean,
+                            expandable: boolean,) => {
+          if (get(parsed.value, keyPath) instanceof Set) {
+            return <span>(JS Set) {keyPath[0]}:</span>
+          }
+
+          return <span>{keyPath[0]}:</span>
         }} />}
       </div>
       <h2>Encoded back to JSON</h2>
