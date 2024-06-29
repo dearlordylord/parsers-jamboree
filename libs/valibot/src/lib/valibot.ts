@@ -21,23 +21,10 @@ import {
   flatten,
   array,
   check,
-  transform, BaseIssue
+  transform, BaseIssue, isoTimestamp
 } from 'valibot';
 import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
 import { BaseSchema } from 'valibot/dist';
-
-
-
-// const igor = {
-//   name: "igor",
-//   email: "igor@loskutoff.com",
-//   createdAt: "1990-01-01T00:00:00.000Z",
-//   updatedAt: "2000-01-01T00:00:00.000Z",
-//   subscription: 0,
-//   stripeId: "cus_NffrFeUfNV2Hib",
-//   visits: 10,
-//   favouriteColours: ["red", "green", "blue", "#ac0200"].sort(),
-// };
 
 const NonEmptyStringSchema = pipe(string(), minLength(1), brand('NonEmptyString'));
 
@@ -46,12 +33,7 @@ const EmailSchema = pipe(NonEmptyStringSchema, email(), brand('Email'));
 
 const UserNameSchema = pipe(NonEmptyStringSchema, brand('UserName'));
 
-// isoDateTime doesn't parse iso date time at the moment but use a proprietary format https://github.com/fabian-hiller/valibot/issues/686
-// const DatetimeSchema = pipe(string(), isoDateTime());
-
-// https://stackoverflow.com/a/14322189/2123547
-const DATETIME_REGEX = /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/
-const DatetimeSchema = pipe(string(), check(v => DATETIME_REGEX.test(v), `Expected a datetime string in the format YYYY-MM-DDTHH:MM:SS.sssZ`), transform(v => new Date(v)), brand('Datetime'));
+const DatetimeSchema = pipe(string(), isoTimestamp());
 
 const SubscriptionSchema = picklist(SUBSCRIPTION_TYPES);
 
