@@ -7,8 +7,9 @@ import { ZodPage } from './parsers/pages/zod';
 import React from 'react';
 import { ArktypePage } from './parsers/pages/arktype';
 import { EffectSchemaPage } from './parsers/pages/effect-schema';
+import { TypeboxPage } from './parsers/pages/typebox';
 
-const LIBS = ['schemata-ts', 'zod', 'arktype', 'effect-schema'] as const;
+const LIBS = ['schemata-ts', 'zod', 'arktype', 'effect-schema', 'typebox'] as const;
 
 type Rogues = {
   [K in (typeof LIBS)[number]]: {
@@ -38,6 +39,11 @@ const rogues: Rogues = {
     label: 'effect-schema',
     link: 'https://github.com/effect-ts/effect/tree/main/packages/schema',
     page: EffectSchemaPage,
+  },
+  typebox: {
+    label: 'typebox',
+    link: 'https://github.com/sinclairzx81/typebox',
+    page: TypeboxPage,
   },
 };
 

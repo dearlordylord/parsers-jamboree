@@ -1,0 +1,19 @@
+{
+  "name": "typebox",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/typebox/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/typebox",
+        "main": "libs/typebox/src/index.ts",
+        "tsConfig": "libs/typebox/tsconfig.lib.json",
+        "assets": ["libs/typebox/*.md"]
+      }
+    }
+  }
+}
