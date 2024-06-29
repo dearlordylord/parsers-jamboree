@@ -16,6 +16,7 @@
     "react-router-dom": "6.11.2",
     "schemata-ts": "^2.2.3",
     "tslib": "^2.3.0",
+    "valibot": "^0.35.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

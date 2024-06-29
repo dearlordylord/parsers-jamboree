@@ -45,7 +45,7 @@ export const UserSchema = S.Struct({
   stripeId: StripeIdSchema,
   visits: S.Int({ min: 0 }), // somehow, there's also NonNegativeFloat but no NonNegativeInteger
   favouriteColours: S.SetFromArray(colourOrd)(ColourSchema),
-}).strict();
+}); // .strict() can be added to not allow unexpected fields
 
 export type User = OutputOf<typeof UserSchema>;
 
@@ -62,7 +62,7 @@ type TreeNode = {
 export const TreeNodeSchema: Schema<TreeNode, TreeNode> = S.Struct({
   name: S.String(),
   children: S.Array(S.Lazy('TreeNode', () => TreeNodeSchema)),
-}).strict();
+});
 
 const userTranscoder = deriveTranscoder(UserSchema);
 

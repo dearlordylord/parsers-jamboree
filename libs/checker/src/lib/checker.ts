@@ -13,6 +13,10 @@ export const igor = JSON.parse(
     stripeId: 'cus_NffrFeUfNV2Hib',
     visits: 10,
     favouriteColours: ['red', 'green', 'blue', '#ac0200'].sort(),
+    profile: {
+      type: 'listener',
+      boughtTracks: 10
+    }
   })
 );
 

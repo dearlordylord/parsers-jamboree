@@ -42,6 +42,23 @@ const Subscription = Schema.Literal(...SUBSCRIPTION_TYPES).pipe(
   Schema.brand(SubscriptionBrand)
 );
 
+const NonNegativeIntegerBrand = Symbol.for('NonNegativeInteger');
+
+const NonNegativeInteger = Schema.Union(Schema.NonNegative, Schema.Int).pipe(Schema.brand(NonNegativeIntegerBrand));
+
+// this lib can figure out discriminator by itself
+// TODO add this union elswhere
+const Profile = Schema.Union(
+  Schema.Struct({
+    type: Schema.Literal('listener'),
+    boughtTracks: NonNegativeInteger,
+  }),
+  Schema.Struct({
+    type: Schema.Literal('artist'),
+    publishedTracks: NonNegativeInteger,
+  })
+);
+
 const User = Schema.Struct({
   // name: Schema.NonEmpty, exists but it doesn't brand the string and also what's up with its name?...
   name: NonEmptyString,
@@ -50,8 +67,9 @@ const User = Schema.Struct({
   updatedAt: Schema.Date,
   subscription: Subscription,
   stripeId: StripeId,
-  visits: Schema.Union(Schema.Positive, Schema.Int),
+  visits: NonNegativeInteger,
   favouriteColours: Schema.Set(ColourOrHex),
+  profile: Profile,
 });
 
 type User = Schema.Schema.Type<typeof User>;
