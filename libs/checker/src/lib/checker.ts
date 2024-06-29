@@ -15,8 +15,8 @@ export const igor = JSON.parse(
     favouriteColours: ['red', 'green', 'blue', '#ac0200'].sort(),
     profile: {
       type: 'listener',
-      boughtTracks: 10
-    }
+      boughtTracks: 10,
+    },
   })
 );
 

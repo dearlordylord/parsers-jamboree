@@ -10,7 +10,14 @@ import { EffectSchemaPage } from './parsers/pages/effect-schema';
 import { TypeboxPage } from './parsers/pages/typebox';
 import { ValibotPage } from './parsers/pages/valibot';
 
-const LIBS = ['schemata-ts', 'zod', 'arktype', 'effect-schema', 'typebox', 'valibot'] as const;
+const LIBS = [
+  'schemata-ts',
+  'zod',
+  'arktype',
+  'effect-schema',
+  'typebox',
+  'valibot',
+] as const;
 
 type Rogues = {
   [K in (typeof LIBS)[number]]: {
@@ -46,7 +53,7 @@ const rogues: Rogues = {
     link: 'https://github.com/sinclairzx81/typebox',
     page: TypeboxPage,
   },
-  'valibot': {
+  valibot: {
     label: 'valibot',
     link: 'https://github.com/fabian-hiller/valibot',
     page: ValibotPage,

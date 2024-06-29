@@ -44,7 +44,9 @@ const Subscription = Schema.Literal(...SUBSCRIPTION_TYPES).pipe(
 
 const NonNegativeIntegerBrand = Symbol.for('NonNegativeInteger');
 
-const NonNegativeInteger = Schema.Union(Schema.NonNegative, Schema.Int).pipe(Schema.brand(NonNegativeIntegerBrand));
+const NonNegativeInteger = Schema.Union(Schema.NonNegative, Schema.Int).pipe(
+  Schema.brand(NonNegativeIntegerBrand)
+);
 
 // this lib can figure out discriminator by itself
 // TODO add this union elswhere

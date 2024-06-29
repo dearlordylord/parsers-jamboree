@@ -39,7 +39,12 @@ export const ParserComponent = <T, E, EE>({
   const printKeyOrder =
     parsedInputJson._tag === 'left'
       ? []
-      : [...Object.keys(parsedInputJson.value as Record<string, unknown>), /*special keys for profile, I don't want to bother with recursive parsing for now; TODO*/...Object.keys(igor.profile)];
+      : [
+          ...Object.keys(parsedInputJson.value as Record<string, unknown>),
+          /*special keys for profile, I don't want to bother with recursive parsing for now; TODO*/ ...Object.keys(
+            igor.profile
+          ),
+        ];
   const printKeyOrderF = (k1: unknown, k2: unknown) =>
     printKeyOrder.indexOf(k1 as string) - printKeyOrder.indexOf(k2 as string);
   const [parserCode, setParserCode] = useState(code);
