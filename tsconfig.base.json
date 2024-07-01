@@ -16,6 +16,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@parsers-jamboree/ajv/*": ["libs/ajv/src/lib/*"],
       "@parsers-jamboree/arktype/*": ["libs/arktype/src/lib/*"],
       "@parsers-jamboree/checker": ["libs/checker/src/index.ts"],
       "@parsers-jamboree/common": ["libs/common/src/index.ts"],

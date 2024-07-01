@@ -9,6 +9,8 @@
     "@monaco-editor/react": "^4.6.0",
     "@sinclair/typebox": "^0.32.34",
     "@vinejs/vine": "^2.1.0",
+    "ajv": "^8.16.0",
+    "ajv-formats": "^3.0.1",
     "arktype": "^2.0.0-dev.26",
     "highlight.js": "^11.9.0",
     "react": "18.3.1",

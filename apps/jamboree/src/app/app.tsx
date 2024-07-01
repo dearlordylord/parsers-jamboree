@@ -11,6 +11,7 @@ import { TypeboxPage } from './parsers/pages/typebox';
 import { ValibotPage } from './parsers/pages/valibot';
 import { VinejsPage } from './parsers/pages/vinejs';
 import { RuntypesPage } from './parsers/pages/runtypes';
+import { AjvPage } from './parsers/pages/ajv';
 
 const LIBS = [
   'schemata-ts',
@@ -21,6 +22,7 @@ const LIBS = [
   'valibot',
   'vinejs',
   'runtypes',
+  'ajv',
 ] as const;
 
 type Rogues = {
@@ -71,6 +73,11 @@ const rogues: Rogues = {
     label: 'runtypes',
     link: 'https://github.com/runtypes/runtypes',
     page: RuntypesPage,
+  },
+  ajv: {
+    label: 'ajv',
+    link: 'https://github.com/ajv-validator/ajv',
+    page: AjvPage,
   }
 };
 

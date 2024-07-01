@@ -102,7 +102,7 @@ export const decodeUser = (u: unknown): Result<string, User> => {
     if (isNaN(createdAt.getTime())) {
       return { _tag: 'left', error: 'createdAt must be a valid ISO date' };
     }
-    let updatedAt = new Date(u.updatedAt);
+    const updatedAt = new Date(u.updatedAt);
     if (isNaN(updatedAt.getTime())) {
       return { _tag: 'left', error: 'updatedAt must be a valid ISO date' };
     }
