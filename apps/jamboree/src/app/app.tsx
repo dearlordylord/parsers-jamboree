@@ -98,7 +98,7 @@ export function App() {
           {Object.entries(rogues).map(([name, { label, link }]) => (
             <li key={name}>
               <Link to={`/${name}`}>{label}</Link>
-              <span style={{ fontSize: '0.5em' }}>{link}</span>
+              <span> </span><span style={{ fontSize: '0.5em' }}><a href={link} target="_blank" rel="noreferrer">{link}</a></span>
             </li>
           ))}
         </ul>
