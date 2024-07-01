@@ -1,5 +1,5 @@
 import { ArkErrors, type } from 'arktype';
-import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
+import { chain, COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
 import { Objects, Pipe, Strings, Tuples } from 'hotscript';
 import Mutable = Objects.Mutable;
 
@@ -45,25 +45,57 @@ const hexColorRegexString = `^#[a-fA-F0-9]{6}$`;
 const COLOURS_WITH_CODES_LITERAL =
   `(${COLOURS_LITERAL})|/${hexColorRegexString}/` as const;
 
-const user = type({
+const userJson = type({
   // TODO how to do compatibility? e.g. convert io-ts into name
   // TODO add user id to all the libs
   name: '0<string<255',
   email: 'email',
-  createdAt: 'parse.date',
-  updatedAt: 'parse.date',
+  // https://github.com/arktypeio/arktype/issues/909 morphs aren't really here yet
+  createdAt: 'string',
+  updatedAt: 'string',
   subscription: SUBSCRIPTION_TYPES_LITERAL,
   stripeId: /cus_[a-zA-Z0-9]{14,}/,
   visits: 'integer>0',
-  // TODO represent a set?
+  // https://github.com/arktypeio/arktype/issues/909 morphs aren't really here yet
   favouriteColours: `(${COLOURS_WITH_CODES_LITERAL})[]`,
 });
 
-type User = typeof user.infer;
+type UserJson = typeof userJson.infer;
 
-export const decodeUser = (u: unknown): Result<ArkErrors, User> => {
-  const result = user(u);
-  return mapResult(result);
+type User = Omit<UserJson, 'favouriteColours' | 'createdAt' | 'updatedAt'> & {
+  createdAt: Date;
+  updatedAt: Date;
+  favouriteColours: Set<string>
+};
+
+export const decodeUser = (u: unknown): Result<string, User> => {
+  const result = userJson(u);
+
+  return chain(
+    (u: UserJson): Result<string, User> => {
+      const favouriteColours = new Set(u.favouriteColours);
+      if (favouriteColours.size !== u.favouriteColours.length) {
+        return { _tag: 'left', error: 'favourite colours must be unique' };
+      }
+      const createdAt = new Date(u.createdAt);
+      if (isNaN(createdAt.getTime())) {
+        return { _tag: 'left', error: 'createdAt must be a valid ISO date' };
+      }
+      const updatedAt = new Date(u.updatedAt);
+      if (isNaN(updatedAt.getTime())) {
+        return { _tag: 'left', error: 'updatedAt must be a valid ISO date' };
+      }
+      return {
+        _tag: 'right',
+        value: {
+          ...u,
+          favouriteColours,
+          createdAt,
+          updatedAt,
+        }
+      }
+    }
+  )(mapResult(result));
 };
 
 export const encodeUser = (_u: User): Result<'the lib cannot do it', never> => {
@@ -72,7 +104,7 @@ export const encodeUser = (_u: User): Result<'the lib cannot do it', never> => {
 
 // utils
 
-const mapResult = <E, T>(r: T | ArkErrors): Result<ArkErrors, T> =>
+const mapResult = <E, T>(r: T | ArkErrors): Result<string, T> =>
   r instanceof ArkErrors
-    ? { _tag: 'left', error: r }
+    ? { _tag: 'left', error: JSON.stringify(r) }
     : { _tag: 'right', value: r };

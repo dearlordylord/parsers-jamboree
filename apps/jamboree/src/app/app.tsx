@@ -98,12 +98,14 @@ export function App() {
           {Object.entries(rogues).map(([name, { label, link }]) => (
             <li key={name}>
               <Link to={`/${name}`}>{label}</Link>
+              <span style={{ fontSize: '0.5em' }}>{link}</span>
             </li>
           ))}
         </ul>
       </div>
       <Routes>
-        <Route path="/" element={<div>Main Page</div>} />
+        <Route path="/" element={<div>
+        </div>}/>
         {Object.entries(rogues).map(([name, { label, link, page: Page }]) => (
           <Route key={name} path={`/${name}`} element={<Page />} />
         ))}
