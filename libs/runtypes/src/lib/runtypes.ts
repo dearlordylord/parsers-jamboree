@@ -13,7 +13,15 @@ import {
   Static,
   RuntypeBrand
 } from 'runtypes';
-import { chain, COLOURS, EMAIL_REGEX_S, ISO_DATE_REGEX_S, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
+import {
+  chain,
+  COLOURS,
+  EMAIL_REGEX_S,
+  ISO_DATE_REGEX_S, PROFILE_TYPE_ARTIST, PROFILE_TYPE_LISTENER,
+  PROFILE_TYPES,
+  Result,
+  SUBSCRIPTION_TYPES
+} from '@parsers-jamboree/common';
 
 const NonNegative = Number.withConstraint(n => n >= 0).withBrand('NonNegative');
 const Integer = Number.withConstraint(n => n % 1 === 0).withBrand('Integer');
@@ -44,6 +52,20 @@ const Colour = Union(...(COLOURS.map(c => Literal(c)) as TupleToLiteral<typeof C
 const HexColourOrColour = Union(HexColour, Colour);
 type HexColourOrColour = Static<typeof HexColourOrColour>;
 
+const ProfileType = Union(...(PROFILE_TYPES.map(t => Literal(t)) as TupleToLiteral<typeof PROFILE_TYPES>));
+
+const ProfileListener = Record({
+  type: Literal(PROFILE_TYPE_LISTENER),
+  boughtTracks: NonNegativeInteger,
+});
+
+const ProfileArtist = Record({
+  type: Literal(PROFILE_TYPE_ARTIST),
+  publishedTracks: NonNegativeInteger,
+});
+
+const Profile = Union(ProfileListener, ProfileArtist);
+
 const UserJson = Record({
   name: NonEmptyString,
   email: Email,
@@ -54,6 +76,7 @@ const UserJson = Record({
   stripeId: StripeCustomerId,
   visits: NonNegativeInteger,
   favouriteColours: Array(HexColourOrColour),
+  profile: Profile
 });
 
 type UserJson = Static<typeof UserJson>;
@@ -96,7 +119,9 @@ export const decodeUser = (u: unknown): Result<string, User> => {
 };
 
 // actually since there's no transformation, it's just the same object; so "no-feature feature"
-export const encodeUser = (u: User): Result<string, unknown> => ({ _tag: 'right', value: u });
+// BUT also we can't check if a transformed object was passed or not; so I predict plenty of errors on this front;
+// the presence of transformations (and they will be present in production code) dictates that this feature is functionally, not only nominally, non-existing
+export const encodeUser = (_u: User): Result<string, unknown> => ({ _tag: 'left', error: 'the lib cannot do it' });
 
 // utils
 
