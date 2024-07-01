@@ -1,0 +1,19 @@
+{
+  "name": "runtypes",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/runtypes/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/runtypes",
+        "main": "libs/runtypes/src/index.ts",
+        "tsConfig": "libs/runtypes/tsconfig.lib.json",
+        "assets": ["libs/runtypes/*.md"]
+      }
+    }
+  }
+}

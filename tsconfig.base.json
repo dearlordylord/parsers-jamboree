@@ -22,6 +22,7 @@
       "@parsers-jamboree/effect-ts-schema/*": [
         "libs/effect-ts-schema/src/lib/*"
       ],
+      "@parsers-jamboree/runtypes/*": ["libs/runtypes/src/lib/*"],
       "@parsers-jamboree/schemata-ts/*": ["libs/schemata-ts/src/lib/*"],
       "@parsers-jamboree/typebox/*": ["libs/typebox/src/lib/*"],
       "@parsers-jamboree/valibot/*": ["libs/valibot/src/lib/*"],

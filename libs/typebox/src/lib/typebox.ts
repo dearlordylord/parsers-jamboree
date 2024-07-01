@@ -49,7 +49,8 @@ type EmailBrand = {
 
 const Email = Type.Transform(
   Type.String({
-    pattern: EMAIL_REGEX_S,
+    pattern:
+    EMAIL_REGEX_S,
   })
 )
   .Decode((value) => value as typeof value & EmailBrand)

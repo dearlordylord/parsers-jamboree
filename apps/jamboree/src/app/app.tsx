@@ -10,6 +10,7 @@ import { EffectSchemaPage } from './parsers/pages/effect-schema';
 import { TypeboxPage } from './parsers/pages/typebox';
 import { ValibotPage } from './parsers/pages/valibot';
 import { VinejsPage } from './parsers/pages/vinejs';
+import { RuntypesPage } from './parsers/pages/runtypes';
 
 const LIBS = [
   'schemata-ts',
@@ -19,6 +20,7 @@ const LIBS = [
   'typebox',
   'valibot',
   'vinejs',
+  'runtypes',
 ] as const;
 
 type Rogues = {
@@ -65,6 +67,11 @@ const rogues: Rogues = {
     link: 'https://github.com/vinejs/vine',
     page: VinejsPage,
   },
+  runtypes: {
+    label: 'runtypes',
+    link: 'https://github.com/runtypes/runtypes',
+    page: RuntypesPage,
+  }
 };
 
 export function App() {
