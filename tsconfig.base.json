@@ -25,6 +25,7 @@
       "@parsers-jamboree/schemata-ts/*": ["libs/schemata-ts/src/lib/*"],
       "@parsers-jamboree/typebox/*": ["libs/typebox/src/lib/*"],
       "@parsers-jamboree/valibot/*": ["libs/valibot/src/lib/*"],
+      "@parsers-jamboree/vinejs/*": ["libs/vinejs/src/lib/*"],
       "@parsers-jamboree/zod/*": ["libs/zod/src/lib/*"]
     }
   },

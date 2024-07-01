@@ -3,8 +3,7 @@ import {
   SUBSCRIPTION_TYPE_PRO,
 } from '@parsers-jamboree/common';
 
-export const igor = JSON.parse(
-  JSON.stringify({
+export const igor = {
     name: 'igor',
     email: 'igor@loskutoff.com',
     createdAt: '1990-01-01T00:00:00.000Z',
@@ -17,12 +16,10 @@ export const igor = JSON.parse(
       type: 'listener',
       boughtTracks: 10,
     },
-  })
-);
+  };
 
 // to test errored types
-export const harry = JSON.parse(
-  JSON.stringify({
+export const harry = {
     name: '',
     email: null,
     createdAt: '1990-01-01T00:00:00.000Z',
@@ -32,9 +29,7 @@ export const harry = JSON.parse(
     visits: -1,
     favouriteColours: ['cars', null, []],
     extraField: 'extra',
-  })
-);
-
+  }
 type TreeNode = {
   name: string;
   children: TreeNode[];

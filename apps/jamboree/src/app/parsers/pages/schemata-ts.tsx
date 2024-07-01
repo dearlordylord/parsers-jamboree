@@ -22,6 +22,7 @@ export const SchemataPage = (): React.ReactElement => {
       <ParserComponent
         code={code}
         encodeUser={encodeUser}
+        type="normal"
         decodeUser={parseUser}
         defaultInput={defaultInput}
         validUser={igor}

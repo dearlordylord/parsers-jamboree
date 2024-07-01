@@ -9,6 +9,7 @@ import { ArktypePage } from './parsers/pages/arktype';
 import { EffectSchemaPage } from './parsers/pages/effect-schema';
 import { TypeboxPage } from './parsers/pages/typebox';
 import { ValibotPage } from './parsers/pages/valibot';
+import { VinejsPage } from './parsers/pages/vinejs';
 
 const LIBS = [
   'schemata-ts',
@@ -17,6 +18,7 @@ const LIBS = [
   'effect-schema',
   'typebox',
   'valibot',
+  'vinejs',
 ] as const;
 
 type Rogues = {
@@ -57,6 +59,11 @@ const rogues: Rogues = {
     label: 'valibot',
     link: 'https://github.com/fabian-hiller/valibot',
     page: ValibotPage,
+  },
+  vinejs: {
+    label: 'vinejs',
+    link: 'https://github.com/vinejs/vine',
+    page: VinejsPage,
   },
 };
 
