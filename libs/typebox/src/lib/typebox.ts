@@ -1,15 +1,4 @@
-// const igor = JSON.parse(JSON.stringify({
-//   name: 'igor',
-//   email: 'igor@loskutoff.com',
-//   createdAt: '1990-01-01T00:00:00.000Z',
-//   updatedAt: '2000-01-01T00:00:00.000Z',
-//   subscription: 0,
-//   stripeId: 'cus_NffrFeUfNV2Hib',
-//   visits: 10,
-//   favouriteColours: ['red', 'green', 'blue', '#ac0200'].sort(),
-// }));
-
-import { Type, type Static, StaticDecode } from '@sinclair/typebox';
+import { Type, StaticDecode } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
 import { COLOURS, EMAIL_REGEX_S, ISO_DATE_REGEX_S, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
 import { ValueError } from '@sinclair/typebox/build/cjs/errors/errors';
