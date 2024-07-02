@@ -22,19 +22,22 @@ exports.UserSchema = S.Struct({
     stripeId: StripeIdSchema,
     visits: S.Int({ min: 0 }), // somehow, there's also NonNegativeFloat but no NonNegativeInteger
     favouriteColours: S.SetFromArray(colourOrd)(ColourSchema),
-}).strict();
+}); // .strict() can be added to not allow unexpected fields
 exports.NamelessUserSchema = exports.UserSchema.omit('name');
 exports.TreeNodeSchema = S.Struct({
     name: S.String(),
     children: S.Array(S.Lazy('TreeNode', () => exports.TreeNodeSchema)),
-}).strict();
+});
 const userTranscoder = (0, Transcoder_1.deriveTranscoder)(exports.UserSchema);
 const parseUser = (user) => {
     const result = userTranscoder.decode(user);
     return mapResult(result);
 };
 exports.parseUser = parseUser;
-const encodeUser = (user) => unwrapEither /*we don't care about the encoding errors here*/(userTranscoder.encode(user));
+const encodeUser = (user) => {
+    const result = userTranscoder.encode(user);
+    return mapResult(result);
+};
 exports.encodeUser = encodeUser;
 const namelessUserTranscoder = (0, Transcoder_1.deriveTranscoder)(exports.NamelessUserSchema);
 const parseNamelessUser = (user) => {
@@ -50,10 +53,15 @@ const parseTree = (node) => {
     return mapResult(result);
 };
 exports.parseTree = parseTree;
-const encodeTree = (node) => treeNodeTranscoder.encode(node);
+const encodeTree = (node) => {
+    const result = treeNodeTranscoder.encode(node);
+    return mapResult(result);
+};
 exports.encodeTree = encodeTree;
 // helpers, unrelated to the library
-const mapResult = (e) => (0, Either_1.isRight)(e) ? { _tag: 'right', value: e.right } : { _tag: 'left', error: e.left };
+const mapResult = (e) => (0, Either_1.isRight)(e)
+    ? { _tag: 'right', value: e.right }
+    : { _tag: 'left', error: e.left };
 const unwrapEither = (e) => {
     if ((0, Either_1.isRight)(e)) {
         return e.right;

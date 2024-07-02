@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.tree = exports.harry = exports.igor = void 0;
 const common_1 = require("@parsers-jamboree/common");
-exports.igor = JSON.parse(JSON.stringify({
+exports.igor = {
     name: 'igor',
     email: 'igor@loskutoff.com',
     createdAt: '1990-01-01T00:00:00.000Z',
@@ -11,9 +11,13 @@ exports.igor = JSON.parse(JSON.stringify({
     stripeId: 'cus_NffrFeUfNV2Hib',
     visits: 10,
     favouriteColours: ['red', 'green', 'blue', '#ac0200'].sort(),
-}));
+    profile: {
+        type: 'listener',
+        boughtTracks: 10,
+    },
+};
 // to test errored types
-exports.harry = JSON.parse(JSON.stringify({
+exports.harry = {
     name: '',
     email: null,
     createdAt: '1990-01-01T00:00:00.000Z',
@@ -23,7 +27,7 @@ exports.harry = JSON.parse(JSON.stringify({
     visits: -1,
     favouriteColours: ['cars', null, []],
     extraField: 'extra',
-}));
+};
 // to test recursive types
 const tree_ = {
     name: 'root',
@@ -65,10 +69,12 @@ const tree_ = {
         },
         {
             name: 'child3',
-            children: [{
+            children: [
+                {
                     name: 'leaf1',
                     children: [],
-                }],
+                },
+            ],
         },
     ],
 };

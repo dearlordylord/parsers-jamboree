@@ -36,9 +36,9 @@ type TreeNode = {
 };
 export declare const TreeNodeSchema: Schema<TreeNode, TreeNode>;
 export declare const parseUser: (user: unknown) => Result<TranscodeErrors, User>;
-export declare const encodeUser: (user: User) => unknown;
+export declare const encodeUser: (user: User) => Result<TranscodeErrors, unknown>;
 export declare const parseNamelessUser: (user: unknown) => Result<TranscodeErrors, NamelessUser>;
 export declare const encodeNamelessUser: (user: NamelessUser) => unknown;
 export declare const parseTree: (node: unknown) => Result<TranscodeErrors, TreeNode>;
-export declare const encodeTree: (node: TreeNode) => unknown;
+export declare const encodeTree: (node: TreeNode) => Result<TranscodeErrors, TreeNode>;
 export {};
