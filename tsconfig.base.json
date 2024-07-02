@@ -3,6 +3,8 @@
   "compilerOptions": {
     "rootDir": ".",
     "strict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": false,
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",

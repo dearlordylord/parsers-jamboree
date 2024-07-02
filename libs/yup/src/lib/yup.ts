@@ -1,8 +1,10 @@
-import { object, string, number, date, InferType, array } from 'yup';
+import { object, string, number, date, InferType, array, mixed } from 'yup';
 import {
+  COLOURS,
   Result,
   SUBSCRIPTION_TYPES
 } from '@parsers-jamboree/common';
+import { Colour } from '@parsers-jamboree/schemata-ts/schemata-ts';
 
 // the developer's position is `let` all the time https://github.com/jquense/yup/pull/2227
 let userSchema = object({
@@ -13,7 +15,23 @@ let userSchema = object({
   subscription: string().oneOf(SUBSCRIPTION_TYPES).required(/*still "undefined" after oneOf*/),
   stripeId: string().matches(/^cus_[a-zA-Z0-9]{14,}$/).required(),
   visits: number().min(0).integer().required(),
-  favouriteColours: array().of(string()/*.matches(/^#[a-fA-F0-9]{6}$/).required() - no unions, again?*/).required(),
+  // favouriteColours: array().of(string().required()/*.matches(/^#[a-fA-F0-9]{6}$/) - no unions, again?*/).required().transform((v, input, ctx) => {
+  //   // the fact of returning it 1) breaks the type (still array) 2) breaks the validation runtime completely ({} is returned)
+  //   return new Set(v);
+  // }),
+  favouriteColours: mixed((input: any): input is Set<Colour | `#${string}`> => input instanceof Set/*parse/validate the contents yourself, propagate errors yourself?*/ && [...input.values()].every(v => typeof v === 'string' && (COLOURS.indexOf(v as typeof COLOURS[number]) !== -1 || !!v.match(/^#[a-fA-F0-9]{6}$/)))).required().transform((v, input, ctx) => {
+    if (ctx.isType(v)) return v;
+    if (!Array.isArray(v)) return ctx.typeError("Expected an array");
+    const r = new Set(v);
+    if (r.size !== v.length) {
+      return ctx.typeError("Expected unique items");
+    }
+    if (!v.every(v => typeof v === 'string' && (COLOURS.indexOf(v as typeof COLOURS[number]) !== -1 || !!v.match(/^#[a-fA-F0-9]{6}$/)))) {
+      return ctx.typeError("Expected a valid colour or hex colour");
+    }
+    return r;
+  }),
+
   profile: object().transform((v) => {
     // the lib doesn't seem to accept unions; we can write our own runtime check
 
@@ -41,9 +59,9 @@ type User = InferType<typeof userSchema>;
 
 export const decodeUser = (u: unknown): Result<unknown, User> => {
   try {
-    return { _tag: 'right', value: userSchema.validateSync(u) };
+    return { _tag: 'right', value: userSchema.cast(u) };
   } catch (e) {
-    return { _tag: 'left', error: e/*we have no idea what's the error type is*/ };
+    return { _tag: 'left', error: (e as any).message/*we have no idea what's the error type is*/ };
   }
 };
 
