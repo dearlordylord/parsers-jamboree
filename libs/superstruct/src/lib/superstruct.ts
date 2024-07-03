@@ -10,7 +10,14 @@ import {
   refine,
   union,
   enums,
-  intersection, pattern, integer, date, assign, StructError, set, Struct
+  intersection,
+  pattern,
+  integer,
+  date,
+  assign,
+  StructError,
+  set,
+  Struct,
 } from 'superstruct';
 import {
   COLOURS,
@@ -18,26 +25,26 @@ import {
   PROFILE_TYPE_ARTIST,
   PROFILE_TYPE_LISTENER,
   Result,
-  SUBSCRIPTION_TYPES
+  SUBSCRIPTION_TYPES,
 } from '@parsers-jamboree/common';
 
-const MyNumber = coerce(number(), string(), (value) => parseFloat(value))
+const MyNumber = coerce(number(), string(), (value) => parseFloat(value));
 
 const EMAIL_REGEX = new RegExp(EMAIL_REGEX_S);
-const isEmail = (value: string) => EMAIL_REGEX.test(value)
+const isEmail = (value: string) => EMAIL_REGEX.test(value);
 
 // TODO fix their example https://github.com/ianstormtaylor/superstruct/blob/main/examples/custom-types.js - `code` not in Result
 const Email = define('Email', (value) => {
   // todo how to compose?
   if (typeof value !== 'string') {
-    return 'not_string'
+    return 'not_string';
   }
   if (!isEmail(value)) {
-    return 'not_email'
+    return 'not_email';
   } else if (value.length >= 256) {
-    return 'too_long'
+    return 'too_long';
   } else {
-    return true
+    return true;
   }
 });
 
@@ -66,7 +73,11 @@ const StripeCustomerId = pattern(string(), /^cus_[a-zA-Z0-9]{14,}$/);
 
 const SubscriptionType = enums(SUBSCRIPTION_TYPES);
 
-const IsoDateString = coerce(date(), string(), (s) => new Date(s)/*date() will filter out invalid date objects implicitly*/);
+const IsoDateString = coerce(
+  date(),
+  string(),
+  (s) => new Date(s) /*date() will filter out invalid date objects implicitly*/
+);
 
 // loses the refinement after assign() https://github.com/ianstormtaylor/superstruct/issues/1188
 const IsoDateStringRange = refine(
@@ -80,39 +91,50 @@ const IsoDateStringRange = refine(
       return (
         `Expected 'createdAt' to be less or equal than 'updatedAt' on type 'IsoDateStringRange', ` +
         `but received ${JSON.stringify(value)}`
-      )
+      );
     }
     return true;
   }
-)
+);
 
-const uniqArray = <T>(s: Struct<T>) => refine(array(s), 'UniqArray', (v) => {
-  if (new Set(v).size !== v.length) {
-    return `Expected unique items on type 'UniqArray', but received ${JSON.stringify(v)}`;
-  }
-  return true;
-});
+const uniqArray = <T>(s: Struct<T>) =>
+  refine(array(s), 'UniqArray', (v) => {
+    if (new Set(v).size !== v.length) {
+      return `Expected unique items on type 'UniqArray', but received ${JSON.stringify(
+        v
+      )}`;
+    }
+    return true;
+  });
 
 // weird having to repeat ColourOrHex; -composability
-const FavouriteColours = coerce(set(ColourOrHex), uniqArray(ColourOrHex), (v) => new Set(v));
+const FavouriteColours = coerce(
+  set(ColourOrHex),
+  uniqArray(ColourOrHex),
+  (v) => new Set(v)
+);
 
 const NonEmptyString = refine(string(), 'NonEmptyString', (s) => {
   if (s.length === 0) {
-    return `Expected non-empty string on type 'NonEmptyString', but received ${JSON.stringify(s)}`;
+    return `Expected non-empty string on type 'NonEmptyString', but received ${JSON.stringify(
+      s
+    )}`;
   }
   return true;
 });
 
-const User = assign(object({
-  name: NonEmptyString,
-  email: Email,
-  subscription: SubscriptionType,
-  stripeId: StripeCustomerId,
-  visits: NonNegativeInteger,
-  favouriteColours: FavouriteColours,
-  profile: union([ProfileListener, ProfileArtist]),
-
-}), IsoDateStringRange);
+const User = assign(
+  object({
+    name: NonEmptyString,
+    email: Email,
+    subscription: SubscriptionType,
+    stripeId: StripeCustomerId,
+    visits: NonNegativeInteger,
+    favouriteColours: FavouriteColours,
+    profile: union([ProfileListener, ProfileArtist]),
+  }),
+  IsoDateStringRange
+);
 
 type User = Infer<typeof User>;
 
@@ -122,21 +144,23 @@ export const decodeUser = (u: unknown): Result<string, User> => {
     return { _tag: 'right', value: c };
   } catch (e: unknown) {
     if (e instanceof StructError) {
-      return { _tag: 'left', error: JSON.stringify({
-          failures: e.failures(),
-          message: e.message,
-        }, null, 2) };
+      return {
+        _tag: 'left',
+        error: JSON.stringify(
+          {
+            failures: e.failures(),
+            message: e.message,
+          },
+          null,
+          2
+        ),
+      };
     } else {
       return { _tag: 'left', error: 'error interpreting the error!' };
     }
-
   }
 };
 
 export const encodeUser = (u: User): Result<string, unknown> => {
   return { _tag: 'left', error: 'the lib cannot do it' };
 };
-
-
-
-

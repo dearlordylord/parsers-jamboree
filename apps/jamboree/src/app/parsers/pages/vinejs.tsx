@@ -1,6 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { igor } from '@parsers-jamboree/checker';
-import { encodeUser, decodeUserForcedAsync } from '@parsers-jamboree/vinejs/vinejs';
+import {
+  encodeUser,
+  decodeUserForcedAsync,
+} from '@parsers-jamboree/vinejs/vinejs';
 import code from '../../../../../../libs/vinejs/src/lib/vinejs?raw';
 // import common from '../../../../../../libs/common/src/lib/common.ts?raw';
 import { ParserComponent } from '../component';

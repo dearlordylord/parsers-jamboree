@@ -11,14 +11,17 @@ type Props<T, E, EE> = {
   encodeUser: (u: T) => Result<EE, unknown>;
   defaultInput: unknown;
   validUser: typeof igor;
-} & ({
-  type: 'normal'
-  decodeUser: (u: unknown) => Result<E, T>;
-} | {
-  type: 'special'
-  // for libs that only have async api; currently only vinejs
-  decodeUserForcedAsync: (u: unknown) => Promise<Result<E, T>>;
-});
+} & (
+  | {
+      type: 'normal';
+      decodeUser: (u: unknown) => Result<E, T>;
+    }
+  | {
+      type: 'special';
+      // for libs that only have async api; currently only vinejs
+      decodeUserForcedAsync: (u: unknown) => Promise<Result<E, T>>;
+    }
+);
 
 export const ParserComponent = <T, E, EE>({
   code,
@@ -54,25 +57,30 @@ export const ParserComponent = <T, E, EE>({
   const printKeyOrderF = (k1: unknown, k2: unknown) =>
     printKeyOrder.indexOf(k1 as string) - printKeyOrder.indexOf(k2 as string);
   const [parserCode, setParserCode] = useState(code);
-  const [parsed, setParsed] = useState<Result<unknown, T>>({ _tag: 'left', error: 'loading...'/*quick dirty fix for special async libs that have no sync interface for parsing*/ });
-  useEffect(
-    () => {
-      if (parsedInputJson._tag === 'left') {
-        return setParsed(parsedInputJson);
-      }
-      if (rest.type === 'normal') {
-        return setParsed(rest.decodeUser(parsedInputJson.value));
-      }
-      if (rest.type === 'special') {
-        return void rest.decodeUserForcedAsync(parsedInputJson.value).then(setParsed).catch(e => {
-
+  const [parsed, setParsed] = useState<Result<unknown, T>>({
+    _tag: 'left',
+    error:
+      'loading...' /*quick dirty fix for special async libs that have no sync interface for parsing*/,
+  });
+  useEffect(() => {
+    if (parsedInputJson._tag === 'left') {
+      return setParsed(parsedInputJson);
+    }
+    if (rest.type === 'normal') {
+      return setParsed(rest.decodeUser(parsedInputJson.value));
+    }
+    if (rest.type === 'special') {
+      return void rest
+        .decodeUserForcedAsync(parsedInputJson.value)
+        .then(setParsed)
+        .catch((e) => {
           console.error(e);
         });
-      }
-    },
-
-    [parsedInputJson, rest.type === 'normal' ? rest.decodeUser : rest.decodeUserForcedAsync ]
-  );
+    }
+  }, [
+    parsedInputJson,
+    rest.type === 'normal' ? rest.decodeUser : rest.decodeUserForcedAsync,
+  ]);
   const encoded = useMemo(
     () =>
       parsed._tag === 'left'

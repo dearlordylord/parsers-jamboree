@@ -1,5 +1,10 @@
 import { ArkErrors, type } from 'arktype';
-import { chain, COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
+import {
+  chain,
+  COLOURS,
+  Result,
+  SUBSCRIPTION_TYPES,
+} from '@parsers-jamboree/common';
 import { Objects, Pipe, Strings, Tuples } from 'hotscript';
 import Mutable = Objects.Mutable;
 
@@ -65,37 +70,35 @@ type UserJson = typeof userJson.infer;
 type User = Omit<UserJson, 'favouriteColours' | 'createdAt' | 'updatedAt'> & {
   createdAt: Date;
   updatedAt: Date;
-  favouriteColours: Set<string>
+  favouriteColours: Set<string>;
 };
 
 export const decodeUser = (u: unknown): Result<string, User> => {
   const result = userJson(u);
 
-  return chain(
-    (u: UserJson): Result<string, User> => {
-      const favouriteColours = new Set(u.favouriteColours);
-      if (favouriteColours.size !== u.favouriteColours.length) {
-        return { _tag: 'left', error: 'favourite colours must be unique' };
-      }
-      const createdAt = new Date(u.createdAt);
-      if (isNaN(createdAt.getTime())) {
-        return { _tag: 'left', error: 'createdAt must be a valid ISO date' };
-      }
-      const updatedAt = new Date(u.updatedAt);
-      if (isNaN(updatedAt.getTime())) {
-        return { _tag: 'left', error: 'updatedAt must be a valid ISO date' };
-      }
-      return {
-        _tag: 'right',
-        value: {
-          ...u,
-          favouriteColours,
-          createdAt,
-          updatedAt,
-        }
-      }
+  return chain((u: UserJson): Result<string, User> => {
+    const favouriteColours = new Set(u.favouriteColours);
+    if (favouriteColours.size !== u.favouriteColours.length) {
+      return { _tag: 'left', error: 'favourite colours must be unique' };
     }
-  )(mapResult(result));
+    const createdAt = new Date(u.createdAt);
+    if (isNaN(createdAt.getTime())) {
+      return { _tag: 'left', error: 'createdAt must be a valid ISO date' };
+    }
+    const updatedAt = new Date(u.updatedAt);
+    if (isNaN(updatedAt.getTime())) {
+      return { _tag: 'left', error: 'updatedAt must be a valid ISO date' };
+    }
+    return {
+      _tag: 'right',
+      value: {
+        ...u,
+        favouriteColours,
+        createdAt,
+        updatedAt,
+      },
+    };
+  })(mapResult(result));
 };
 
 export const encodeUser = (_u: User): Result<'the lib cannot do it', never> => {

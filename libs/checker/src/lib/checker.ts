@@ -4,32 +4,32 @@ import {
 } from '@parsers-jamboree/common';
 
 export const igor = {
-    name: 'igor',
-    email: 'igor@loskutoff.com',
-    createdAt: '1990-01-01T00:00:00.000Z',
-    updatedAt: '2000-01-01T00:00:00.000Z',
-    subscription: SUBSCRIPTION_TYPE_PRO,
-    stripeId: 'cus_NffrFeUfNV2Hib',
-    visits: 10,
-    favouriteColours: ['red', 'green', 'blue', '#ac0200'].sort(),
-    profile: {
-      type: 'listener',
-      boughtTracks: 10,
-    },
-  };
+  name: 'igor',
+  email: 'igor@loskutoff.com',
+  createdAt: '1990-01-01T00:00:00.000Z',
+  updatedAt: '2000-01-01T00:00:00.000Z',
+  subscription: SUBSCRIPTION_TYPE_PRO,
+  stripeId: 'cus_NffrFeUfNV2Hib',
+  visits: 10,
+  favouriteColours: ['red', 'green', 'blue', '#ac0200'].sort(),
+  profile: {
+    type: 'listener',
+    boughtTracks: 10,
+  },
+};
 
 // to test errored types
 export const harry = {
-    name: '',
-    email: null,
-    createdAt: '1990-01-01T00:00:00.000Z',
-    updatedAt: '1900-01-01T00:00:00.000Z',
-    subscription: SUBSCRIPTION_TYPE_FREE,
-    stripeId: 'big boss',
-    visits: -1,
-    favouriteColours: ['cars', null, []],
-    extraField: 'extra',
-  }
+  name: '',
+  email: null,
+  createdAt: '1990-01-01T00:00:00.000Z',
+  updatedAt: '1900-01-01T00:00:00.000Z',
+  subscription: SUBSCRIPTION_TYPE_FREE,
+  stripeId: 'big boss',
+  visits: -1,
+  favouriteColours: ['cars', null, []],
+  extraField: 'extra',
+};
 type TreeNode = {
   name: string;
   children: TreeNode[];

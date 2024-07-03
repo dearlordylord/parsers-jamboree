@@ -26,7 +26,7 @@ const LIBS = [
   'runtypes',
   'ajv',
   'yup',
-  'superstruct'
+  'superstruct',
 ] as const;
 
 type Rogues = {
@@ -92,7 +92,7 @@ const rogues: Rogues = {
     label: 'superstruct',
     link: 'https://github.com/ianstormtaylor/superstruct',
     page: SuperstructPage,
-  }
+  },
 };
 
 export function App() {
@@ -112,14 +112,18 @@ export function App() {
           {Object.entries(rogues).map(([name, { label, link }]) => (
             <li key={name}>
               <Link to={`/${name}`}>{label}</Link>
-              <span> </span><span style={{ fontSize: '0.5em' }}><a href={link} target="_blank" rel="noreferrer">{link}</a></span>
+              <span> </span>
+              <span style={{ fontSize: '0.5em' }}>
+                <a href={link} target="_blank" rel="noreferrer">
+                  {link}
+                </a>
+              </span>
             </li>
           ))}
         </ul>
       </div>
       <Routes>
-        <Route path="/" element={<div>
-        </div>}/>
+        <Route path="/" element={<div></div>} />
         {Object.entries(rogues).map(([name, { label, link, page: Page }]) => (
           <Route key={name} path={`/${name}`} element={<Page />} />
         ))}

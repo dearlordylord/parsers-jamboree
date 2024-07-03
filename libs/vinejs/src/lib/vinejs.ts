@@ -1,15 +1,19 @@
-
-
 import vine, { BaseLiteralType } from '@vinejs/vine';
 import {
-  COLOURS, ISO_DATE_REGEX_S,
+  COLOURS,
+  ISO_DATE_REGEX_S,
   PROFILE_TYPE_ARTIST,
   PROFILE_TYPE_LISTENER,
   PROFILE_TYPES,
   Result,
-  SUBSCRIPTION_TYPES
+  SUBSCRIPTION_TYPES,
 } from '@parsers-jamboree/common';
-import { FieldContext, FieldOptions, Infer, Validation } from '@vinejs/vine/build/src/types';
+import {
+  FieldContext,
+  FieldOptions,
+  Infer,
+  Validation,
+} from '@vinejs/vine/build/src/types';
 import { ValidationError } from '@vinejs/vine/build/src/errors/validation_error';
 import type { OTYPE } from '@vinejs/vine/build/src/symbols';
 
@@ -41,40 +45,45 @@ const profileWhat = vine.group([
   }),
 ]);
 
-
-const profileSchema = vine.object({
-  // in total, we repeat the poor enum 3 times
-  type: vine.enum(PROFILE_TYPES),
-}).merge(profileWhat);
+const profileSchema = vine
+  .object({
+    // in total, we repeat the poor enum 3 times
+    type: vine.enum(PROFILE_TYPES),
+  })
+  .merge(profileWhat);
 
 // https://vinejs.dev/docs/extend/custom_schema_types
 const isIsoDate = vine.createRule((value: unknown, _, field: FieldContext) => {
-
   if (typeof value !== 'string') {
-    field.report('The {{ field }} field value must be a string', 'isoDate', field);
+    field.report(
+      'The {{ field }} field value must be a string',
+      'isoDate',
+      field
+    );
     return;
   }
 
   if (!value.match(ISO_DATE_REGEX_S)) {
-    field.report('The {{ field }} field value must be a valid ISO date', 'isoDate', field);
+    field.report(
+      'The {{ field }} field value must be a valid ISO date',
+      'isoDate',
+      field
+    );
     return;
   }
   const date = new Date(value);
 
   // interesting api
-  field.mutate(date, field)
+  field.mutate(date, field);
 });
 
 export class IsoDate extends BaseLiteralType<string, Date, Date> {
   constructor(options?: FieldOptions, validations?: Validation<any>[]) {
-    super(options, validations || [isIsoDate()])
+    super(options, validations || [isIsoDate()]);
   }
 
   clone() {
-    return new IsoDate(
-      this.cloneOptions(),
-      this.cloneValidations()
-    ) as this
+    return new IsoDate(this.cloneOptions(), this.cloneValidations()) as this;
   }
 }
 
@@ -95,7 +104,9 @@ const userSchema = vine.object({
 
 type User = Infer<typeof userSchema>;
 
-export const decodeUserForcedAsync = async (user: unknown): Promise<Result<string, User>> => {
+export const decodeUserForcedAsync = async (
+  user: unknown
+): Promise<Result<string, User>> => {
   const r = await vine.tryValidate({
     schema: userSchema,
     data: user,
@@ -103,11 +114,20 @@ export const decodeUserForcedAsync = async (user: unknown): Promise<Result<strin
   return mapResult(r);
 };
 
-export const encodeUser = (user: User): Result<string, unknown> => ({ _tag: 'left', error: 'the lib cannot do it' })
+export const encodeUser = (user: User): Result<string, unknown> => ({
+  _tag: 'left',
+  error: 'the lib cannot do it',
+});
 
 // utils
 
-const mapResult = <S extends {
-  [OTYPE]: any;
-}>(r: [ValidationError, null] | [null, Infer<S>]): Result<string, Infer<S>> =>
-  r[0] ? { _tag: 'left', error: JSON.stringify(r[0]) } : { _tag: 'right', value: r[1] };
+const mapResult = <
+  S extends {
+    [OTYPE]: any;
+  }
+>(
+  r: [ValidationError, null] | [null, Infer<S>]
+): Result<string, Infer<S>> =>
+  r[0]
+    ? { _tag: 'left', error: JSON.stringify(r[0]) }
+    : { _tag: 'right', value: r[1] };

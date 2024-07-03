@@ -1,6 +1,12 @@
 import { Type, StaticDecode } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
-import { COLOURS, EMAIL_REGEX_S, ISO_DATE_REGEX_S, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
+import {
+  COLOURS,
+  EMAIL_REGEX_S,
+  ISO_DATE_REGEX_S,
+  Result,
+  SUBSCRIPTION_TYPES,
+} from '@parsers-jamboree/common';
 import { ValueError } from '@sinclair/typebox/build/cjs/errors/errors';
 
 const Colour = Type.Union(COLOURS.map((c) => Type.Literal(c)));
@@ -26,7 +32,7 @@ const StripeId = Type.Transform(
 
 const IsoDate = Type.Transform(
   Type.String({
-        pattern: ISO_DATE_REGEX_S,
+    pattern: ISO_DATE_REGEX_S,
   })
 )
   .Decode((value) => new Date(value))
@@ -38,8 +44,7 @@ type EmailBrand = {
 
 const Email = Type.Transform(
   Type.String({
-    pattern:
-    EMAIL_REGEX_S,
+    pattern: EMAIL_REGEX_S,
   })
 )
   .Decode((value) => value as typeof value & EmailBrand)
