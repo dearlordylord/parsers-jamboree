@@ -20,7 +20,7 @@
     "react-router-dom": "6.11.2",
     "runtypes": "^6.7.0",
     "schemata-ts": "^2.2.3",
-    "superstruct": "^1.0.4",
+    "superstruct": "^2.0.0",
     "tslib": "^2.3.0",
     "valibot": "^0.35.0",
     "yup": "^1.4.0",

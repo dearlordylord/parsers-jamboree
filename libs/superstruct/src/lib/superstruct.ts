@@ -1,15 +1,25 @@
-import { Infer, number, object, string } from 'superstruct'
-
-const User = object({
-  id: number(),
-  email: string(),
-  name: string(),
-})
-
-type User = Infer<typeof User>
-
-import { coerce, define } from 'superstruct'
-import { EMAIL_REGEX_S } from '@parsers-jamboree/common';
+import {
+  array,
+  Infer,
+  number,
+  object,
+  string,
+  coerce,
+  define,
+  literal,
+  refine,
+  union,
+  enums,
+  intersection, pattern, integer, date, assign, StructError, set, Struct
+} from 'superstruct';
+import {
+  COLOURS,
+  EMAIL_REGEX_S,
+  PROFILE_TYPE_ARTIST,
+  PROFILE_TYPE_LISTENER,
+  Result,
+  SUBSCRIPTION_TYPES
+} from '@parsers-jamboree/common';
 
 const MyNumber = coerce(number(), string(), (value) => parseFloat(value))
 
@@ -29,4 +39,104 @@ const Email = define('Email', (value) => {
   } else {
     return true
   }
-})
+});
+
+// can go with `define` and branding but since the lib doesn't support out of the box let's skip it
+const NonNegative = refine(number(), 'NonNegative', (n) => n >= 0);
+// can be "min(integer(), 0)" but I went this way to show intersections
+const NonNegativeInteger = intersection([NonNegative, integer()]);
+
+// discriminated unions not exactly supported https://github.com/ianstormtaylor/superstruct/issues/1183
+
+const ProfileListener = object({
+  type: literal(PROFILE_TYPE_LISTENER),
+  boughtTracks: NonNegativeInteger,
+});
+
+const ProfileArtist = object({
+  type: literal(PROFILE_TYPE_ARTIST),
+  publishedTracks: NonNegativeInteger,
+});
+
+const Colour = enums(COLOURS);
+const HexColour = pattern(string(), /^#[a-fA-F0-9]{6}$/);
+const ColourOrHex = union([Colour, HexColour]);
+
+const StripeCustomerId = pattern(string(), /^cus_[a-zA-Z0-9]{14,}$/);
+
+const SubscriptionType = enums(SUBSCRIPTION_TYPES);
+
+const IsoDateString = coerce(date(), string(), (s) => new Date(s)/*date() will filter out invalid date objects implicitly*/);
+
+// loses the refinement after assign() https://github.com/ianstormtaylor/superstruct/issues/1188
+const IsoDateStringRange = refine(
+  object({
+    createdAt: IsoDateString,
+    updatedAt: IsoDateString,
+  }),
+  'DateRange',
+  (value) => {
+    if (value.createdAt > value.updatedAt) {
+      return (
+        `Expected 'createdAt' to be less or equal than 'updatedAt' on type 'IsoDateStringRange', ` +
+        `but received ${JSON.stringify(value)}`
+      )
+    }
+    return true;
+  }
+)
+
+const uniqArray = <T>(s: Struct<T>) => refine(array(s), 'UniqArray', (v) => {
+  if (new Set(v).size !== v.length) {
+    return `Expected unique items on type 'UniqArray', but received ${JSON.stringify(v)}`;
+  }
+  return true;
+});
+
+// weird having to repeat ColourOrHex; -composability
+const FavouriteColours = coerce(set(ColourOrHex), uniqArray(ColourOrHex), (v) => new Set(v));
+
+const NonEmptyString = refine(string(), 'NonEmptyString', (s) => {
+  if (s.length === 0) {
+    return `Expected non-empty string on type 'NonEmptyString', but received ${JSON.stringify(s)}`;
+  }
+  return true;
+});
+
+const User = assign(object({
+  name: NonEmptyString,
+  email: Email,
+  subscription: SubscriptionType,
+  stripeId: StripeCustomerId,
+  visits: NonNegativeInteger,
+  favouriteColours: FavouriteColours,
+  profile: union([ProfileListener, ProfileArtist]),
+
+}), IsoDateStringRange);
+
+type User = Infer<typeof User>;
+
+export const decodeUser = (u: unknown): Result<string, User> => {
+  try {
+    const c = User.create(u);
+    return { _tag: 'right', value: c };
+  } catch (e: unknown) {
+    if (e instanceof StructError) {
+      return { _tag: 'left', error: JSON.stringify({
+          failures: e.failures(),
+          message: e.message,
+        }, null, 2) };
+    } else {
+      return { _tag: 'left', error: 'error interpreting the error!' };
+    }
+
+  }
+};
+
+export const encodeUser = (u: User): Result<string, unknown> => {
+  return { _tag: 'left', error: 'the lib cannot do it' };
+};
+
+
+
+
