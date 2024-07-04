@@ -3,8 +3,9 @@ import { Result, ResultValue } from '@parsers-jamboree/common';
 import Editor from '@monaco-editor/react';
 import { Highlighter } from '../highlighter';
 import { JSONTree, KeyPath } from 'react-json-tree';
-import { igor } from '@parsers-jamboree/checker';
+import { igor } from '@parsers-jamboree/checker/checker';
 import { get } from '../utils';
+import { Breaker } from './breaker';
 
 type Props<T, E, EE> = {
   code: string;
@@ -82,6 +83,8 @@ export const ParserComponent = <T, E, EE>({
   const inputId = useId();
   return (
     <div>
+      <h2>Feature test results</h2>
+      <Breaker decodeUser={rest.decodeUser}/>
       <h2 id={inputId}>Input</h2>
       <form onSubmit={() => setInput(defaultInput)}>
         {input !== defaultInput ? (

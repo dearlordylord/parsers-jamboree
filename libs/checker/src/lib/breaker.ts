@@ -68,3 +68,20 @@ export const BREAKERS = {
   addFileSystemUFOType,
   addFileSystemDupeFile
 } as const;
+
+export const BREAKER_DESCRIPTIONS: {
+  [K in keyof typeof BREAKERS]: string;
+} = {
+  switchDates: 'switches the createdAt and updatedAt fields',
+  prefixCustomerId: 'adds an invalid prefix to the stripeId field',
+  addTwoAtsToEmail: 'renders the email invalid by adding two @s',
+  clearName: 'clears the name field',
+  addFavouriteTiger: 'adds an invalid colour to the favouriteColours field',
+  addFavouriteRed: 'adds a duplicated valid colour to the favouriteColours field',
+  setSubscriptionTypeBanana: 'sets the subscription field to banana',
+  setHalfVisits: 'renders the visits field to be a float instead of an integer',
+  setCreatedAtCyborgWar: 'sets invalid createdAt date',
+  setProfileArtist: 'sets the valid profile field to an invalid structure',
+  addFileSystemUFOType: 'sets an invalid fileSystem field deep in the tree',
+  addFileSystemDupeFile: 'adds a duplicated value to the tree',
+}

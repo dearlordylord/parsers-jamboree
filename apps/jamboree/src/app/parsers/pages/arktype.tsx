@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { igor } from '@parsers-jamboree/checker';
+import { igor } from '@parsers-jamboree/checker/checker';
 import { encodeUser, decodeUser } from '@parsers-jamboree/arktype/arktype';
 import code from '../../../../../../libs/arktype/src/lib/arktype?raw';
 // import common from '../../../../../../libs/common/src/lib/common.ts?raw';

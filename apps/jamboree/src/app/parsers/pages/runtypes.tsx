@@ -1,5 +1,5 @@
 import React from 'react';
-import { igor } from '@parsers-jamboree/checker';
+import { igor } from '@parsers-jamboree/checker/checker';
 import { encodeUser, decodeUser } from '@parsers-jamboree/runtypes/runtypes';
 import code from '../../../../../../libs/runtypes/src/lib/runtypes?raw';
 // import common from '../../../../../../libs/common/src/lib/common.ts?raw';

@@ -17,7 +17,7 @@ import {
   assign,
   StructError,
   set,
-  Struct,
+  Struct, any
 } from 'superstruct';
 import {
   COLOURS,
@@ -120,6 +120,8 @@ const NonEmptyString = refine(string(), 'NonEmptyString', (s) => {
   return true;
 });
 
+const FileSystem = any(); // TODO
+
 const User = assign(
   object({
     name: NonEmptyString,
@@ -129,6 +131,7 @@ const User = assign(
     visits: NonNegativeInteger,
     favouriteColours: FavouriteColours,
     profile: union([ProfileListener, ProfileArtist]),
+    fileSystem: FileSystem,
   }),
   IsoDateStringRange
 );

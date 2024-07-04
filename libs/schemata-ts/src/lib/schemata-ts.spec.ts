@@ -1,4 +1,4 @@
-import { igor } from '@parsers-jamboree/checker';
+import { igor } from '@parsers-jamboree/checker/checker';
 import { encodeUser, parseUser } from './schemata-ts';
 import { unwrapResult } from '@parsers-jamboree/common';
 

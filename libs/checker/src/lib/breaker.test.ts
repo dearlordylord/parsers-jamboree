@@ -1,6 +1,6 @@
 import { BREAKERS } from './breaker';
 import { decodeUser } from '@parsers-jamboree/effect-ts-schema/effect-ts-schema';
-import { igor } from '@parsers-jamboree/checker';
+import { igor } from '@parsers-jamboree/checker/checker';
 
 // TODO add transformations
 describe('breakers', () => {

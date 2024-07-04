@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { igor } from '@parsers-jamboree/checker';
+import { igor } from '@parsers-jamboree/checker/checker';
 import {
   encodeUser,
   decodeUser,

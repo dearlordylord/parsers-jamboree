@@ -1,5 +1,5 @@
 import React from 'react';
-import { igor } from '@parsers-jamboree/checker';
+import { igor } from '@parsers-jamboree/checker/checker';
 import { encodeUser, decodeUser } from '@parsers-jamboree/valibot/valibot';
 import code from '../../../../../../libs/valibot/src/lib/valibot?raw';
 import { ParserComponent } from '../component';
