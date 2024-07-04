@@ -20,9 +20,10 @@ const Email = NonEmptyString.pipe(
 
 const StripeIdBrand = Symbol.for('StripeId');
 
-const StripeId = Schema.String.pipe(
-  Schema.pattern(/^cus_[a-zA-Z0-9]{14,}$/)
-).pipe(Schema.brand(StripeIdBrand));
+const StripeId = Schema.TemplateLiteral(
+  Schema.Literal('cus_'),
+  Schema.String,
+).pipe(Schema.pattern(/^cus_[a-zA-Z0-9]{14,}$/)).pipe(Schema.brand(StripeIdBrand));
 
 const ColourBrand = Symbol.for('Colour');
 
