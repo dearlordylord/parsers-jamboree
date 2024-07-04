@@ -9,7 +9,6 @@ import { ArktypePage } from './parsers/pages/arktype';
 import { EffectSchemaPage } from './parsers/pages/effect-schema';
 import { TypeboxPage } from './parsers/pages/typebox';
 import { ValibotPage } from './parsers/pages/valibot';
-import { VinejsPage } from './parsers/pages/vinejs';
 import { RuntypesPage } from './parsers/pages/runtypes';
 import { AjvPage } from './parsers/pages/ajv';
 import { YupPage } from './parsers/pages/yup';
@@ -22,7 +21,6 @@ const LIBS = [
   'effect-schema',
   'typebox',
   'valibot',
-  'vinejs',
   'runtypes',
   'ajv',
   'yup',
@@ -67,11 +65,6 @@ const rogues: Rogues = {
     label: 'valibot',
     link: 'https://github.com/fabian-hiller/valibot',
     page: ValibotPage,
-  },
-  vinejs: {
-    label: 'vinejs',
-    link: 'https://github.com/vinejs/vine',
-    page: VinejsPage,
   },
   runtypes: {
     label: 'runtypes',

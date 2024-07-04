@@ -107,12 +107,9 @@ const uniqArray = <T>(s: Struct<T>) =>
     return true;
   });
 
-// weird having to repeat ColourOrHex; -composability
-const FavouriteColours = coerce(
-  set(ColourOrHex),
-  uniqArray(ColourOrHex),
-  (v) => new Set(v)
-);
+const arrayToSet = <T>(s: Struct<T>) => coerce(array(s), set(s), (v) => new Set(v));
+
+const FavouriteColours = arrayToSet(ColourOrHex);
 
 const NonEmptyString = refine(string(), 'NonEmptyString', (s) => {
   if (s.length === 0) {

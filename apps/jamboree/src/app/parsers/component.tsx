@@ -11,17 +11,8 @@ type Props<T, E, EE> = {
   encodeUser: (u: T) => Result<EE, unknown>;
   defaultInput: unknown;
   validUser: typeof igor;
-} & (
-  | {
-      type: 'normal';
-      decodeUser: (u: unknown) => Result<E, T>;
-    }
-  | {
-      type: 'special';
-      // for libs that only have async api; currently only vinejs
-      decodeUserForcedAsync: (u: unknown) => Promise<Result<E, T>>;
-    }
-);
+  decodeUser: (u: unknown) => Result<E, T>
+};
 
 export const ParserComponent = <T, E, EE>({
   code,
@@ -62,24 +53,15 @@ export const ParserComponent = <T, E, EE>({
     error:
       'loading...' /*quick dirty fix for special async libs that have no sync interface for parsing*/,
   });
+  // the useEffect() is a leftover from accomodating for vinejs speciality of forced async; change it to just sync call TODO
   useEffect(() => {
     if (parsedInputJson._tag === 'left') {
       return setParsed(parsedInputJson);
     }
-    if (rest.type === 'normal') {
-      return setParsed(rest.decodeUser(parsedInputJson.value));
-    }
-    if (rest.type === 'special') {
-      return void rest
-        .decodeUserForcedAsync(parsedInputJson.value)
-        .then(setParsed)
-        .catch((e) => {
-          console.error(e);
-        });
-    }
+    return setParsed(rest.decodeUser(parsedInputJson.value));
   }, [
     parsedInputJson,
-    rest.type === 'normal' ? rest.decodeUser : rest.decodeUserForcedAsync,
+    rest.decodeUser,
   ]);
   const encoded = useMemo(
     () =>

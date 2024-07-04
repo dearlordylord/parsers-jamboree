@@ -17,7 +17,6 @@ export const EffectSchemaPage = (): React.ReactElement => {
       <ParserComponent
         code={code}
         encodeUser={encodeUser}
-        type="normal"
         decodeUser={decodeUser}
         defaultInput={defaultInput}
         validUser={igor}

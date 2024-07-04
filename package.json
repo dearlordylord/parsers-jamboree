@@ -8,7 +8,6 @@
     "@effect/schema": "^0.68.12",
     "@monaco-editor/react": "^4.6.0",
     "@sinclair/typebox": "^0.32.34",
-    "@vinejs/vine": "^2.1.0",
     "ajv": "^8.16.0",
     "ajv-formats": "^3.0.1",
     "arktype": "^2.0.0-dev.26",
