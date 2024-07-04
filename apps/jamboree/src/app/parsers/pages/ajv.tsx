@@ -5,8 +5,6 @@ import code from '../../../../../../libs/ajv/src/lib/ajv?raw';
 // import common from '../../../../../../libs/common/src/lib/common.ts?raw';
 import { ParserComponent } from '../component';
 
-const defaultInput = JSON.stringify(igor, null, 2);
-
 export const AjvPage = (): React.ReactElement => {
   return (
     <div>
@@ -15,7 +13,6 @@ export const AjvPage = (): React.ReactElement => {
         code={code}
         encodeUser={encodeUser}
         decodeUser={decodeUser}
-        defaultInput={defaultInput}
         validUser={igor}
       />
     </div>

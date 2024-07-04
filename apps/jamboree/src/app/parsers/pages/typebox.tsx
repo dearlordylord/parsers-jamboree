@@ -4,8 +4,6 @@ import { encodeUser, decodeUser } from '@parsers-jamboree/typebox/typebox';
 import code from '../../../../../../libs/typebox/src/lib/typebox?raw';
 import { ParserComponent } from '../component';
 
-const defaultInput = JSON.stringify(igor, null, 2);
-
 export const TypeboxPage = (): React.ReactElement => {
   return (
     <div>
@@ -14,7 +12,6 @@ export const TypeboxPage = (): React.ReactElement => {
         code={code}
         encodeUser={encodeUser}
         decodeUser={decodeUser}
-        defaultInput={defaultInput}
         validUser={igor}
       />
     </div>

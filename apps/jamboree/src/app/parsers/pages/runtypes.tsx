@@ -5,8 +5,6 @@ import code from '../../../../../../libs/runtypes/src/lib/runtypes?raw';
 // import common from '../../../../../../libs/common/src/lib/common.ts?raw';
 import { ParserComponent } from '../component';
 
-const defaultInput = JSON.stringify(igor, null, 2);
-
 export const RuntypesPage = (): React.ReactElement => {
   return (
     <div>
@@ -15,7 +13,6 @@ export const RuntypesPage = (): React.ReactElement => {
         code={code}
         encodeUser={encodeUser}
         decodeUser={decodeUser}
-        defaultInput={defaultInput}
         validUser={igor}
       />
     </div>

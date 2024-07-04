@@ -5,10 +5,7 @@ import {
   decodeUser,
 } from '@parsers-jamboree/effect-ts-schema/effect-ts-schema';
 import code from '../../../../../../libs/effect-ts-schema/src/lib/effect-ts-schema?raw';
-// import common from '../../../../../../libs/common/src/lib/common.ts?raw';
 import { ParserComponent } from '../component';
-
-const defaultInput = JSON.stringify(igor, null, 2);
 
 export const EffectSchemaPage = (): React.ReactElement => {
   return (
@@ -18,7 +15,6 @@ export const EffectSchemaPage = (): React.ReactElement => {
         code={code}
         encodeUser={encodeUser}
         decodeUser={decodeUser}
-        defaultInput={defaultInput}
         validUser={igor}
       />
     </div>

@@ -37,37 +37,54 @@ const ajv = new ajv_1.default({
 });
 // more flexibility with addKeyword (not typed well)
 const schema = {
-    type: "object",
+    type: 'object',
     properties: {
-        name: { type: "string" },
-        email: { type: "string" },
-        createdAt: { type: "string" },
-        updatedAt: { type: "string" },
-        subscription: { type: "string", enum: common_1.SUBSCRIPTION_TYPES },
-        stripeId: { type: "string", pattern: '^cus_[a-zA-Z0-9]{14,}$' },
-        visits: { type: "integer", minimum: 0 },
-        favouriteColours: { type: "array", items: { type: "string" }, uniqueItems: true },
+        name: { type: 'string' },
+        email: { type: 'string' },
+        createdAt: { type: 'string' },
+        updatedAt: { type: 'string' },
+        subscription: { type: 'string', enum: common_1.SUBSCRIPTION_TYPES },
+        stripeId: { type: 'string', pattern: '^cus_[a-zA-Z0-9]{14,}$' },
+        visits: { type: 'integer', minimum: 0 },
+        favouriteColours: {
+            type: 'array',
+            items: { type: 'string' },
+            uniqueItems: true,
+        },
         profile: {
             type: 'object',
-            oneOf: [{
-                    type: "object",
+            oneOf: [
+                {
+                    type: 'object',
                     properties: {
-                        type: { type: "string", enum: ['listener'] },
-                        boughtTracks: { type: "integer", minimum: 0 },
+                        type: { type: 'string', enum: ['listener'] },
+                        boughtTracks: { type: 'integer', minimum: 0 },
                     },
                     required: ['type', 'boughtTracks'],
-                }, {
-                    type: "object",
+                },
+                {
+                    type: 'object',
                     properties: {
-                        type: { type: "string", enum: ['artist'] },
-                        publishedTracks: { type: "integer", minimum: 0 },
+                        type: { type: 'string', enum: ['artist'] },
+                        publishedTracks: { type: 'integer', minimum: 0 },
                     },
                     required: ['type', 'publishedTracks'],
-                }]
-        }
+                },
+            ],
+        },
     },
-    required: ["name", "email", "createdAt", "updatedAt", "subscription", "stripeId", "visits", "favouriteColours", "profile"],
-    additionalProperties: false
+    required: [
+        'name',
+        'email',
+        'createdAt',
+        'updatedAt',
+        'subscription',
+        'stripeId',
+        'visits',
+        'favouriteColours',
+        'profile',
+    ],
+    additionalProperties: false,
 };
 const validate = ajv.compile(schema);
 const decodeUser = (u) => {
@@ -86,12 +103,18 @@ const decodeUser = (u) => {
         if (favouriteColours.size !== u.favouriteColours.length) {
             return { _tag: 'left', error: 'favourite colours must be unique' };
         }
-        return { _tag: 'right', value: Object.assign(Object.assign({}, u), { createdAt, updatedAt, favouriteColours }) };
+        return {
+            _tag: 'right',
+            value: Object.assign(Object.assign({}, u), { createdAt, updatedAt, favouriteColours }),
+        };
     }
     // mutates itself adding .errors
     return { _tag: 'left', error: JSON.stringify(validate.errors, null, 2) };
 };
 exports.decodeUser = decodeUser;
-const encodeUser = (u) => ({ _tag: 'left', error: 'the lib cannot do it' });
+const encodeUser = (u) => ({
+    _tag: 'left',
+    error: 'the lib cannot do it',
+});
 exports.encodeUser = encodeUser;
 //# sourceMappingURL=ajv.js.map

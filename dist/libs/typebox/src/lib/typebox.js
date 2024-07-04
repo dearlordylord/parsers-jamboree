@@ -1,14 +1,4 @@
 "use strict";
-// const igor = JSON.parse(JSON.stringify({
-//   name: 'igor',
-//   email: 'igor@loskutoff.com',
-//   createdAt: '1990-01-01T00:00:00.000Z',
-//   updatedAt: '2000-01-01T00:00:00.000Z',
-//   subscription: 0,
-//   stripeId: 'cus_NffrFeUfNV2Hib',
-//   visits: 10,
-//   favouriteColours: ['red', 'green', 'blue', '#ac0200'].sort(),
-// }));
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.encodeUser = exports.decodeUser = void 0;
 const typebox_1 = require("@sinclair/typebox");

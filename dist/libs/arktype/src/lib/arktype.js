@@ -40,7 +40,7 @@ const decodeUser = (u) => {
             _tag: 'right',
             value: Object.assign(Object.assign({}, u), { favouriteColours,
                 createdAt,
-                updatedAt })
+                updatedAt }),
         };
     })(mapResult(result));
 };

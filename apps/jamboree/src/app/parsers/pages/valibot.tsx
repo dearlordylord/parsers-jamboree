@@ -4,8 +4,6 @@ import { encodeUser, decodeUser } from '@parsers-jamboree/valibot/valibot';
 import code from '../../../../../../libs/valibot/src/lib/valibot?raw';
 import { ParserComponent } from '../component';
 
-const defaultInput = JSON.stringify(igor, null, 2);
-
 export const ValibotPage = (): React.ReactElement => {
   return (
     <div>
@@ -14,7 +12,6 @@ export const ValibotPage = (): React.ReactElement => {
         code={code}
         encodeUser={encodeUser}
         decodeUser={decodeUser}
-        defaultInput={defaultInput}
         validUser={igor}
       />
     </div>

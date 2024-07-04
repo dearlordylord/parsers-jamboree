@@ -1,7 +1,8 @@
-import { Schema, TreeFormatter } from '@effect/schema';
+import { ParseResult, Schema, TreeFormatter } from '@effect/schema';
 import * as Either from 'effect/Either';
 import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
 import { ParseError } from '@effect/schema/ParseResult';
+import { SetFromSelf } from '@effect/schema/src/Schema';
 
 const NonEmptyStringBrand = Symbol.for('NonEmptyString');
 
@@ -44,12 +45,12 @@ const Subscription = Schema.Literal(...SUBSCRIPTION_TYPES).pipe(
 
 const NonNegativeIntegerBrand = Symbol.for('NonNegativeInteger');
 
-const NonNegativeInteger = Schema.Union(Schema.NonNegative, Schema.Int).pipe(
+const NonNegativeInteger = Schema.Int.pipe(
+  Schema.nonNegative(),
   Schema.brand(NonNegativeIntegerBrand)
 );
 
 // this lib can figure out discriminator by itself
-// TODO add this union elswhere
 const Profile = Schema.Union(
   Schema.Struct({
     type: Schema.Literal('listener'),
@@ -61,7 +62,27 @@ const Profile = Schema.Union(
   })
 );
 
-const User = Schema.Struct({
+const FavouriteColours = Schema.transformOrFail(
+  Schema.Array(ColourOrHex),
+  Schema.SetFromSelf(Schema.typeSchema(ColourOrHex)),
+  {
+    strict: true,
+    decode: (input, options, ast) => {
+      const set = new Set(input);
+      if (set.size !== input.length) {
+        return ParseResult.fail(
+          new ParseResult.Type(ast, input, "Items must be unique")
+        )
+      }
+      return ParseResult.succeed(set)
+    },
+    encode: (input, options, ast) => {
+      return ParseResult.succeed(Array.from(input));
+    }
+  }
+);
+
+const UserUnentangled = Schema.Struct({
   // name: Schema.NonEmpty, exists but it doesn't brand the string and also what's up with its name?...
   name: NonEmptyString,
   email: Email,
@@ -70,9 +91,28 @@ const User = Schema.Struct({
   subscription: Subscription,
   stripeId: StripeId,
   visits: NonNegativeInteger,
-  favouriteColours: Schema.Set(ColourOrHex),
+  favouriteColours: FavouriteColours,
   profile: Profile,
 });
+
+const UserEntangled = Schema.transformOrFail(
+  UserUnentangled,
+  Schema.typeSchema(UserUnentangled),
+  {
+    strict: true,
+    decode: (u, options, ast) => {
+      if (u.createdAt > u.updatedAt) {
+        return ParseResult.fail(
+          new ParseResult.Type(ast, u.createdAt, "createdAt must be less or equal than updatedAt")
+        )
+      }
+      return ParseResult.succeed(u)
+    },
+    encode: ParseResult.succeed
+  }
+);
+
+const User = UserEntangled;
 
 type User = Schema.Schema.Type<typeof User>;
 

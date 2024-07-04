@@ -16,7 +16,10 @@ exports.COLOUR_BLUE = 'blue';
 exports.COLOURS = [exports.COLOUR_RED, exports.COLOUR_GREEN, exports.COLOUR_BLUE];
 exports.PROFILE_TYPE_LISTENER = 'listener';
 exports.PROFILE_TYPE_ARTIST = 'artist';
-exports.PROFILE_TYPES = [exports.PROFILE_TYPE_LISTENER, exports.PROFILE_TYPE_ARTIST];
+exports.PROFILE_TYPES = [
+    exports.PROFILE_TYPE_LISTENER,
+    exports.PROFILE_TYPE_ARTIST,
+];
 const map = (f) => (r) => r._tag === 'left' ? r : { _tag: 'right', value: f(r.value) };
 exports.map = map;
 const chain = (f) => (r) => r._tag === 'left' ? r : f(r.value);

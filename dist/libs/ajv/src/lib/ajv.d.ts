@@ -4,7 +4,7 @@ type UserJson = {
     email: string;
     createdAt: string;
     updatedAt: string;
-    subscription: typeof SUBSCRIPTION_TYPES[number];
+    subscription: (typeof SUBSCRIPTION_TYPES)[number];
     stripeId: string;
     visits: number;
     favouriteColours: string[];

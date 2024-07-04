@@ -8,7 +8,6 @@ import code from '../../../../../../libs/schemata-ts/src/lib/schemata-ts.ts?raw'
 // import common from '../../../../../../libs/common/src/lib/common.ts?raw';
 import { ParserComponent } from '../component';
 
-const defaultInput = JSON.stringify(igor, null, 2);
 // monaco.languages.typescript.typescriptDefaults.addExtraLib(
 //   common,
 //   'schemata-ts/schemata/index');
@@ -23,7 +22,6 @@ export const SchemataPage = (): React.ReactElement => {
         code={code}
         encodeUser={encodeUser}
         decodeUser={parseUser}
-        defaultInput={defaultInput}
         validUser={igor}
       />
     </div>

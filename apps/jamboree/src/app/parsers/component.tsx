@@ -9,7 +9,6 @@ import { get } from '../utils';
 type Props<T, E, EE> = {
   code: string;
   encodeUser: (u: T) => Result<EE, unknown>;
-  defaultInput: unknown;
   validUser: typeof igor;
   decodeUser: (u: unknown) => Result<E, T>
 };

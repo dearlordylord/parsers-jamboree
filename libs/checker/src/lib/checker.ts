@@ -18,18 +18,6 @@ export const igor = {
   },
 };
 
-// to test errored types
-export const harry = {
-  name: '',
-  email: null,
-  createdAt: '1990-01-01T00:00:00.000Z',
-  updatedAt: '1900-01-01T00:00:00.000Z',
-  subscription: SUBSCRIPTION_TYPE_FREE,
-  stripeId: 'big boss',
-  visits: -1,
-  favouriteColours: ['cars', null, []],
-  extraField: 'extra',
-};
 type TreeNode = {
   name: string;
   children: TreeNode[];
