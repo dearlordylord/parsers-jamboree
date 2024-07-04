@@ -8,7 +8,7 @@ describe('breakers', () => {
     expect(decodeUser(igor)).toMatchObject({
       _tag: 'right',
     });
-  })
+  });
   Object.entries(BREAKERS).forEach(([n, b]) => {
     it(`should break the structure with ${n}`, () => {
       expect(decodeUser(b(igor))).toMatchObject({
@@ -16,5 +16,4 @@ describe('breakers', () => {
       });
     });
   });
-
 });

@@ -11,7 +11,7 @@ type Props<T, E, EE> = {
   code: string;
   encodeUser: (u: T) => Result<EE, unknown>;
   validUser: typeof igor;
-  decodeUser: (u: unknown) => Result<E, T>
+  decodeUser: (u: unknown) => Result<E, T>;
 };
 
 export const ParserComponent = <T, E, EE>({
@@ -59,10 +59,7 @@ export const ParserComponent = <T, E, EE>({
       return setParsed(parsedInputJson);
     }
     return setParsed(rest.decodeUser(parsedInputJson.value));
-  }, [
-    parsedInputJson,
-    rest.decodeUser,
-  ]);
+  }, [parsedInputJson, rest.decodeUser]);
   const encoded = useMemo(
     () =>
       parsed._tag === 'left'
@@ -84,7 +81,7 @@ export const ParserComponent = <T, E, EE>({
   return (
     <div>
       <h2>Feature test results</h2>
-      <Breaker decodeUser={rest.decodeUser}/>
+      <Breaker decodeUser={rest.decodeUser} />
       <h2 id={inputId}>Input</h2>
       <form onSubmit={() => setInput(defaultInput)}>
         {input !== defaultInput ? (

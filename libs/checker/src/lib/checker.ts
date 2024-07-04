@@ -23,7 +23,7 @@ export const igor = {
       {
         type: 'directory',
         name: 'empty',
-        children: []
+        children: [],
       },
       {
         type: 'directory',
@@ -31,16 +31,16 @@ export const igor = {
         children: [
           {
             type: 'file',
-            name: 'bonjournee.exe'
-          }
-        ]
+            name: 'bonjournee.exe',
+          },
+        ],
       },
       {
         type: 'file',
         name: 'bonjour.exe',
-      }
-    ]
-  }
+      },
+    ],
+  },
 };
 
 type TreeNode = {

@@ -66,6 +66,7 @@ const NonEmptyString = (0, superstruct_1.refine)((0, superstruct_1.string)(), 'N
     }
     return true;
 });
+const FileSystem = (0, superstruct_1.any)(); // TODO
 const User = (0, superstruct_1.assign)((0, superstruct_1.object)({
     name: NonEmptyString,
     email: Email,
@@ -74,6 +75,7 @@ const User = (0, superstruct_1.assign)((0, superstruct_1.object)({
     visits: NonNegativeInteger,
     favouriteColours: FavouriteColours,
     profile: (0, superstruct_1.union)([ProfileListener, ProfileArtist]),
+    fileSystem: FileSystem,
 }), IsoDateStringRange);
 const decodeUser = (u) => {
     try {

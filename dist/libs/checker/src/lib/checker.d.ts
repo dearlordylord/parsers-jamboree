@@ -11,16 +11,21 @@ export declare const igor: {
         type: string;
         boughtTracks: number;
     };
-};
-export declare const harry: {
-    name: string;
-    email: null;
-    createdAt: string;
-    updatedAt: string;
-    subscription: "free";
-    stripeId: string;
-    visits: number;
-    favouriteColours: (string | never[] | null)[];
-    extraField: string;
+    fileSystem: {
+        type: string;
+        name: string;
+        children: ({
+            type: string;
+            name: string;
+            children: {
+                type: string;
+                name: string;
+            }[];
+        } | {
+            type: string;
+            name: string;
+            children?: undefined;
+        })[];
+    };
 };
 export declare const tree: any;

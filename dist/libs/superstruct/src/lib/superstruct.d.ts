@@ -16,6 +16,7 @@ declare const User: Struct<{
         type: "artist";
         publishedTracks: number;
     };
+    fileSystem?: any;
 }, {
     createdAt: Struct<Date, null>;
     updatedAt: Struct<Date, null>;
@@ -36,6 +37,7 @@ declare const User: Struct<{
         type: "artist";
         publishedTracks: number;
     }, null>;
+    fileSystem: Struct<any, null>;
 }>;
 type User = Infer<typeof User>;
 export declare const decodeUser: (u: unknown) => Result<string, User>;

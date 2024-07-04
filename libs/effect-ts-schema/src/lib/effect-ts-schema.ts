@@ -2,7 +2,6 @@ import { ParseResult, Schema, TreeFormatter } from '@effect/schema';
 import * as Either from 'effect/Either';
 import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
 import { ParseError } from '@effect/schema/ParseResult';
-import { SetFromSelf } from '@effect/schema/src/Schema';
 
 const NonEmptyStringBrand = Symbol.for('NonEmptyString');
 
@@ -20,10 +19,9 @@ const Email = NonEmptyString.pipe(
 
 const StripeIdBrand = Symbol.for('StripeId');
 
-const StripeId = Schema.TemplateLiteral(
-  Schema.Literal('cus_'),
-  Schema.String,
-).pipe(Schema.pattern(/^cus_[a-zA-Z0-9]{14,}$/)).pipe(Schema.brand(StripeIdBrand));
+const StripeId = Schema.TemplateLiteral(Schema.Literal('cus_'), Schema.String)
+  .pipe(Schema.pattern(/^cus_[a-zA-Z0-9]{14,}$/))
+  .pipe(Schema.brand(StripeIdBrand));
 
 const ColourBrand = Symbol.for('Colour');
 
@@ -71,45 +69,60 @@ const FavouriteColours = Schema.transformOrFail(
       const set = new Set(input);
       if (set.size !== input.length) {
         return ParseResult.fail(
-          new ParseResult.Type(ast, input, "Items must be unique")
-        )
+          new ParseResult.Type(ast, input, 'Items must be unique')
+        );
       }
-      return ParseResult.succeed(set)
+      return ParseResult.succeed(set);
     },
     encode: (input, options, ast) => {
       return ParseResult.succeed(Array.from(input));
-    }
+    },
   }
 );
 
-type FileSystem = ({
-  readonly type: 'directory';
-  readonly children: readonly FileSystem[];
-} | {
-  readonly type: 'file';
-}) & {
+type FileSystem = (
+  | {
+      readonly type: 'directory';
+      readonly children: readonly FileSystem[];
+    }
+  | {
+      readonly type: 'file';
+    }
+) & {
   readonly name: NonEmptyString;
 };
 
 const FileSystemDirectory = Schema.Struct({
   type: Schema.Literal('directory'),
   children: Schema.Array(
-    Schema.suspend((): Schema.Schema<FileSystem> => Schema.typeSchema(FileSystem))
-  ).pipe(Schema.filter(children => {
-    const names = new Set(children.map(c => c.name));
-    return children.length === names.size ? undefined : `Expected unique names, got ${JSON.stringify(names)}`;
-  }))
+    Schema.suspend(
+      (): Schema.Schema<FileSystem> => Schema.typeSchema(FileSystem)
+    )
+  ).pipe(
+    Schema.filter((children) => {
+      const names = new Set(children.map((c) => c.name));
+      return children.length === names.size
+        ? undefined
+        : `Expected unique names, got ${JSON.stringify(names)}`;
+    })
+  ),
 });
 
 const FileSystemFile = Schema.Struct({
   type: Schema.Literal('file'),
 });
 
-const FileSystemFileOrDirectory = Schema.Union(FileSystemFile, FileSystemDirectory);
+const FileSystemFileOrDirectory = Schema.Union(
+  FileSystemFile,
+  FileSystemDirectory
+);
 
-const FileSystem = Schema.extend(Schema.Struct({
-  name: NonEmptyString,
-}), FileSystemFileOrDirectory)
+const FileSystem = Schema.extend(
+  Schema.Struct({
+    name: NonEmptyString,
+  }),
+  FileSystemFileOrDirectory
+);
 
 const UserUnentangled = Schema.Struct({
   name: NonEmptyString,
@@ -132,12 +145,16 @@ const UserEntangled = Schema.transformOrFail(
     decode: (u, options, ast) => {
       if (u.createdAt > u.updatedAt) {
         return ParseResult.fail(
-          new ParseResult.Type(ast, u.createdAt, "createdAt must be less or equal than updatedAt")
-        )
+          new ParseResult.Type(
+            ast,
+            u.createdAt,
+            'createdAt must be less or equal than updatedAt'
+          )
+        );
       }
-      return ParseResult.succeed(u)
+      return ParseResult.succeed(u);
     },
-    encode: ParseResult.succeed
+    encode: ParseResult.succeed,
   }
 );
 

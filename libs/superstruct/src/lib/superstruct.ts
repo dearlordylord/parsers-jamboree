@@ -17,7 +17,8 @@ import {
   assign,
   StructError,
   set,
-  Struct, any
+  Struct,
+  any,
 } from 'superstruct';
 import {
   COLOURS,
@@ -107,7 +108,8 @@ const uniqArray = <T>(s: Struct<T>) =>
     return true;
   });
 
-const arrayToSet = <T>(s: Struct<T>) => coerce(array(s), set(s), (v) => new Set(v));
+const arrayToSet = <T>(s: Struct<T>) =>
+  coerce(array(s), set(s), (v) => new Set(v));
 
 const FavouriteColours = arrayToSet(ColourOrHex);
 

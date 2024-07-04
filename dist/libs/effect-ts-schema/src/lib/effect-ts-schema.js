@@ -5,12 +5,14 @@ const schema_1 = require("@effect/schema");
 const Either = require("effect/Either");
 const common_1 = require("@parsers-jamboree/common");
 const NonEmptyStringBrand = Symbol.for('NonEmptyString');
-const NonEmptyString = schema_1.Schema.String.pipe(schema_1.Schema.filter((s) => s.length > 0)).pipe(schema_1.Schema.brand(NonEmptyStringBrand));
+const NonEmptyString = schema_1.Schema.NonEmpty.pipe(schema_1.Schema.brand(NonEmptyStringBrand));
 const EmailBrand = Symbol.for('Email');
 // no built-in email combinator by-design (lot of definitions out there)
 const Email = NonEmptyString.pipe(schema_1.Schema.pattern(/^(?!\.)(?!.*\.\.)([A-Z0-9_+-.]*)[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i)).pipe(schema_1.Schema.brand(EmailBrand));
 const StripeIdBrand = Symbol.for('StripeId');
-const StripeId = schema_1.Schema.String.pipe(schema_1.Schema.pattern(/^cus_[a-zA-Z0-9]{14,}$/)).pipe(schema_1.Schema.brand(StripeIdBrand));
+const StripeId = schema_1.Schema.TemplateLiteral(schema_1.Schema.Literal('cus_'), schema_1.Schema.String)
+    .pipe(schema_1.Schema.pattern(/^cus_[a-zA-Z0-9]{14,}$/))
+    .pipe(schema_1.Schema.brand(StripeIdBrand));
 const ColourBrand = Symbol.for('Colour');
 const Colour = schema_1.Schema.Literal(...common_1.COLOURS).pipe(schema_1.Schema.brand(ColourBrand));
 const HexBrand = Symbol.for('Hex');
@@ -19,9 +21,8 @@ const ColourOrHex = schema_1.Schema.Union(Colour, Hex);
 const SubscriptionBrand = Symbol.for('Subscription');
 const Subscription = schema_1.Schema.Literal(...common_1.SUBSCRIPTION_TYPES).pipe(schema_1.Schema.brand(SubscriptionBrand));
 const NonNegativeIntegerBrand = Symbol.for('NonNegativeInteger');
-const NonNegativeInteger = schema_1.Schema.Union(schema_1.Schema.NonNegative, schema_1.Schema.Int).pipe(schema_1.Schema.brand(NonNegativeIntegerBrand));
+const NonNegativeInteger = schema_1.Schema.Int.pipe(schema_1.Schema.nonNegative(), schema_1.Schema.brand(NonNegativeIntegerBrand));
 // this lib can figure out discriminator by itself
-// TODO add this union elswhere
 const Profile = schema_1.Schema.Union(schema_1.Schema.Struct({
     type: schema_1.Schema.Literal('listener'),
     boughtTracks: NonNegativeInteger,
@@ -29,8 +30,36 @@ const Profile = schema_1.Schema.Union(schema_1.Schema.Struct({
     type: schema_1.Schema.Literal('artist'),
     publishedTracks: NonNegativeInteger,
 }));
-const User = schema_1.Schema.Struct({
-    // name: Schema.NonEmpty, exists but it doesn't brand the string and also what's up with its name?...
+const FavouriteColours = schema_1.Schema.transformOrFail(schema_1.Schema.Array(ColourOrHex), schema_1.Schema.SetFromSelf(schema_1.Schema.typeSchema(ColourOrHex)), {
+    strict: true,
+    decode: (input, options, ast) => {
+        const set = new Set(input);
+        if (set.size !== input.length) {
+            return schema_1.ParseResult.fail(new schema_1.ParseResult.Type(ast, input, 'Items must be unique'));
+        }
+        return schema_1.ParseResult.succeed(set);
+    },
+    encode: (input, options, ast) => {
+        return schema_1.ParseResult.succeed(Array.from(input));
+    },
+});
+const FileSystemDirectory = schema_1.Schema.Struct({
+    type: schema_1.Schema.Literal('directory'),
+    children: schema_1.Schema.Array(schema_1.Schema.suspend(() => schema_1.Schema.typeSchema(FileSystem))).pipe(schema_1.Schema.filter((children) => {
+        const names = new Set(children.map((c) => c.name));
+        return children.length === names.size
+            ? undefined
+            : `Expected unique names, got ${JSON.stringify(names)}`;
+    })),
+});
+const FileSystemFile = schema_1.Schema.Struct({
+    type: schema_1.Schema.Literal('file'),
+});
+const FileSystemFileOrDirectory = schema_1.Schema.Union(FileSystemFile, FileSystemDirectory);
+const FileSystem = schema_1.Schema.extend(schema_1.Schema.Struct({
+    name: NonEmptyString,
+}), FileSystemFileOrDirectory);
+const UserUnentangled = schema_1.Schema.Struct({
     name: NonEmptyString,
     email: Email,
     createdAt: schema_1.Schema.Date,
@@ -38,9 +67,21 @@ const User = schema_1.Schema.Struct({
     subscription: Subscription,
     stripeId: StripeId,
     visits: NonNegativeInteger,
-    favouriteColours: schema_1.Schema.Set(ColourOrHex),
+    favouriteColours: FavouriteColours,
     profile: Profile,
+    fileSystem: FileSystem,
 });
+const UserEntangled = schema_1.Schema.transformOrFail(UserUnentangled, schema_1.Schema.typeSchema(UserUnentangled), {
+    strict: true,
+    decode: (u, options, ast) => {
+        if (u.createdAt > u.updatedAt) {
+            return schema_1.ParseResult.fail(new schema_1.ParseResult.Type(ast, u.createdAt, 'createdAt must be less or equal than updatedAt'));
+        }
+        return schema_1.ParseResult.succeed(u);
+    },
+    encode: schema_1.ParseResult.succeed,
+});
+const User = UserEntangled;
 const decodeUser = (u) => {
     const result = schema_1.Schema.decodeUnknownEither(User)(u);
     return mapResult(result);

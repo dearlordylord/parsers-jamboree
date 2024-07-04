@@ -10,7 +10,6 @@ import { prefixCustomerId } from '../../../libs/checker/src/lib/breaker';
 
 console.log('prefixCustomerId', prefixCustomerId(igor));
 
-
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );

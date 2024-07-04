@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.tree = exports.harry = exports.igor = void 0;
+exports.tree = exports.igor = void 0;
 const common_1 = require("@parsers-jamboree/common");
 exports.igor = {
     name: 'igor',
@@ -15,18 +15,31 @@ exports.igor = {
         type: 'listener',
         boughtTracks: 10,
     },
-};
-// to test errored types
-exports.harry = {
-    name: '',
-    email: null,
-    createdAt: '1990-01-01T00:00:00.000Z',
-    updatedAt: '1900-01-01T00:00:00.000Z',
-    subscription: common_1.SUBSCRIPTION_TYPE_FREE,
-    stripeId: 'big boss',
-    visits: -1,
-    favouriteColours: ['cars', null, []],
-    extraField: 'extra',
+    fileSystem: {
+        type: 'directory',
+        name: 'root',
+        children: [
+            {
+                type: 'directory',
+                name: 'empty',
+                children: [],
+            },
+            {
+                type: 'directory',
+                name: 'sub',
+                children: [
+                    {
+                        type: 'file',
+                        name: 'bonjournee.exe',
+                    },
+                ],
+            },
+            {
+                type: 'file',
+                name: 'bonjour.exe',
+            },
+        ],
+    },
 };
 // to test recursive types
 const tree_ = {
