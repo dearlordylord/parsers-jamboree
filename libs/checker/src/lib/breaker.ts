@@ -44,6 +44,16 @@ export const setProfileArtist: UserBreaker = mutateField(constant({
   boughtTracks: 10,
 }))('profile');
 
+export const addFileSystemUFOType: UserBreaker = mutateField((fs: Igor['fileSystem']) => ({
+  ...fs,
+  children: [...fs.children, { type: 'directory', name: 'ufos', children: [{ type: 'UFO', name: 'ufo.exe' }] }],
+}))('fileSystem');
+
+export const addFileSystemDupeFile: UserBreaker = mutateField((fs: Igor['fileSystem']) => ({
+  ...fs,
+  children: [...fs.children, { type: 'file', name: 'bonjour.exe' }, { type: 'file', name: 'bonjour.exe' }],
+}))('fileSystem');
+
 export const BREAKERS = {
   switchDates,
   prefixCustomerId,
@@ -55,4 +65,6 @@ export const BREAKERS = {
   setHalfVisits,
   setCreatedAtCyborgWar,
   setProfileArtist,
+  addFileSystemUFOType,
+  addFileSystemDupeFile
 } as const;

@@ -16,6 +16,31 @@ export const igor = {
     type: 'listener',
     boughtTracks: 10,
   },
+  fileSystem: {
+    type: 'directory',
+    name: 'root',
+    children: [
+      {
+        type: 'directory',
+        name: 'empty',
+        children: []
+      },
+      {
+        type: 'directory',
+        name: 'sub',
+        children: [
+          {
+            type: 'file',
+            name: 'bonjournee.exe'
+          }
+        ]
+      },
+      {
+        type: 'file',
+        name: 'bonjour.exe',
+      }
+    ]
+  }
 };
 
 type TreeNode = {

@@ -6,9 +6,8 @@ import { SetFromSelf } from '@effect/schema/src/Schema';
 
 const NonEmptyStringBrand = Symbol.for('NonEmptyString');
 
-const NonEmptyString = Schema.String.pipe(
-  Schema.filter((s) => s.length > 0)
-).pipe(Schema.brand(NonEmptyStringBrand));
+const NonEmptyString = Schema.NonEmpty.pipe(Schema.brand(NonEmptyStringBrand));
+type NonEmptyString = Schema.Schema.Type<typeof NonEmptyString>;
 
 const EmailBrand = Symbol.for('Email');
 
@@ -82,8 +81,36 @@ const FavouriteColours = Schema.transformOrFail(
   }
 );
 
+type FileSystem = ({
+  readonly type: 'directory';
+  readonly children: readonly FileSystem[];
+} | {
+  readonly type: 'file';
+}) & {
+  readonly name: NonEmptyString;
+};
+
+const FileSystemDirectory = Schema.Struct({
+  type: Schema.Literal('directory'),
+  children: Schema.Array(
+    Schema.suspend((): Schema.Schema<FileSystem> => Schema.typeSchema(FileSystem))
+  ).pipe(Schema.filter(children => {
+    const names = new Set(children.map(c => c.name));
+    return children.length === names.size ? undefined : `Expected unique names, got ${JSON.stringify(names)}`;
+  }))
+});
+
+const FileSystemFile = Schema.Struct({
+  type: Schema.Literal('file'),
+});
+
+const FileSystemFileOrDirectory = Schema.Union(FileSystemFile, FileSystemDirectory);
+
+const FileSystem = Schema.extend(Schema.Struct({
+  name: NonEmptyString,
+}), FileSystemFileOrDirectory)
+
 const UserUnentangled = Schema.Struct({
-  // name: Schema.NonEmpty, exists but it doesn't brand the string and also what's up with its name?...
   name: NonEmptyString,
   email: Email,
   createdAt: Schema.Date,
@@ -93,6 +120,7 @@ const UserUnentangled = Schema.Struct({
   visits: NonNegativeInteger,
   favouriteColours: FavouriteColours,
   profile: Profile,
+  fileSystem: FileSystem,
 });
 
 const UserEntangled = Schema.transformOrFail(
