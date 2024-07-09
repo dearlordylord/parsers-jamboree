@@ -13,7 +13,7 @@ import {
   PROFILE_TYPE_ARTIST,
   PROFILE_TYPE_LISTENER,
   Result,
-  SUBSCRIPTION_TYPES
+  SUBSCRIPTION_TYPES,
 } from '@parsers-jamboree/common';
 
 // by the pattern of schemata/UUID.ts
@@ -79,13 +79,13 @@ const ProfileSchema = S.Union(ProfileListenerSchema, ProfileArtistSchema);
 
 type FileSystem = (
   | {
-  readonly type: 'directory';
-  readonly children: readonly FileSystem[];
-}
+      readonly type: 'directory';
+      readonly children: readonly FileSystem[];
+    }
   | {
-  readonly type: 'file';
-}
-  ) & {
+      readonly type: 'file';
+    }
+) & {
   readonly name: S.NonEmptyString;
 };
 
@@ -95,7 +95,11 @@ export const FileSystemSchema: Schema<FileSystem, FileSystem> = S.Intersect(
       type: S.Literal('directory'),
       children: pipe(
         S.Array(S.Lazy('FileSystem', () => FileSystemSchema)),
-        S.Refine((c): c is FileSystem[] => c.length === new Set(c.map(f => f.name)).size, 'Uniq files/dirs')
+        S.Refine(
+          (c): c is FileSystem[] =>
+            c.length === new Set(c.map((f) => f.name)).size,
+          'Uniq files/dirs'
+        )
       ),
     }),
     S.Struct({
@@ -121,11 +125,14 @@ export const UserTemporalOrderlessSchema = S.Struct({
 // same as user temporal ordered
 export type User = OutputOf<typeof UserTemporalOrderlessSchema>;
 
-export const UserSchema = pipe(UserTemporalOrderlessSchema, S.Refine(
-  // refinements seem to be not very composable
-  (c): c is User => c.createdAt <= c.updatedAt,
-  'User'
-));
+export const UserSchema = pipe(
+  UserTemporalOrderlessSchema,
+  S.Refine(
+    // refinements seem to be not very composable
+    (c): c is User => c.createdAt <= c.updatedAt,
+    'User'
+  )
+);
 
 // struct methods / functions are no more after refinement
 // export const NamelessUserSchema = UserSchema.omit('name');

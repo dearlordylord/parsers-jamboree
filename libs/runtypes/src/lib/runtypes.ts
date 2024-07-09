@@ -9,7 +9,10 @@ import {
   Union,
   Template,
   Static,
-  RuntypeBrand, Intersect, Lazy, Runtype
+  RuntypeBrand,
+  Intersect,
+  Lazy,
+  Runtype,
 } from 'runtypes';
 import {
   chain,
@@ -97,19 +100,21 @@ const TemporalConcernUnsorted = Record({
   updatedAt: IsoDateString,
 });
 
-const TemporalConcern = TemporalConcernUnsorted.withConstraint(
-  (v) => v.createdAt <= v.updatedAt ? true : `createdAt must be less or equal than updatedAt`
+const TemporalConcern = TemporalConcernUnsorted.withConstraint((v) =>
+  v.createdAt <= v.updatedAt
+    ? true
+    : `createdAt must be less or equal than updatedAt`
 );
 
 type FileSystem = (
   | {
-  readonly type: 'directory';
-  readonly children: readonly FileSystem[];
-}
+      readonly type: 'directory';
+      readonly children: readonly FileSystem[];
+    }
   | {
-  readonly type: 'file';
-}
-  ) & {
+      readonly type: 'file';
+    }
+) & {
   readonly name: NonEmptyString;
 };
 
@@ -117,16 +122,21 @@ const FileSystemCommon = Record({
   name: NonEmptyString,
 });
 
-
-
 const FileSystemDirectory: Runtype<FileSystem & { type: 'directory' }> = Lazy(
-  () => Intersect(
-    FileSystemCommon,
-    Record({
-      type: Literal('directory'),
-      children: Array(FileSystem),
-    }).withConstraint((v) => new Set(v.children.map((c) => c.name)).size === v.children.length ? true : `Expected unique names, got ${JSON.stringify(v.children.map((c) => c.name))}`)
-  )
+  () =>
+    Intersect(
+      FileSystemCommon,
+      Record({
+        type: Literal('directory'),
+        children: Array(FileSystem),
+      }).withConstraint((v) =>
+        new Set(v.children.map((c) => c.name)).size === v.children.length
+          ? true
+          : `Expected unique names, got ${JSON.stringify(
+              v.children.map((c) => c.name)
+            )}`
+      )
+    )
 );
 
 const FileSystemFile = Intersect(
@@ -148,7 +158,9 @@ const UserJson = Intersect(
     subscription: SubscriptionType,
     stripeId: StripeCustomerId,
     visits: NonNegativeInteger,
-    favouriteColours: Array(HexColourOrColour).withConstraint((v) => new Set(v).size === v.length ? true : `Expected unique items`),
+    favouriteColours: Array(HexColourOrColour).withConstraint((v) =>
+      new Set(v).size === v.length ? true : `Expected unique items`
+    ),
     profile: Profile,
     fileSystem: FileSystem,
   }),

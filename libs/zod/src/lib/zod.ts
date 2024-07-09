@@ -21,16 +21,19 @@ export const timeConcernTimelessSchema = z.object({
   updatedAt: z.string().datetime(),
 });
 
-const favouriteColoursSchema = z.array(colourSchema).superRefine((v, ctx) => {
-  const set = new Set(v);
-  if (set.size !== v.length) {
-    ctx.addIssue({
-      code: 'custom',
-      message: 'favourite colours must be unique',
-    });
-  }
-  return z.NEVER;
-}).transform((v) => new Set(v));
+const favouriteColoursSchema = z
+  .array(colourSchema)
+  .superRefine((v, ctx) => {
+    const set = new Set(v);
+    if (set.size !== v.length) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'favourite colours must be unique',
+      });
+    }
+    return z.NEVER;
+  })
+  .transform((v) => new Set(v));
 
 const profileListenerSchema = z.object({
   type: z.literal('listener'),
@@ -61,7 +64,6 @@ export const profileSchema = z.discriminatedUnion('type', [
 //   readonly name: FileSystemName;
 // };
 
-
 // const fileSystemNameSchema = z.string().min(1).max(255).brand('fileSystemName');
 // type FileSystemName = z.infer<typeof fileSystemNameSchema>;
 //
@@ -90,24 +92,27 @@ export const profileSchema = z.discriminatedUnion('type', [
 //   fileSystemFileSchema,
 // ]);
 
-const userSchema = z.object({
-  name: userNameSchema,
-  email: emailSchema,
-  subscription: z.enum(SUBSCRIPTION_TYPES),
-  stripeId: stripeIdSchema,
-  visits: visitsSchema,
-  favouriteColours: favouriteColoursSchema,
-  profile: profileSchema,
-  fileSystemSchema: z.any(), // https://github.com/colinhacks/zod/issues/3628
-}).merge(timeConcernTimelessSchema).superRefine((v, ctx) => {
-  if (v.createdAt > v.updatedAt) {
-    ctx.addIssue({
-      code: 'custom',
-      message: 'createdAt must be less or equal than updatedAt',
-    });
-  }
-  return z.NEVER
-});
+const userSchema = z
+  .object({
+    name: userNameSchema,
+    email: emailSchema,
+    subscription: z.enum(SUBSCRIPTION_TYPES),
+    stripeId: stripeIdSchema,
+    visits: visitsSchema,
+    favouriteColours: favouriteColoursSchema,
+    profile: profileSchema,
+    fileSystemSchema: z.any(), // https://github.com/colinhacks/zod/issues/3628
+  })
+  .merge(timeConcernTimelessSchema)
+  .superRefine((v, ctx) => {
+    if (v.createdAt > v.updatedAt) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'createdAt must be less or equal than updatedAt',
+      });
+    }
+    return z.NEVER;
+  });
 
 type User = z.infer<typeof userSchema>;
 

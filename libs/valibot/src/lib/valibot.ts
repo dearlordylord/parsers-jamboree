@@ -22,7 +22,13 @@ import {
   check,
   transform,
   BaseIssue,
-  isoTimestamp, intersect, lazy, GenericSchema, BaseSchema, forward, partialCheck
+  isoTimestamp,
+  intersect,
+  lazy,
+  GenericSchema,
+  BaseSchema,
+  forward,
+  partialCheck,
 } from 'valibot';
 import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
 
@@ -33,8 +39,6 @@ const NonEmptyStringSchema = pipe(
 );
 
 type NonEmptyString = InferOutput<typeof NonEmptyStringSchema>;
-
-
 
 // email format specifics: https://github.com/fabian-hiller/valibot/issues/204
 const EmailSchema = pipe(NonEmptyStringSchema, email(), brand('Email'));
@@ -77,13 +81,12 @@ const HexColourSchema = pipe(
 
 const ColourSchema = pipe(picklist(COLOURS), brand('Colour'));
 
-
 const uniqArray = <S extends BaseSchema<unknown, unknown, BaseIssue<unknown>>>(
   schema: S
 ) =>
   pipe(
     array(schema),
-    check((v) => new Set(v).size === v.length, 'Expected unique items'),
+    check((v) => new Set(v).size === v.length, 'Expected unique items')
   );
 // default set doesn't work as I would expect https://github.com/fabian-hiller/valibot/issues/685
 const set = <S extends BaseSchema<unknown, unknown, BaseIssue<unknown>>>(
@@ -131,26 +134,31 @@ const FileSystemCommonSchema = object({
 
 type FileSystem = (
   | {
-  readonly type: 'directory';
-  readonly children: readonly FileSystem[];
-}
+      readonly type: 'directory';
+      readonly children: readonly FileSystem[];
+    }
   | {
-  readonly type: 'file';
-}
-  ) & {
+      readonly type: 'file';
+    }
+) & {
   readonly name: NonEmptyString;
 };
 
-const FileSystemDirectorySchema: GenericSchema<unknown, FileSystem & { type: 'directory' }> = intersect([
+const FileSystemDirectorySchema: GenericSchema<
+  unknown,
+  FileSystem & { type: 'directory' }
+> = intersect([
   FileSystemCommonSchema,
   pipe(
     object({
       type: literal('directory'),
       children: array(lazy(() => FileSystemSchema)),
     }),
-    check(v => new Set(v.children.map(c => c.name)).size === v.children.length, 'Expected unique names in the children')
+    check(
+      (v) => new Set(v.children.map((c) => c.name)).size === v.children.length,
+      'Expected unique names in the children'
+    )
   ),
-
 ]);
 
 const FileSystemFileSchema = intersect([
