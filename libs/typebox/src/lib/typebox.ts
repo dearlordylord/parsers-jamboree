@@ -85,8 +85,6 @@ const FormatWhat = Type.String({
 
 type User = StaticDecode<typeof User>;
 
-// TODO questionable "mutate"
-
 export const decodeUser = (u: unknown): Result<ValueError[], User> => {
   // flow control with exceptions
   try {

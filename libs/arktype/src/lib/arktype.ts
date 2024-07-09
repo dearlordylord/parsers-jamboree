@@ -51,8 +51,6 @@ const COLOURS_WITH_CODES_LITERAL =
   `(${COLOURS_LITERAL})|/${hexColorRegexString}/` as const;
 
 const userJson = type({
-  // TODO how to do compatibility? e.g. convert io-ts into name
-  // TODO add user id to all the libs
   name: '0<string<255',
   email: 'email',
   // https://github.com/arktypeio/arktype/issues/909 morphs aren't really here yet
@@ -78,17 +76,17 @@ export const decodeUser = (u: unknown): Result<string, User> => {
 
   return chain((u: UserJson): Result<string, User> => {
     const favouriteColours = new Set(u.favouriteColours);
-    if (favouriteColours.size !== u.favouriteColours.length) {
-      return { _tag: 'left', error: 'favourite colours must be unique' };
-    }
+    // if (favouriteColours.size !== u.favouriteColours.length) {
+    //   return { _tag: 'left', error: 'favourite colours must be unique' };
+    // }
     const createdAt = new Date(u.createdAt);
-    if (isNaN(createdAt.getTime())) {
-      return { _tag: 'left', error: 'createdAt must be a valid ISO date' };
-    }
+    // if (isNaN(createdAt.getTime())) {
+    //   return { _tag: 'left', error: 'createdAt must be a valid ISO date' };
+    // }
     const updatedAt = new Date(u.updatedAt);
-    if (isNaN(updatedAt.getTime())) {
-      return { _tag: 'left', error: 'updatedAt must be a valid ISO date' };
-    }
+    // if (isNaN(updatedAt.getTime())) {
+    //   return { _tag: 'left', error: 'updatedAt must be a valid ISO date' };
+    // }
     return {
       _tag: 'right',
       value: {

@@ -6,7 +6,6 @@ import {
   minLength,
   brand,
   InferOutput,
-  isoDateTime,
   literal,
   picklist,
   regex,
@@ -23,16 +22,19 @@ import {
   check,
   transform,
   BaseIssue,
-  isoTimestamp,
+  isoTimestamp, intersect, lazy, GenericSchema, BaseSchema, forward, partialCheck
 } from 'valibot';
 import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
-import { BaseSchema } from 'valibot/dist';
 
 const NonEmptyStringSchema = pipe(
   string(),
   minLength(1),
   brand('NonEmptyString')
 );
+
+type NonEmptyString = InferOutput<typeof NonEmptyStringSchema>;
+
+
 
 // email format specifics: https://github.com/fabian-hiller/valibot/issues/204
 const EmailSchema = pipe(NonEmptyStringSchema, email(), brand('Email'));
@@ -45,7 +47,7 @@ const SubscriptionSchema = picklist(SUBSCRIPTION_TYPES);
 
 const StripeCustomerIdSchema = pipe(
   string(),
-  regex(/cus_[a-zA-Z0-9]{14,}/),
+  regex(/^cus_[a-zA-Z0-9]{14,}$/),
   brand('StripeId')
 );
 // we can do custom<`cus_${string}`>((v) => typeof v === 'string' && /cus_[a-zA-Z0-9]{14,}/.test(v)) to narrow the literal type further to cus_${string}
@@ -57,10 +59,6 @@ const StripeCustomerIdSchemaOption2 = pipe(
   ),
   brand('StripeId')
 );
-const customerId2: InferOutput<typeof StripeCustomerIdSchemaOption2> =
-  'cus_NffrFeUfNV2Hib' as InferOutput<
-    typeof StripeCustomerIdSchemaOption2
-  > satisfies `cus_${string}`;
 
 const NonNegativeIntegerSchema = pipe(
   number(),
@@ -79,13 +77,20 @@ const HexColourSchema = pipe(
 
 const ColourSchema = pipe(picklist(COLOURS), brand('Colour'));
 
-// default set doesn't work as I would expect https://github.com/fabian-hiller/valibot/issues/685
-const set = <S extends BaseSchema<unknown, unknown, BaseIssue<unknown>>>(
+
+const uniqArray = <S extends BaseSchema<unknown, unknown, BaseIssue<unknown>>>(
   schema: S
 ) =>
   pipe(
     array(schema),
     check((v) => new Set(v).size === v.length, 'Expected unique items'),
+  );
+// default set doesn't work as I would expect https://github.com/fabian-hiller/valibot/issues/685
+const set = <S extends BaseSchema<unknown, unknown, BaseIssue<unknown>>>(
+  schema: S
+) =>
+  pipe(
+    uniqArray(schema),
     transform((v) => new Set(v))
   );
 
@@ -103,18 +108,77 @@ const ProfileSchema = variant('type', [
   }),
 ]);
 
-const UserSchema = object({
-  name: UserNameSchema,
-  email: EmailSchema,
+const TemporalConcernUnsortedSchema = object({
   createdAt: DatetimeSchema,
   updatedAt: DatetimeSchema,
-  subscription: SubscriptionSchema,
-  stripeId: StripeCustomerIdSchema,
-  visits: VisitsSchema,
-  favouriteColours: FavouriteColoursSchema,
-  profile: ProfileSchema,
-  // we can check dependent fields with custom() but I don't like the API in its current state
 });
+
+const TemporalConcernSchema = pipe(
+  TemporalConcernUnsortedSchema,
+  forward(
+    partialCheck(
+      [['createdAt'], ['updatedAt']],
+      (input) => input.createdAt <= input.updatedAt,
+      'createdAt must be less or equal than updatedAt'
+    ),
+    ['updatedAt']
+  )
+);
+
+const FileSystemCommonSchema = object({
+  name: NonEmptyStringSchema,
+});
+
+type FileSystem = (
+  | {
+  readonly type: 'directory';
+  readonly children: readonly FileSystem[];
+}
+  | {
+  readonly type: 'file';
+}
+  ) & {
+  readonly name: NonEmptyString;
+};
+
+const FileSystemDirectorySchema: GenericSchema<unknown, FileSystem & { type: 'directory' }> = intersect([
+  FileSystemCommonSchema,
+  pipe(
+    object({
+      type: literal('directory'),
+      children: array(lazy(() => FileSystemSchema)),
+    }),
+    check(v => new Set(v.children.map(c => c.name)).size === v.children.length, 'Expected unique names in the children')
+  ),
+
+]);
+
+const FileSystemFileSchema = intersect([
+  FileSystemCommonSchema,
+  object({
+    type: literal('file'),
+  }),
+]);
+
+const FileSystemSchema = union([
+  FileSystemDirectorySchema,
+  FileSystemFileSchema,
+]);
+
+const UserSchema = intersect([
+  object({
+    name: UserNameSchema,
+    email: EmailSchema,
+    subscription: SubscriptionSchema,
+    stripeId: StripeCustomerIdSchema,
+    visits: VisitsSchema,
+    favouriteColours: FavouriteColoursSchema,
+    profile: ProfileSchema,
+    fileSystem: FileSystemSchema,
+    // we can check dependent fields with custom() but I don't like the API in its current state
+  }),
+  TemporalConcernSchema,
+]);
 
 type User = InferOutput<typeof UserSchema>;
 
@@ -123,7 +187,7 @@ export const decodeUser = (u: unknown): Result<unknown, User> => {
   return mapResult(result);
 };
 
-export const encodeUser = (u: User): Result<unknown, unknown> => {
+export const encodeUser = (_u: User): Result<unknown, unknown> => {
   return { _tag: 'left', error: 'the lib cannot do it' };
 };
 
