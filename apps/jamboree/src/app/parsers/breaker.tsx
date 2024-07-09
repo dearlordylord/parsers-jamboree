@@ -35,16 +35,23 @@ export const Breaker = ({ decodeUser }: Props): React.ReactElement => {
         </tr>
         <tr>
           {Object.entries(BREAKERS).map(([k, f]) => {
-            const parsed = decodeUser(f(igor));
-            return (
-              <td key={k}>
-                {parsed._tag === 'left' ? (
-                  <IconHeart color="red" />
-                ) : (
-                  <IconHeartBroken />
-                )}
-              </td>
-            );
+            try {
+              const parsed = decodeUser(f(igor));
+              return (
+                <td key={k}>
+                  {parsed._tag === 'left' ? (
+                    <IconHeart color="red" />
+                  ) : (
+                    <IconHeartBroken />
+                  )}
+                </td>
+              );
+            } catch (e) {
+              console.error(e);
+              return <td key={k}>ERROR</td>;
+            }
+
+
           })}
         </tr>
       </table>

@@ -33,6 +33,7 @@ import {
   Result,
   SUBSCRIPTION_TYPES,
 } from '@parsers-jamboree/common';
+import { JTDSchemaType } from 'ajv/dist/types/jtd-schema';
 
 // formats don't seem to be type-checked; skipping
 // import addFormats from "ajv-formats"
@@ -60,7 +61,42 @@ type UserJson = {
         type: typeof PROFILE_TYPE_ARTIST;
         publishedTracks: number;
       };
+  fileSystem: ({
+    type: 'directory';
+    children: FileSystem[];
+  } | {
+    type: 'file';
+  }) & {
+    name: string;
+  }
 };
+
+const fileSystemSchema = {
+  type: 'object',
+  oneOf: [
+    {
+      properties: {
+        type: { type: 'string', enum: ['directory'] },
+        children: {
+          type: 'array',
+          items: { $ref: '#/definitions/node' },
+        },
+        name: { type: 'string' },
+      },
+      required: ['type', 'children', 'name'],
+      additionalProperties: false,
+    },
+    {
+      properties: {
+        type: { type: 'string', enum: ['file'] },
+        name: { type: 'string' },
+      },
+      required: ['type', 'name'],
+      additionalProperties: false,
+    },
+  ],
+  required: ['type'],
+} satisfies JSONSchemaType<UserJson['fileSystem']>;
 
 // more flexibility with addKeyword (not typed well)
 const schema: JSONSchemaType<UserJson> = {
@@ -84,7 +120,7 @@ const schema: JSONSchemaType<UserJson> = {
         {
           type: 'object',
           properties: {
-            type: { type: 'string', enum: ['listener'] },
+            type: { type: 'string', enum: [PROFILE_TYPE_LISTENER] },
             boughtTracks: { type: 'integer', minimum: 0 },
           },
           required: ['type', 'boughtTracks'],
@@ -92,13 +128,14 @@ const schema: JSONSchemaType<UserJson> = {
         {
           type: 'object',
           properties: {
-            type: { type: 'string', enum: ['artist'] },
+            type: { type: 'string', enum: [PROFILE_TYPE_ARTIST] },
             publishedTracks: { type: 'integer', minimum: 0 },
           },
           required: ['type', 'publishedTracks'],
         },
       ],
     },
+    fileSystem: { $ref: '#/definitions/node' }
   },
   required: [
     'name',
@@ -110,10 +147,12 @@ const schema: JSONSchemaType<UserJson> = {
     'visits',
     'favouriteColours',
     'profile',
+    'fileSystem',
   ],
-  additionalProperties: false,
+  definitions: {
+    node: fileSystemSchema
+  }
 };
-
 type User = Omit<UserJson, 'favouriteColours' | 'createdAt' | 'updatedAt'> & {
   createdAt: Date;
   updatedAt: Date;

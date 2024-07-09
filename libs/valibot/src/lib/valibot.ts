@@ -145,7 +145,7 @@ type FileSystem = (
 };
 
 const FileSystemDirectorySchema: GenericSchema<
-  unknown,
+  Omit<FileSystem, 'name'> & { type: 'directory', name: string },
   FileSystem & { type: 'directory' }
 > = intersect([
   FileSystemCommonSchema,
