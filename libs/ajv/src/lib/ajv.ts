@@ -71,33 +71,6 @@ type UserJson = {
   }
 };
 
-const fileSystemSchema = {
-  type: 'object',
-  oneOf: [
-    {
-      properties: {
-        type: { type: 'string', enum: ['directory'] },
-        children: {
-          type: 'array',
-          items: { $ref: '#/definitions/node' },
-        },
-        name: { type: 'string' },
-      },
-      required: ['type', 'children', 'name'],
-      additionalProperties: false,
-    },
-    {
-      properties: {
-        type: { type: 'string', enum: ['file'] },
-        name: { type: 'string' },
-      },
-      required: ['type', 'name'],
-      additionalProperties: false,
-    },
-  ],
-  required: ['type'],
-} satisfies JSONSchemaType<UserJson['fileSystem']>;
-
 // more flexibility with addKeyword (not typed well)
 const schema: JSONSchemaType<UserJson> = {
   type: 'object',
@@ -135,7 +108,7 @@ const schema: JSONSchemaType<UserJson> = {
         },
       ],
     },
-    fileSystem: { $ref: '#/definitions/node' }
+    fileSystem: { $ref: '#/definitions/fsNode' }
   },
   required: [
     'name',
@@ -150,43 +123,68 @@ const schema: JSONSchemaType<UserJson> = {
     'fileSystem',
   ],
   definitions: {
-    node: fileSystemSchema
+    fsNode: {
+      type: 'object',
+      oneOf: [
+        {
+          type: 'object',
+          properties: {
+            type: { type: 'string', enum: ['directory'] },
+            children: {
+              type: 'array',
+              items: { $ref: '#/definitions/fsNode' },
+            },
+            name: { type: 'string' },
+          },
+          required: ['type', 'children', 'name'],
+          additionalProperties: false,
+        },
+        {
+          type: 'object',
+          properties: {
+            type: { type: 'string', enum: ['file'] },
+            name: { type: 'string' },
+          },
+          required: ['type', 'name'],
+          additionalProperties: false,
+        },
+      ],
+      required: ['type'],
+    }
   }
-};
-type User = Omit<UserJson, 'favouriteColours' | 'createdAt' | 'updatedAt'> & {
-  createdAt: Date;
-  updatedAt: Date;
-  favouriteColours: Set<string>;
 };
 
 const validate = ajv.compile(schema);
 
-export const decodeUser = (u: unknown): Result<unknown, User> => {
-  const r = validate(u);
+export const decodeUser = (u: unknown): Result<unknown, UserJson> => {
+  // the library mutates the input; with all the above; disqualified
+  const deepCopy = JSON.parse(JSON.stringify(u)) as unknown;
+  const r = validate(deepCopy);
   if (r) {
-    const createdAt = new Date(u.createdAt);
+    // const createdAt = new Date(u.createdAt);
     // errors are not composable here
-    if (isNaN(createdAt.getTime())) {
-      return { _tag: 'left', error: 'createdAt must be a valid ISO date' };
-    }
-    const updatedAt = new Date(u.updatedAt);
-    if (isNaN(updatedAt.getTime())) {
-      return { _tag: 'left', error: 'updatedAt must be a valid ISO date' };
-    }
-    const favouriteColours = new Set(u.favouriteColours);
-    if (favouriteColours.size !== u.favouriteColours.length) {
-      return { _tag: 'left', error: 'favourite colours must be unique' };
-    }
+    // if (isNaN(createdAt.getTime())) {
+    //   return { _tag: 'left', error: 'createdAt must be a valid ISO date' };
+    // }
+    // const updatedAt = new Date(u.updatedAt);
+    // if (isNaN(updatedAt.getTime())) {
+    //   return { _tag: 'left', error: 'updatedAt must be a valid ISO date' };
+    // }
+    // const favouriteColours = new Set(u.favouriteColours);
+    // if (favouriteColours.size !== u.favouriteColours.length) {
+    //   return { _tag: 'left', error: 'favourite colours must be unique' };
+    // }
     return {
       _tag: 'right',
-      value: { ...u, createdAt, updatedAt, favouriteColours },
+      // value: { ...u, createdAt, updatedAt, favouriteColours },
+      value: { ...deepCopy },
     };
   }
   // mutates itself adding .errors
   return { _tag: 'left', error: JSON.stringify(validate.errors, null, 2) };
 };
 
-export const encodeUser = (u: User): Result<string, unknown> => ({
+export const encodeUser = (u: UserJson): Result<string, unknown> => ({
   _tag: 'left',
   error: 'the lib cannot do it',
 });
