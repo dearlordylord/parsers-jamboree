@@ -6,6 +6,7 @@ import {
 } from '@parsers-jamboree/superstruct/superstruct';
 import code from '../../../../../../libs/superstruct/src/lib/superstruct?raw';
 import { ParserComponent } from '../component';
+import { meta } from '@parsers-jamboree/valibot/valibot';
 
 export const SuperstructPage = (): React.ReactElement => {
   return (
@@ -16,6 +17,7 @@ export const SuperstructPage = (): React.ReactElement => {
         encodeUser={encodeUser}
         decodeUser={decodeUser}
         validUser={igor}
+        meta={meta}
       />
     </div>
   );

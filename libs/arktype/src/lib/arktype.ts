@@ -3,7 +3,7 @@ import {
   chain,
   COLOURS,
   Result,
-  SUBSCRIPTION_TYPES,
+  SUBSCRIPTION_TYPES, TrustedCompileTimeMeta
 } from '@parsers-jamboree/common';
 import { Objects, Pipe, Strings, Tuples } from 'hotscript';
 import Mutable = Objects.Mutable;
@@ -102,6 +102,10 @@ export const decodeUser = (u: unknown): Result<string, User> => {
 export const encodeUser = (_u: User): Result<'the lib cannot do it', never> => {
   return { _tag: 'left', error: 'the lib cannot do it' };
 };
+
+export const meta: TrustedCompileTimeMeta = {
+  branded: false,
+}
 
 // utils
 

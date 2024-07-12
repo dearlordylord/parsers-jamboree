@@ -1,17 +1,20 @@
 import React, { useEffect, useId, useMemo, useState } from 'react';
-import { Result, ResultValue } from '@parsers-jamboree/common';
+import { Result, ResultValue, TrustedCompileTimeMeta } from '@parsers-jamboree/common';
 import Editor from '@monaco-editor/react';
 import { Highlighter } from '../highlighter';
 import { JSONTree, KeyPath } from 'react-json-tree';
 import { igor } from '@parsers-jamboree/checker/checker';
 import { get } from '../utils';
 import { Breaker } from './breaker';
+import { deepEqual } from '@parsers-jamboree/checker/utils';
+
 
 type Props<T, E, EE> = {
   code: string;
   encodeUser: (u: T) => Result<EE, unknown>;
   validUser: typeof igor;
   decodeUser: (u: unknown) => Result<E, T>;
+  meta: TrustedCompileTimeMeta
 };
 
 export const ParserComponent = <T, E, EE>({
@@ -39,12 +42,13 @@ export const ParserComponent = <T, E, EE>({
   const printKeyOrder =
     parsedInputJson._tag === 'left'
       ? []
-      : [
-          ...Object.keys(parsedInputJson.value as Record<string, unknown>),
-          /*special keys for profile, I don't want to bother with recursive parsing for now; TODO*/ ...Object.keys(
-            igor.profile
-          ),
-        ];
+      : [...new Set([
+        ...Object.keys(parsedInputJson.value as Record<string, unknown>),
+        /*special keys for profile, I don't want to bother with recursive parsing for now; TODO*/ ...Object.keys(
+          igor.profile
+        ),
+        ...Object.keys(igor.fileSystem),
+      ])].sort();
   const printKeyOrderF = (k1: unknown, k2: unknown) =>
     printKeyOrder.indexOf(k1 as string) - printKeyOrder.indexOf(k2 as string);
   const [parserCode, setParserCode] = useState(code);
@@ -76,12 +80,18 @@ export const ParserComponent = <T, E, EE>({
           })(),
     [parsed, encodeUser]
   );
-  const encodedMatchesInput = encoded === input;
+  const encodedMatchesInput = useMemo(() => {
+    try {
+      return deepEqual(JSON.parse(input), JSON.parse(encoded));
+    } catch (e) {
+      return false;
+    }
+  }, [encoded, input]);
   const inputId = useId();
   return (
     <div>
       <h2>Feature test results</h2>
-      <Breaker decodeUser={rest.decodeUser} />
+      <Breaker decodeUser={rest.decodeUser} encodeUser={encodeUser} meta={rest.meta} />
       <h2 id={inputId}>Input</h2>
       <form onSubmit={() => setInput(defaultInput)}>
         {input !== defaultInput ? (

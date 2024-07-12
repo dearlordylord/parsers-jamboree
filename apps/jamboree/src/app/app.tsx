@@ -2,91 +2,9 @@
 import styles from './app.module.css';
 
 import { Route, Routes, Link } from 'react-router-dom';
-import { SchemataPage } from './parsers/pages/schemata-ts';
-import { ZodPage } from './parsers/pages/zod';
 import React from 'react';
-import { ArktypePage } from './parsers/pages/arktype';
-import { EffectSchemaPage } from './parsers/pages/effect-schema';
-import { TypeboxPage } from './parsers/pages/typebox';
-import { ValibotPage } from './parsers/pages/valibot';
-import { RuntypesPage } from './parsers/pages/runtypes';
-import { AjvPage } from './parsers/pages/ajv';
-import { YupPage } from './parsers/pages/yup';
-import { SuperstructPage } from './parsers/pages/superstruct';
-
-const LIBS = [
-  'schemata-ts',
-  'zod',
-  'arktype',
-  'effect-schema',
-  'typebox',
-  'valibot',
-  'runtypes',
-  'ajv',
-  'yup',
-  'superstruct',
-] as const;
-
-type Rogues = {
-  [K in (typeof LIBS)[number]]: {
-    label: string;
-    link: string;
-    page: React.FC;
-  };
-};
-
-const rogues: Rogues = {
-  'schemata-ts': {
-    label: 'schemata-ts',
-    link: 'https://github.com/jamband/schemata-ts',
-    page: SchemataPage,
-  },
-  zod: {
-    label: 'zod',
-    link: 'https://github.com/colinhacks/zod',
-    page: ZodPage,
-  },
-  arktype: {
-    label: 'arktype',
-    link: 'https://github.com/arktypeio/arktype',
-    page: ArktypePage,
-  },
-  'effect-schema': {
-    label: 'effect-schema',
-    link: 'https://github.com/effect-ts/effect/tree/main/packages/schema',
-    page: EffectSchemaPage,
-  },
-  typebox: {
-    label: 'typebox',
-    link: 'https://github.com/sinclairzx81/typebox',
-    page: TypeboxPage,
-  },
-  valibot: {
-    label: 'valibot',
-    link: 'https://github.com/fabian-hiller/valibot',
-    page: ValibotPage,
-  },
-  runtypes: {
-    label: 'runtypes',
-    link: 'https://github.com/runtypes/runtypes',
-    page: RuntypesPage,
-  },
-  ajv: {
-    label: 'ajv',
-    link: 'https://github.com/ajv-validator/ajv',
-    page: AjvPage,
-  },
-  yup: {
-    label: 'yup',
-    link: 'https://github.com/jquense/yup',
-    page: YupPage,
-  },
-  superstruct: {
-    label: 'superstruct',
-    link: 'https://github.com/ianstormtaylor/superstruct',
-    page: SuperstructPage,
-  },
-};
+import { pages, ParserTable, rogues } from './parsers/table';
+import { LIBS } from './parsers/runtimes';
 
 export function App() {
   return (
@@ -116,9 +34,11 @@ export function App() {
         </ul>
       </div>
       <Routes>
-        <Route path="/" element={<div></div>} />
-        {Object.entries(rogues).map(([name, { label, link, page: Page }]) => (
-          <Route key={name} path={`/${name}`} element={<Page />} />
+        <Route path="/" element={<div>
+          <ParserTable />
+        </div>} />
+        {Object.entries(rogues).map(([name, { label, link }]) => (
+          <Route key={name} path={`/${name}`} element={React.createElement(pages[name as typeof LIBS[number]])} />
         ))}
       </Routes>
       {/* END: routes */}

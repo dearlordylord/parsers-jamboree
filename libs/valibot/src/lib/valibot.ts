@@ -30,7 +30,7 @@ import {
   forward,
   partialCheck,
 } from 'valibot';
-import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
+import { COLOURS, Result, SUBSCRIPTION_TYPES, TrustedCompileTimeMeta } from '@parsers-jamboree/common';
 
 const NonEmptyStringSchema = pipe(
   string(),
@@ -88,6 +88,7 @@ const uniqArray = <S extends BaseSchema<unknown, unknown, BaseIssue<unknown>>>(
     array(schema),
     check((v) => new Set(v).size === v.length, 'Expected unique items')
   );
+
 // default set doesn't work as I would expect https://github.com/fabian-hiller/valibot/issues/685
 const set = <S extends BaseSchema<unknown, unknown, BaseIssue<unknown>>>(
   schema: S
@@ -145,6 +146,7 @@ type FileSystem = (
 };
 
 const FileSystemDirectorySchema: GenericSchema<
+  // undocumented; manually put input type here (or unknown, which would cover most cases)
   Omit<FileSystem, 'name'> & { type: 'directory', name: string },
   FileSystem & { type: 'directory' }
 > = intersect([
@@ -198,6 +200,10 @@ export const decodeUser = (u: unknown): Result<unknown, User> => {
 export const encodeUser = (_u: User): Result<unknown, unknown> => {
   return { _tag: 'left', error: 'the lib cannot do it' };
 };
+
+export const meta: TrustedCompileTimeMeta = {
+  branded: true,
+}
 
 // utils
 

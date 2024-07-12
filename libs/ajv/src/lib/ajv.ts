@@ -1,41 +1,11 @@
-/*
-from docs:
-
-const Ajv = require("ajv")
-const ajv = new Ajv() // options can be passed, e.g. {allErrors: true}
-
-const schema = {
-  type: "object",
-  properties: {
-    foo: {type: "integer"},
-    bar: {type: "string"}
-  },
-  required: ["foo"],
-  additionalProperties: false
-}
-
-const validate = ajv.compile(schema)
-
-const data = {
-  foo: 1,
-  bar: "abc"
-}
-
-const valid = validate(data)
-if (!valid) console.log(validate.errors)
-
- */
-
 import Ajv, { JSONSchemaType } from 'ajv';
 import {
   COLOURS,
-  EMAIL_REGEX_S,
   PROFILE_TYPE_ARTIST,
   PROFILE_TYPE_LISTENER,
   Result,
-  SUBSCRIPTION_TYPES
+  SUBSCRIPTION_TYPES, TrustedCompileTimeMeta
 } from '@parsers-jamboree/common';
-import { JTDSchemaType } from 'ajv/dist/types/jtd-schema';
 
 // formats don't seem to be type-checked; skipping
 // import addFormats from "ajv-formats"
@@ -43,7 +13,6 @@ import { JTDSchemaType } from 'ajv/dist/types/jtd-schema';
 const ajv = new Ajv({
   removeAdditional: true,
 });
-// addFormats(ajv);
 
 type UserJson = {
   name: string;
@@ -204,3 +173,7 @@ export const encodeUser = (u: UserJson): Result<string, unknown> => ({
   _tag: 'left',
   error: 'the lib cannot do it',
 });
+
+export const meta: TrustedCompileTimeMeta = {
+  branded: false,
+}

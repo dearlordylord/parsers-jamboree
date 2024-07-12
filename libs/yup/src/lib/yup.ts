@@ -1,5 +1,5 @@
 import { object, string, number, date, InferType, array, mixed } from 'yup';
-import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
+import { COLOURS, Result, SUBSCRIPTION_TYPES, TrustedCompileTimeMeta } from '@parsers-jamboree/common';
 import { Colour } from '@parsers-jamboree/schemata-ts/schemata-ts';
 
 // the developer's position is `let` all the time https://github.com/jquense/yup/pull/2227
@@ -75,6 +75,10 @@ let userSchema = object({
 });
 
 type User = InferType<typeof userSchema>;
+
+export const meta: TrustedCompileTimeMeta = {
+  branded: false,
+}
 
 export const decodeUser = (u: unknown): Result<unknown, User> => {
   try {

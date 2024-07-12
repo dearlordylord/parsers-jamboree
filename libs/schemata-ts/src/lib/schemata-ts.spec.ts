@@ -1,10 +1,10 @@
 import { igor } from '@parsers-jamboree/checker/checker';
-import { encodeUser, parseUser } from './schemata-ts';
+import { encodeUser, decodeUser } from './schemata-ts';
 import { unwrapResult } from '@parsers-jamboree/common';
 
 describe('schemata-ts', () => {
   it('should parse a user', () => {
-    expect(parseUser(igor)).toMatchObject({
+    expect(decodeUser(igor)).toMatchObject({
       _tag: 'right',
       value: {
         ...igor,
@@ -15,7 +15,7 @@ describe('schemata-ts', () => {
     });
   });
   it('should encode a user', () => {
-    const user = unwrapResult(JSON.stringify)(parseUser(igor));
+    const user = unwrapResult(JSON.stringify)(decodeUser(igor));
     expect(encodeUser(user)).toMatchObject(igor);
   });
 });

@@ -1,5 +1,5 @@
 import { z, ZodObject, ZodRawShape } from 'zod';
-import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
+import { COLOURS, Result, SUBSCRIPTION_TYPES, TrustedCompileTimeMeta } from '@parsers-jamboree/common';
 import { SafeParseReturnType } from 'zod/lib/types';
 import * as S from 'schemata-ts/schemata/index';
 
@@ -50,7 +50,7 @@ export const profileSchema = z.discriminatedUnion('type', [
   profileArtistSchema,
 ]);
 
-// recursive structures doesn't seem to work https://github.com/colinhacks/zod/issues/3628
+// recursive structures don't to work https://github.com/colinhacks/zod/issues/3628
 
 // type FileSystem = (
 //   | {
@@ -116,6 +116,7 @@ const userSchema = z
 
 type User = z.infer<typeof userSchema>;
 
+
 export const decodeUser = (u: unknown): Result<unknown, User> => {
   const result = userSchema.safeParse(u);
   return mapResult(result);
@@ -138,6 +139,10 @@ export const encodeUser = (
   _tag: 'left',
   error: 'the lib cannot do it',
 });
+
+export const meta: TrustedCompileTimeMeta = {
+  branded: true,
+}
 
 // utils
 

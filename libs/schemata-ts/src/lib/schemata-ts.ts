@@ -13,7 +13,7 @@ import {
   PROFILE_TYPE_ARTIST,
   PROFILE_TYPE_LISTENER,
   Result,
-  SUBSCRIPTION_TYPES,
+  SUBSCRIPTION_TYPES, TrustedCompileTimeMeta
 } from '@parsers-jamboree/common';
 
 // by the pattern of schemata/UUID.ts
@@ -140,7 +140,7 @@ export const UserSchema = pipe(
 
 const userTranscoder = deriveTranscoder(UserSchema);
 
-export const parseUser = (user: unknown): Result<TranscodeErrors, User> => {
+export const decodeUser = (user: unknown): Result<TranscodeErrors, User> => {
   const result = userTranscoder.decode(user);
   return mapResult(result);
 };
@@ -149,6 +149,10 @@ export const encodeUser = (user: User): Result<TranscodeErrors, unknown> => {
   const result = userTranscoder.encode(user);
   return mapResult(result);
 };
+
+export const meta: TrustedCompileTimeMeta = {
+  branded: true,
+}
 
 // helpers, unrelated to the library
 const mapResult = <E, T>(e: Either<E, T>): Result<E, T> =>
