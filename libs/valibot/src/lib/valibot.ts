@@ -30,7 +30,12 @@ import {
   forward,
   partialCheck,
 } from 'valibot';
-import { COLOURS, Result, SUBSCRIPTION_TYPES, TrustedCompileTimeMeta } from '@parsers-jamboree/common';
+import {
+  COLOURS,
+  Result,
+  SUBSCRIPTION_TYPES,
+  TrustedCompileTimeMeta,
+} from '@parsers-jamboree/common';
 
 const NonEmptyStringSchema = pipe(
   string(),
@@ -147,7 +152,7 @@ type FileSystem = (
 
 const FileSystemDirectorySchema: GenericSchema<
   // undocumented; manually put input type here (or unknown, which would cover most cases)
-  Omit<FileSystem, 'name'> & { type: 'directory', name: string },
+  Omit<FileSystem, 'name'> & { type: 'directory'; name: string },
   FileSystem & { type: 'directory' }
 > = intersect([
   FileSystemCommonSchema,
@@ -203,7 +208,7 @@ export const encodeUser = (_u: User): Result<unknown, unknown> => {
 
 export const meta: TrustedCompileTimeMeta = {
   branded: true,
-}
+};
 
 // utils
 

@@ -5,7 +5,8 @@ import {
   EMAIL_REGEX_S,
   ISO_DATE_REGEX_S,
   Result,
-  SUBSCRIPTION_TYPES, TrustedCompileTimeMeta
+  SUBSCRIPTION_TYPES,
+  TrustedCompileTimeMeta,
 } from '@parsers-jamboree/common';
 import { ValueError } from '@sinclair/typebox/build/cjs/errors/errors';
 
@@ -87,7 +88,7 @@ type User = StaticDecode<typeof User>;
 
 export const meta: TrustedCompileTimeMeta = {
   branded: true,
-}
+};
 
 export const decodeUser = (u: unknown): Result<ValueError[], User> => {
   // flow control with exceptions

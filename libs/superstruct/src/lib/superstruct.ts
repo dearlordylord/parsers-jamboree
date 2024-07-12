@@ -26,7 +26,8 @@ import {
   PROFILE_TYPE_ARTIST,
   PROFILE_TYPE_LISTENER,
   Result,
-  SUBSCRIPTION_TYPES, TrustedCompileTimeMeta
+  SUBSCRIPTION_TYPES,
+  TrustedCompileTimeMeta,
 } from '@parsers-jamboree/common';
 
 const MyNumber = coerce(number(), string(), (value) => parseFloat(value));
@@ -142,7 +143,7 @@ type User = Infer<typeof User>;
 
 export const meta: TrustedCompileTimeMeta = {
   branded: false,
-}
+};
 
 export const decodeUser = (u: unknown): Result<string, User> => {
   try {

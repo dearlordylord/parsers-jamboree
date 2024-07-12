@@ -1,6 +1,11 @@
 import { ParseResult, Schema, TreeFormatter } from '@effect/schema';
 import * as Either from 'effect/Either';
-import { COLOURS, Result, SUBSCRIPTION_TYPES, TrustedCompileTimeMeta } from '@parsers-jamboree/common';
+import {
+  COLOURS,
+  Result,
+  SUBSCRIPTION_TYPES,
+  TrustedCompileTimeMeta,
+} from '@parsers-jamboree/common';
 import { ParseError } from '@effect/schema/ParseResult';
 
 const NonEmptyStringBrand = Symbol.for('NonEmptyString');
@@ -173,7 +178,7 @@ export const encodeUser = (u: User): Result<string, unknown> => {
 
 export const meta: TrustedCompileTimeMeta = {
   branded: true,
-}
+};
 
 // utils
 

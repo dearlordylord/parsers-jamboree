@@ -13,7 +13,8 @@ import {
   PROFILE_TYPE_ARTIST,
   PROFILE_TYPE_LISTENER,
   Result,
-  SUBSCRIPTION_TYPES, TrustedCompileTimeMeta
+  SUBSCRIPTION_TYPES,
+  TrustedCompileTimeMeta,
 } from '@parsers-jamboree/common';
 
 // by the pattern of schemata/UUID.ts
@@ -152,7 +153,7 @@ export const encodeUser = (user: User): Result<TranscodeErrors, unknown> => {
 
 export const meta: TrustedCompileTimeMeta = {
   branded: true,
-}
+};
 
 // helpers, unrelated to the library
 const mapResult = <E, T>(e: Either<E, T>): Result<E, T> =>

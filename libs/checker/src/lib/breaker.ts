@@ -3,7 +3,11 @@ import { constant, pipe } from 'fp-ts/function';
 import { Objects, Pipe } from 'hotscript';
 import { Match } from 'hotscript/dist/internals/match/Match';
 import * as A from 'fp-ts/Array';
-import { chain, Result, TrustedCompileTimeMeta } from '@parsers-jamboree/common';
+import {
+  chain,
+  Result,
+  TrustedCompileTimeMeta,
+} from '@parsers-jamboree/common';
 import { deepEqual } from './utils';
 
 type Breaker<T> = (t: T) => T;
@@ -154,25 +158,29 @@ export type TesterResult = {
   success: boolean;
 }[];
 
-export const runTesters = ({ decodeUser, encodeUser, meta }: TesterArgs): TesterResult => [
-  ...pipe(Object.entries(BREAKERS), A.map(([k, f]) => ({
-    key: k,
-    title: BREAKER_DESCRIPTIONS[k as keyof typeof BREAKERS],
-    success: decodeUser(f(igor))._tag === 'left',
-  }))),
+export const runTesters = ({
+  decodeUser,
+  encodeUser,
+  meta,
+}: TesterArgs): TesterResult => [
+  ...pipe(
+    Object.entries(BREAKERS),
+    A.map(([k, f]) => ({
+      key: k,
+      title: BREAKER_DESCRIPTIONS[k as keyof typeof BREAKERS],
+      success: decodeUser(f(igor))._tag === 'left',
+    }))
+  ),
   {
     key: 'encodedEqualsInput',
     title: 'decode then encode doesnt break the input',
-    success: deepEqual({
-      _tag: 'right',
-      value: igor
-    }, pipe(
-      igor,
-      JSON.stringify,
-      JSON.parse,
-      decodeUser,
-      chain(encodeUser)
-    )),
+    success: deepEqual(
+      {
+        _tag: 'right',
+        value: igor,
+      },
+      pipe(igor, JSON.stringify, JSON.parse, decodeUser, chain(encodeUser))
+    ),
   },
   {
     key: 'transformationsPossible',
@@ -182,18 +190,24 @@ export const runTesters = ({ decodeUser, encodeUser, meta }: TesterArgs): Tester
       JSON.stringify,
       JSON.parse,
       decodeUser,
-      chain(v => (v as any/*don't bother with decoded type here; outputs are various*/)?.['favouriteColours' satisfies keyof typeof igor] instanceof Set ? { _tag: 'right', value: v } : { _tag: 'left', error: 'transformations are not possible' }),
-      v => v._tag === 'right'
-    )
+      chain((v) =>
+        (
+          v as any
+        ) /*don't bother with decoded type here; outputs are various*/?.[
+          'favouriteColours' satisfies keyof typeof igor
+        ] instanceof Set
+          ? { _tag: 'right', value: v }
+          : { _tag: 'left', error: 'transformations are not possible' }
+      ),
+      (v) => v._tag === 'right'
+    ),
   },
   ...pipe(
     Object.entries(meta),
-    A.map(
-      ([k, v]) => ({
-        key: k,
-        title: COMPILE_TIME_META_DESCRIPTIONS[k as keyof TrustedCompileTimeMeta],
-        success: v,
-      })
-    )
-  )
-]
+    A.map(([k, v]) => ({
+      key: k,
+      title: COMPILE_TIME_META_DESCRIPTIONS[k as keyof TrustedCompileTimeMeta],
+      success: v,
+    }))
+  ),
+];

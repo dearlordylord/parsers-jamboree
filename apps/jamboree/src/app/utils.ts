@@ -8,7 +8,7 @@ export const get = (obj: any, path: readonly (string | number)[]) => {
   return travel(path);
 };
 
-export const headStrict = <T,>(a: T[]): T => {
+export const headStrict = <T>(a: T[]): T => {
   if (a.length === 0) {
     throw new Error('headStrict');
   }

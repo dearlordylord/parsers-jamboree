@@ -23,7 +23,8 @@ import {
   PROFILE_TYPE_LISTENER,
   PROFILE_TYPES,
   Result,
-  SUBSCRIPTION_TYPES, TrustedCompileTimeMeta
+  SUBSCRIPTION_TYPES,
+  TrustedCompileTimeMeta,
 } from '@parsers-jamboree/common';
 
 const NonNegative = Number.withConstraint((n) => n >= 0).withBrand(
@@ -198,7 +199,7 @@ export const decodeUser = (u: unknown): Result<string, User> => {
 
 export const meta: TrustedCompileTimeMeta = {
   branded: true,
-}
+};
 
 // actually since there's no transformation, it's just the same object; so "no-feature feature"
 // BUT also we can't check if a transformed object was passed or not; so I predict plenty of errors on this front;

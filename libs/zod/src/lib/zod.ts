@@ -1,5 +1,10 @@
 import { z, ZodObject, ZodRawShape } from 'zod';
-import { COLOURS, Result, SUBSCRIPTION_TYPES, TrustedCompileTimeMeta } from '@parsers-jamboree/common';
+import {
+  COLOURS,
+  Result,
+  SUBSCRIPTION_TYPES,
+  TrustedCompileTimeMeta,
+} from '@parsers-jamboree/common';
 import { SafeParseReturnType } from 'zod/lib/types';
 import * as S from 'schemata-ts/schemata/index';
 
@@ -116,7 +121,6 @@ const userSchema = z
 
 type User = z.infer<typeof userSchema>;
 
-
 export const decodeUser = (u: unknown): Result<unknown, User> => {
   const result = userSchema.safeParse(u);
   return mapResult(result);
@@ -142,7 +146,7 @@ export const encodeUser = (
 
 export const meta: TrustedCompileTimeMeta = {
   branded: true,
-}
+};
 
 // utils
 

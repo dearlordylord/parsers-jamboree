@@ -16,12 +16,12 @@ import IconHeartBroken from '~icons/mdi/heart-broken';
 import { libRuntimes, LIBS } from './runtimes';
 import { headStrict } from '../utils';
 
-export const parserTableColumn = (lib: typeof LIBS[number]) => [
-  ...runTesters(libRuntimes[lib]).map(({key, title, success}) => ({
+export const parserTableColumn = (lib: (typeof LIBS)[number]) => [
+  ...runTesters(libRuntimes[lib]).map(({ key, title, success }) => ({
     name: key,
-    c: success ? <IconHeart color="red"/> : <IconHeartBroken/>,
+    c: success ? <IconHeart color="red" /> : <IconHeartBroken />,
   })),
-]
+];
 
 type Rogues = {
   [K in (typeof LIBS)[number]]: {
@@ -88,9 +88,6 @@ export const rogues: Rogues = {
   },
 };
 
-
-
-
 export const ParserTable = (): React.ReactElement => {
   const results = LIBS.map((lib) => parserTableColumn(lib));
   // assume format is stable
@@ -99,20 +96,25 @@ export const ParserTable = (): React.ReactElement => {
     <div>
       <table>
         <thead>
-        <tr>
-          <th></th>
-          {LIBS.map((lib) => (
-            <th key={lib}><Link to={`/${lib}`}>{rogues[lib].label}</Link></th>
-          ))}
-        </tr>
+          <tr>
+            <th></th>
+            {LIBS.map((lib) => (
+              <th key={lib}>
+                <Link to={`/${lib}`}>{rogues[lib].label}</Link>
+              </th>
+            ))}
+          </tr>
         </thead>
         <tbody>
-        {firstColumn.map(({name}, i) => <tr>
-          <td>{name}</td>
-          {results.map((row) => <td key={i}>{row[i].c}</td>)}
-        </tr>)}
+          {firstColumn.map(({ name }, i) => (
+            <tr>
+              <td>{name}</td>
+              {results.map((row) => (
+                <td key={i}>{row[i].c}</td>
+              ))}
+            </tr>
+          ))}
         </tbody>
-
       </table>
     </div>
   );

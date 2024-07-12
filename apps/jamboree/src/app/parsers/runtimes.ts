@@ -20,7 +20,7 @@ export const LIBS = [
   'runtypes',
   'ajv',
   'yup',
-  'superstruct'
+  'superstruct',
 ] as const;
 
 export const libRuntimes: {
@@ -35,5 +35,5 @@ export const libRuntimes: {
   runtypes: runtypes,
   ajv: ajv,
   yup: yup,
-  superstruct: superstruct
+  superstruct: superstruct,
 };

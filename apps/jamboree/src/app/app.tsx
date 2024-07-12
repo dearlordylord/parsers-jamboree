@@ -34,11 +34,20 @@ export function App() {
         </ul>
       </div>
       <Routes>
-        <Route path="/" element={<div>
-          <ParserTable />
-        </div>} />
+        <Route
+          path="/"
+          element={
+            <div>
+              <ParserTable />
+            </div>
+          }
+        />
         {Object.entries(rogues).map(([name, { label, link }]) => (
-          <Route key={name} path={`/${name}`} element={React.createElement(pages[name as typeof LIBS[number]])} />
+          <Route
+            key={name}
+            path={`/${name}`}
+            element={React.createElement(pages[name as (typeof LIBS)[number]])}
+          />
         ))}
       </Routes>
       {/* END: routes */}

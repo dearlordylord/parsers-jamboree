@@ -8,10 +8,14 @@ import { runTesters } from '@parsers-jamboree/checker/breaker';
 type Props = {
   decodeUser: (u: unknown) => Result<unknown, unknown>;
   encodeUser: (u: unknown) => Result<unknown, unknown>;
-  meta: TrustedCompileTimeMeta
+  meta: TrustedCompileTimeMeta;
 };
 
-export const Breaker = ({ decodeUser, encodeUser, meta }: Props): React.ReactElement => {
+export const Breaker = ({
+  decodeUser,
+  encodeUser,
+  meta,
+}: Props): React.ReactElement => {
   // sanity check that it parses a valid input at all
   const parsed = decodeUser(igor);
   if (parsed._tag === 'left') {
@@ -22,42 +26,32 @@ export const Breaker = ({ decodeUser, encodeUser, meta }: Props): React.ReactEle
     <div>
       <table>
         <thead>
-        <tr>
-          {tests.map(({key, title}) => {
-            return (
-              <th
-                title={title}
-                key={key}
-              >
-                {key}
-              </th>
-            );
-          })}
-        </tr>
+          <tr>
+            {tests.map(({ key, title }) => {
+              return (
+                <th title={title} key={key}>
+                  {key}
+                </th>
+              );
+            })}
+          </tr>
         </thead>
         <tbody>
-        <tr>
-          {tests.map(({key, success}) => {
-            try {
-              return (
-                <td key={key}>
-                  {success ? (
-                    <IconHeart color="red"/>
-                  ) : (
-                    <IconHeartBroken/>
-                  )}
-                </td>
-              );
-            } catch (e) {
-              console.error(e);
-              return <td key={key}>ERROR</td>;
-            }
-
-
-          })}
-        </tr>
+          <tr>
+            {tests.map(({ key, success }) => {
+              try {
+                return (
+                  <td key={key}>
+                    {success ? <IconHeart color="red" /> : <IconHeartBroken />}
+                  </td>
+                );
+              } catch (e) {
+                console.error(e);
+                return <td key={key}>ERROR</td>;
+              }
+            })}
+          </tr>
         </tbody>
-
       </table>
     </div>
   );
