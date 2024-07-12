@@ -1,7 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BREAKER_DESCRIPTIONS = exports.BREAKERS = exports.addFileSystemDupeFile = exports.addFileSystemUFOType = exports.setProfileArtist = exports.setCreatedAtCyborgWar = exports.setHalfVisits = exports.setSubscriptionTypeBanana = exports.addFavouriteRed = exports.addFavouriteTiger = exports.clearName = exports.addTwoAtsToEmail = exports.prefixCustomerId = exports.switchDates = void 0;
+exports.runTesters = exports.BREAKER_DESCRIPTIONS = exports.BREAKERS = exports.addFileSystemDupeFile = exports.addFileSystemUFOType = exports.setProfileArtist = exports.setCreatedAtCyborgWar = exports.setHalfVisits = exports.setSubscriptionTypeBanana = exports.addFavouriteRed = exports.addFavouriteTiger = exports.clearName = exports.addTwoAtsToEmail = exports.prefixCustomerId = exports.switchDates = void 0;
+const tslib_1 = require("tslib");
+const checker_1 = require("./checker");
 const function_1 = require("fp-ts/function");
+const A = tslib_1.__importStar(require("fp-ts/Array"));
+const common_1 = require("@parsers-jamboree/common");
+const utils_1 = require("./utils");
 const switchFields = (f1, f2) => (x) => (Object.assign(Object.assign({}, x), { [f1]: x[f2], [f2]: x[f1] }));
 // typing isn't great, can break runtime with wrong "m"...
 const mutateField = (m) => (f) => (x) => (Object.assign(Object.assign({}, x), { [f]: m(x[f]) }));
@@ -66,4 +71,35 @@ exports.BREAKER_DESCRIPTIONS = {
     addFileSystemUFOType: 'sets an invalid fileSystem field deep in the tree',
     addFileSystemDupeFile: 'adds a duplicated value to the tree',
 };
+const COMPILE_TIME_META_DESCRIPTIONS = {
+    branded: 'branded types are supported',
+};
+const runTesters = ({ decodeUser, encodeUser, meta, }) => [
+    ...(0, function_1.pipe)(Object.entries(exports.BREAKERS), A.map(([k, f]) => ({
+        key: k,
+        title: exports.BREAKER_DESCRIPTIONS[k],
+        success: decodeUser(f(checker_1.igor))._tag === 'left',
+    }))),
+    {
+        key: 'encodedEqualsInput',
+        title: 'decode then encode doesnt break the input',
+        success: (0, utils_1.deepEqual)({
+            _tag: 'right',
+            value: checker_1.igor,
+        }, (0, function_1.pipe)(checker_1.igor, JSON.stringify, JSON.parse, decodeUser, (0, common_1.chain)(encodeUser))),
+    },
+    {
+        key: 'transformationsPossible',
+        title: 'transformations are possible',
+        success: (0, function_1.pipe)(checker_1.igor, JSON.stringify, JSON.parse, decodeUser, (0, common_1.chain)((v) => (v /*don't bother with decoded type here; outputs are various*/ === null || v === void 0 ? void 0 : v['favouriteColours']) instanceof Set
+            ? { _tag: 'right', value: v }
+            : { _tag: 'left', error: 'transformations are not possible' }), (v) => v._tag === 'right'),
+    },
+    ...(0, function_1.pipe)(Object.entries(meta), A.map(([k, v]) => ({
+        key: k,
+        title: COMPILE_TIME_META_DESCRIPTIONS[k],
+        success: v,
+    }))),
+];
+exports.runTesters = runTesters;
 //# sourceMappingURL=breaker.js.map

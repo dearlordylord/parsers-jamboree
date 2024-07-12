@@ -1,5 +1,5 @@
 import { StaticDecode } from '@sinclair/typebox';
-import { Result } from '@parsers-jamboree/common';
+import { Result, TrustedCompileTimeMeta } from '@parsers-jamboree/common';
 import { ValueError } from '@sinclair/typebox/build/cjs/errors/errors';
 type StripeIdBrand = {
     readonly StripeId: unique symbol;
@@ -18,6 +18,7 @@ declare const User: import("@sinclair/typebox").TObject<{
     favouriteColours: import("@sinclair/typebox").TTransform<import("@sinclair/typebox").TArray<import("@sinclair/typebox").TUnion<[import("@sinclair/typebox").TUnion<import("@sinclair/typebox").TLiteral<"red" | "green" | "blue">[]>, import("@sinclair/typebox").TRegExp]>>, Set<string>>;
 }>;
 type User = StaticDecode<typeof User>;
+export declare const meta: TrustedCompileTimeMeta;
 export declare const decodeUser: (u: unknown) => Result<ValueError[], User>;
 export declare const encodeUser: (u: User) => Result<ValueError[], unknown>;
 export {};

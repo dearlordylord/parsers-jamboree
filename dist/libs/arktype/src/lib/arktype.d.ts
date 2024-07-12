@@ -1,4 +1,4 @@
-import { Result } from '@parsers-jamboree/common';
+import { Result, TrustedCompileTimeMeta } from '@parsers-jamboree/common';
 declare const userJson: import("arktype").Type<{
     name: import("@arktype/schema").string.is<import("@arktype/schema").MoreThanLength<0> & import("@arktype/schema").LessThanLength<255>>;
     email: import("@arktype/schema").string.matching<"?">;
@@ -17,4 +17,5 @@ type User = Omit<UserJson, 'favouriteColours' | 'createdAt' | 'updatedAt'> & {
 };
 export declare const decodeUser: (u: unknown) => Result<string, User>;
 export declare const encodeUser: (_u: User) => Result<'the lib cannot do it', never>;
+export declare const meta: TrustedCompileTimeMeta;
 export {};

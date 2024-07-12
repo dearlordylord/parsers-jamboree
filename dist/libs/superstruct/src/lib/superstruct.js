@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.encodeUser = exports.decodeUser = void 0;
+exports.encodeUser = exports.decodeUser = exports.meta = void 0;
 const superstruct_1 = require("superstruct");
 const common_1 = require("@parsers-jamboree/common");
 const MyNumber = (0, superstruct_1.coerce)((0, superstruct_1.number)(), (0, superstruct_1.string)(), (value) => parseFloat(value));
@@ -77,6 +77,9 @@ const User = (0, superstruct_1.assign)((0, superstruct_1.object)({
     profile: (0, superstruct_1.union)([ProfileListener, ProfileArtist]),
     fileSystem: FileSystem,
 }), IsoDateStringRange);
+exports.meta = {
+    branded: false,
+};
 const decodeUser = (u) => {
     try {
         const c = User.create(u);

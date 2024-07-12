@@ -1,4 +1,4 @@
-import { PROFILE_TYPE_ARTIST, PROFILE_TYPE_LISTENER, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
+import { PROFILE_TYPE_ARTIST, PROFILE_TYPE_LISTENER, Result, SUBSCRIPTION_TYPES, TrustedCompileTimeMeta } from '@parsers-jamboree/common';
 type UserJson = {
     name: string;
     email: string;
@@ -15,12 +15,16 @@ type UserJson = {
         type: typeof PROFILE_TYPE_ARTIST;
         publishedTracks: number;
     };
+    fileSystem: ({
+        type: 'directory';
+        children: FileSystem[];
+    } | {
+        type: 'file';
+    }) & {
+        name: string;
+    };
 };
-type User = Omit<UserJson, 'favouriteColours' | 'createdAt' | 'updatedAt'> & {
-    createdAt: Date;
-    updatedAt: Date;
-    favouriteColours: Set<string>;
-};
-export declare const decodeUser: (u: unknown) => Result<unknown, User>;
-export declare const encodeUser: (u: User) => Result<string, unknown>;
+export declare const decodeUser: (u: unknown) => Result<unknown, UserJson>;
+export declare const encodeUser: (u: UserJson) => Result<string, unknown>;
+export declare const meta: TrustedCompileTimeMeta;
 export {};

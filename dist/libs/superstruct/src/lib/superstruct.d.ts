@@ -1,5 +1,5 @@
 import { Infer, Struct } from 'superstruct';
-import { Result } from '@parsers-jamboree/common';
+import { Result, TrustedCompileTimeMeta } from '@parsers-jamboree/common';
 declare const User: Struct<{
     createdAt: Date;
     updatedAt: Date;
@@ -40,6 +40,7 @@ declare const User: Struct<{
     fileSystem: Struct<any, null>;
 }>;
 type User = Infer<typeof User>;
+export declare const meta: TrustedCompileTimeMeta;
 export declare const decodeUser: (u: unknown) => Result<string, User>;
 export declare const encodeUser: (u: User) => Result<string, unknown>;
 export {};

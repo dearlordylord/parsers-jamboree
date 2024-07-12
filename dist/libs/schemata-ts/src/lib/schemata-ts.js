@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.encodeTree = exports.parseTree = exports.encodeNamelessUser = exports.parseNamelessUser = exports.encodeUser = exports.parseUser = exports.TreeNodeSchema = exports.NamelessUserSchema = exports.UserSchema = void 0;
-const S = require("schemata-ts/schemata/index");
-const Nt = require("schemata-ts/newtype");
-const k = require("kuvio");
+exports.meta = exports.encodeUser = exports.decodeUser = exports.UserSchema = exports.UserTemporalOrderlessSchema = exports.FileSystemSchema = exports.NonNegativeIntegerSchema = void 0;
+const tslib_1 = require("tslib");
+const S = tslib_1.__importStar(require("schemata-ts/schemata/index"));
+const Nt = tslib_1.__importStar(require("schemata-ts/newtype"));
+const k = tslib_1.__importStar(require("kuvio"));
 const function_1 = require("fp-ts/function");
 const Either_1 = require("fp-ts/lib/Either");
 const string_1 = require("fp-ts/lib/string");
@@ -13,51 +14,64 @@ const isoStripeId = Nt.iso();
 const StripeIdSchema = (0, function_1.pipe)(S.Pattern(k.sequence(k.exactString('cus_'), k.atLeast('NffrFeUfNV2Hib'.length)(k.alnum)), `Stripe Id of format cus_XXXXXXXXXXXXXX`), S.Newtype(isoStripeId, `Stripe Id`));
 const ColourSchema = S.Union(S.Literal(...common_1.COLOURS), S.HexColor);
 const colourOrd = string_1.Ord;
-exports.UserSchema = S.Struct({
-    name: S.NonEmptyString,
-    email: S.EmailAddress,
+// making it unique seemed too much bother;
+// - Refine would operate on the output and doesn't see the input;
+// - redefining SetFromArray is too far from user-friendly
+// - functionality "and" doesn't seem to exist in the API (e.g. S.Int() AND S.NonNegativeFloat())
+const FavouriteColoursNonUniqueSchema = S.SetFromArray(colourOrd)(ColourSchema);
+const TemporalConcernOrderlessSchema = S.Struct({
     createdAt: S.DateFromIsoString(),
     updatedAt: S.DateFromIsoString(),
+});
+// somehow, there's also NonNegativeFloat but no NonNegativeInteger
+exports.NonNegativeIntegerSchema = (0, function_1.pipe)(S.Int({ min: 0 }), S.Brand());
+const ProfileListenerSchema = S.Struct({
+    type: S.Literal(common_1.PROFILE_TYPE_LISTENER),
+    boughtTracks: exports.NonNegativeIntegerSchema,
+});
+const ProfileArtistSchema = S.Struct({
+    type: S.Literal(common_1.PROFILE_TYPE_ARTIST),
+    publishedTracks: exports.NonNegativeIntegerSchema,
+});
+const ProfileSchema = S.Union(ProfileListenerSchema, ProfileArtistSchema);
+exports.FileSystemSchema = S.Intersect(S.Union(S.Struct({
+    type: S.Literal('directory'),
+    children: (0, function_1.pipe)(S.Array(S.Lazy('FileSystem', () => exports.FileSystemSchema)), S.Refine((c) => c.length === new Set(c.map((f) => f.name)).size, 'Uniq files/dirs')),
+}), S.Struct({
+    type: S.Literal('file'),
+})), S.Struct({
+    name: S.NonEmptyString,
+}));
+exports.UserTemporalOrderlessSchema = S.Struct({
+    name: S.NonEmptyString,
+    email: S.EmailAddress,
     subscription: S.Literal(...common_1.SUBSCRIPTION_TYPES),
     stripeId: StripeIdSchema,
-    visits: S.Int({ min: 0 }), // somehow, there's also NonNegativeFloat but no NonNegativeInteger
-    favouriteColours: S.SetFromArray(colourOrd)(ColourSchema),
-}); // .strict() can be added to not allow unexpected fields
-exports.NamelessUserSchema = exports.UserSchema.omit('name');
-exports.TreeNodeSchema = S.Struct({
-    name: S.String(),
-    children: S.Array(S.Lazy('TreeNode', () => exports.TreeNodeSchema)),
-});
+    visits: exports.NonNegativeIntegerSchema,
+    favouriteColours: FavouriteColoursNonUniqueSchema,
+    profile: ProfileSchema,
+    fileSystem: exports.FileSystemSchema,
+}).intersect(TemporalConcernOrderlessSchema); // .strict() can be added to not allow unexpected fields
+exports.UserSchema = (0, function_1.pipe)(exports.UserTemporalOrderlessSchema, S.Refine(
+// refinements seem to be not very composable
+(c) => c.createdAt <= c.updatedAt, 'User'));
+// struct methods / functions are no more after refinement
+// export const NamelessUserSchema = UserSchema.omit('name');
+// export type NamelessUser = OutputOf<typeof NamelessUserSchema>;
 const userTranscoder = (0, Transcoder_1.deriveTranscoder)(exports.UserSchema);
-const parseUser = (user) => {
+const decodeUser = (user) => {
     const result = userTranscoder.decode(user);
     return mapResult(result);
 };
-exports.parseUser = parseUser;
+exports.decodeUser = decodeUser;
 const encodeUser = (user) => {
     const result = userTranscoder.encode(user);
     return mapResult(result);
 };
 exports.encodeUser = encodeUser;
-const namelessUserTranscoder = (0, Transcoder_1.deriveTranscoder)(exports.NamelessUserSchema);
-const parseNamelessUser = (user) => {
-    const result = namelessUserTranscoder.decode(user);
-    return mapResult(result);
+exports.meta = {
+    branded: true,
 };
-exports.parseNamelessUser = parseNamelessUser;
-const encodeNamelessUser = (user) => namelessUserTranscoder.encode(user);
-exports.encodeNamelessUser = encodeNamelessUser;
-const treeNodeTranscoder = (0, Transcoder_1.deriveTranscoder)(exports.TreeNodeSchema);
-const parseTree = (node) => {
-    const result = treeNodeTranscoder.decode(node);
-    return mapResult(result);
-};
-exports.parseTree = parseTree;
-const encodeTree = (node) => {
-    const result = treeNodeTranscoder.encode(node);
-    return mapResult(result);
-};
-exports.encodeTree = encodeTree;
 // helpers, unrelated to the library
 const mapResult = (e) => (0, Either_1.isRight)(e)
     ? { _tag: 'right', value: e.right }

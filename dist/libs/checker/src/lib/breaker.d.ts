@@ -1,4 +1,5 @@
 import { igor } from './checker';
+import { Result, TrustedCompileTimeMeta } from '@parsers-jamboree/common';
 type Breaker<T> = (t: T) => T;
 type Igor = typeof igor;
 type UserBreaker = Breaker<Igor>;
@@ -31,4 +32,15 @@ export declare const BREAKERS: {
 export declare const BREAKER_DESCRIPTIONS: {
     [K in keyof typeof BREAKERS]: string;
 };
+export type TesterArgs = {
+    decodeUser: (u: unknown) => Result<unknown, unknown>;
+    encodeUser: (u: unknown) => Result<unknown, unknown>;
+    meta: TrustedCompileTimeMeta;
+};
+export type TesterResult = {
+    key: string;
+    title: string;
+    success: boolean;
+}[];
+export declare const runTesters: ({ decodeUser, encodeUser, meta, }: TesterArgs) => TesterResult;
 export {};

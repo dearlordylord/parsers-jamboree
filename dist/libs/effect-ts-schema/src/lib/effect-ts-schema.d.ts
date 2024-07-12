@@ -1,5 +1,5 @@
 import { Schema } from '@effect/schema';
-import { Result } from '@parsers-jamboree/common';
+import { Result, TrustedCompileTimeMeta } from '@parsers-jamboree/common';
 declare const NonEmptyStringBrand: unique symbol;
 declare const NonEmptyString: Schema.brand<typeof Schema.NonEmpty, typeof NonEmptyStringBrand>;
 type NonEmptyString = Schema.Schema.Type<typeof NonEmptyString>;
@@ -101,4 +101,5 @@ declare const User: Schema.transformOrFail<Schema.Struct<{
 type User = Schema.Schema.Type<typeof User>;
 export declare const decodeUser: (u: unknown) => Result<string, User>;
 export declare const encodeUser: (u: User) => Result<string, unknown>;
+export declare const meta: TrustedCompileTimeMeta;
 export {};

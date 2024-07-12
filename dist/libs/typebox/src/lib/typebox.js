@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.encodeUser = exports.decodeUser = void 0;
+exports.encodeUser = exports.decodeUser = exports.meta = void 0;
 const typebox_1 = require("@sinclair/typebox");
 const value_1 = require("@sinclair/typebox/value");
 const common_1 = require("@parsers-jamboree/common");
@@ -51,7 +51,9 @@ const FormatWhat = typebox_1.Type.String({
     // should be registered in FormatRegistry, but will fail runtime if not
     format: 'what?',
 });
-// TODO questionable "mutate"
+exports.meta = {
+    branded: true,
+};
 const decodeUser = (u) => {
     // flow control with exceptions
     try {

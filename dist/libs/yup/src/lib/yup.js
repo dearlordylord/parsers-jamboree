@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.encodeUser = exports.decodeUser = void 0;
+exports.encodeUser = exports.decodeUser = exports.meta = void 0;
 const yup_1 = require("yup");
 const common_1 = require("@parsers-jamboree/common");
 // the developer's position is `let` all the time https://github.com/jquense/yup/pull/2227
@@ -61,6 +61,9 @@ let userSchema = (0, yup_1.object)({
     })
         .required(),
 });
+exports.meta = {
+    branded: false,
+};
 const decodeUser = (u) => {
     try {
         return { _tag: 'right', value: userSchema.cast(u) };

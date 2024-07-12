@@ -5,7 +5,6 @@ import {
   SUBSCRIPTION_TYPES,
   TrustedCompileTimeMeta,
 } from '@parsers-jamboree/common';
-import { Colour } from '@parsers-jamboree/schemata-ts/schemata-ts';
 
 // the developer's position is `let` all the time https://github.com/jquense/yup/pull/2227
 let userSchema = object({
@@ -25,7 +24,7 @@ let userSchema = object({
   //   return new Set(v);
   // }),
   favouriteColours: mixed(
-    (input: any): input is Set<Colour | `#${string}`> =>
+    (input: any): input is Set<typeof COLOURS[number] | `#${string}`> =>
       input instanceof
         Set /*parse/validate the contents yourself, propagate errors yourself?*/ &&
       [...input.values()].every(

@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.encodeUser = exports.decodeUser = void 0;
+exports.meta = exports.encodeUser = exports.decodeUser = void 0;
+const tslib_1 = require("tslib");
 const schema_1 = require("@effect/schema");
-const Either = require("effect/Either");
+const Either = tslib_1.__importStar(require("effect/Either"));
 const common_1 = require("@parsers-jamboree/common");
 const NonEmptyStringBrand = Symbol.for('NonEmptyString');
 const NonEmptyString = schema_1.Schema.NonEmpty.pipe(schema_1.Schema.brand(NonEmptyStringBrand));
@@ -91,6 +92,9 @@ const encodeUser = (u) => {
     return mapResult(schema_1.Schema.encodeEither(User)(u));
 };
 exports.encodeUser = encodeUser;
+exports.meta = {
+    branded: true,
+};
 // utils
 const mapResult = (r) => Either.isLeft(r)
     ? { _tag: 'left', error: schema_1.TreeFormatter.formatErrorSync(r.left) }

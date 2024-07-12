@@ -54,12 +54,12 @@ const TemporalConcernOrderlessSchema = S.Struct({
   updatedAt: S.DateFromIsoString(),
 });
 
-type NonNegativeIntegerBrand = {
+export type NonNegativeIntegerBrand = {
   readonly NonNegativeInteger: unique symbol;
 };
 
 // somehow, there's also NonNegativeFloat but no NonNegativeInteger
-const NonNegativeIntegerSchema = pipe(
+export const NonNegativeIntegerSchema = pipe(
   S.Int({ min: 0 }),
   S.Brand<NonNegativeIntegerBrand>()
 );
