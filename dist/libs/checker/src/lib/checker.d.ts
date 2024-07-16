@@ -28,4 +28,3 @@ export declare const igor: {
         })[];
     };
 };
-export declare const tree: any;

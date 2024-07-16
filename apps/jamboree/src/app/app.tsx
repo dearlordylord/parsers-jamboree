@@ -20,13 +20,13 @@ export function App() {
           <li>
             <Link to="/">Home</Link>
           </li>
-          {Object.entries(rogues).map(([name, { label, link }]) => (
+          {LIBS.map((name) => (
             <li key={name}>
-              <Link to={`/${name}`}>{label}</Link>
+              <Link to={`/${name}`}>{rogues[name].label}</Link>
               <span> </span>
               <span style={{ fontSize: '0.5em' }}>
-                <a href={link} target="_blank" rel="noreferrer">
-                  {link}
+                <a href={rogues[name].link} target="_blank" rel="noreferrer">
+                  {rogues[name].link}
                 </a>
               </span>
             </li>

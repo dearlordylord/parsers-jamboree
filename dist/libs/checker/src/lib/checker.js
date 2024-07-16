@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.tree = exports.igor = void 0;
+exports.igor = void 0;
 const common_1 = require("@parsers-jamboree/common");
 exports.igor = {
     name: 'igor',
@@ -41,55 +41,4 @@ exports.igor = {
         ],
     },
 };
-// to test recursive types
-const tree_ = {
-    name: 'root',
-    children: [
-        {
-            name: 'child1',
-            children: [
-                {
-                    name: 'child1.1',
-                    children: [
-                        {
-                            name: 'grandchild1.1.1',
-                            children: [],
-                        },
-                        {
-                            name: 'grandchild1.1.2',
-                            children: [],
-                        },
-                    ],
-                },
-                {
-                    name: 'child1.2',
-                    children: [
-                        {
-                            name: 'grandchild1.2.1',
-                            children: [],
-                        },
-                        {
-                            name: 'grandchild1.2.2',
-                            children: [],
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            name: 'child2',
-            children: [],
-        },
-        {
-            name: 'child3',
-            children: [
-                {
-                    name: 'leaf1',
-                    children: [],
-                },
-            ],
-        },
-    ],
-};
-exports.tree = JSON.parse(JSON.stringify(tree_));
 //# sourceMappingURL=checker.js.map
