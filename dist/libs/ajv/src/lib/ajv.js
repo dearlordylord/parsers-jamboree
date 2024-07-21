@@ -151,9 +151,11 @@ exports.meta = {
         branded: false,
         typedErrors: false,
         templateLiterals: false,
+        emailFormatAmbiguityIsAccountedFor: true,
     },
     explanations: {
-        typedErrors: 'https://ajv.js.org/guide/typescript.html#type-safe-error-handling - requires `as` - not good enough'
+        typedErrors: 'https://ajv.js.org/guide/typescript.html#type-safe-error-handling - requires `as` - not good enough',
+        emailFormatAmbiguityIsAccountedFor: `I assume the lib mirrors the standard, so it's rather "Not applicable".`,
     }
 };
 //# sourceMappingURL=ajv.js.map

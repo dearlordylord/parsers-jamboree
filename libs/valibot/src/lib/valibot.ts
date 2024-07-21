@@ -222,9 +222,11 @@ export const meta: TrustedCompileTimeMeta = {
     branded: true,
     typedErrors: true,
     templateLiterals: false,
+    emailFormatAmbiguityIsAccountedFor: true,
   },
   explanations: {
-    templateLiterals: 'Not natively supported + I didn\'t manage to hack them into working without casting, see code comments',
+    templateLiterals: 'Not natively supported + I didn\'t manage to hack them into working without casting, see code comments.',
+    emailFormatAmbiguityIsAccountedFor: `A disclaimer is present in the doce https://valibot.dev/api/email/`,
   }
 };
 

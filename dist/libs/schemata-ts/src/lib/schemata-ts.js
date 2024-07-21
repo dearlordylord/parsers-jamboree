@@ -74,8 +74,11 @@ exports.meta = {
         branded: true,
         typedErrors: true,
         templateLiterals: true,
+        emailFormatAmbiguityIsAccountedFor: true,
     },
-    explanations: {}
+    explanations: {
+        emailFormatAmbiguityIsAccountedFor: `Derives RFC 5321 email with https://github.com/skeate/kuvio string combinators. In good faith, I assume it works, but also can be treated as N/A.`,
+    }
 };
 // helpers, unrelated to the library
 const mapResult = (e) => (0, Either_1.isRight)(e)

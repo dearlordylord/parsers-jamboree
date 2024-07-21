@@ -59,23 +59,24 @@ exports.BREAKERS = {
     addFileSystemDupeFile: exports.addFileSystemDupeFile,
 };
 exports.BREAKER_DESCRIPTIONS = {
-    switchDates: 'switches the createdAt and updatedAt fields',
-    prefixCustomerId: 'adds an invalid prefix to the stripeId field',
-    addTwoAtsToEmail: 'renders the email invalid by adding two @s',
-    clearName: 'clears the name field',
+    switchDates: 'Switches the createdAt and updatedAt fields',
+    prefixCustomerId: 'Adds an invalid prefix to the stripeId field',
+    addTwoAtsToEmail: 'Renders the email invalid by adding two @s',
+    clearName: 'Clears the name field',
     addFavouriteTiger: 'Adds an invalid colour to the favouriteColours field. Enough said.',
     addFavouriteRed: `Adds a duplicated valid colour to the favouriteColours field. Although in some cases it's ok, other times I'd like to have no garbage in my database. Having duplicated values in a collection with "set" semantics means that one side of interaction doesn't really know what it's doing, and this is a potential timebomb better to fix the earliest.`,
-    setSubscriptionTypeBanana: 'sets the subscription field to banana',
-    setHalfVisits: 'renders the visits field to be a float instead of an integer',
-    setCreatedAtCyborgWar: 'sets invalid createdAt date',
-    setProfileArtist: 'sets the valid profile field to an invalid structure',
+    setSubscriptionTypeBanana: 'Sets the subscription field to banana',
+    setHalfVisits: 'Renders the visits field to be a float instead of an integer',
+    setCreatedAtCyborgWar: 'Sets invalid createdAt date',
+    setProfileArtist: 'Sets the valid profile field to an invalid structure',
     addFileSystemUFOType: 'An enum test not unlike the TIger test, but in composition with recursive data structures.',
     addFileSystemDupeFile: 'Adds a duplicated value to the tree. My tree has the “unique list” semantics, so that shouldn’t be possible.',
 };
 const COMPILE_TIME_META_DESCRIPTIONS = {
-    branded: 'branded types are supported',
-    typedErrors: 'typed errors are supported',
-    templateLiterals: 'template literals are supported',
+    branded: 'Branded types are supported',
+    typedErrors: 'Typed errors are supported',
+    templateLiterals: 'Template literals are supported',
+    emailFormatAmbiguityIsAccountedFor: `Email format ambiguity is accounted for either in API or in Docs. The library doesn't perpetuate irresponsible approach to email validation.`
 };
 const runTesters = ({ decodeUser, encodeUser, meta, }) => [
     ...(0, function_1.pipe)(Object.entries(exports.BREAKERS), A.sort((0, function_1.pipe)(string_1.Ord, (0, Ord_1.contramap)(([k]) => k))), A.map(([k, f]) => ({

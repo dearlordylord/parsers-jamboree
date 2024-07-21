@@ -8,6 +8,7 @@ export type TrustedCompileTimeMetaItems = {
   branded: boolean;
   typedErrors: boolean;
   templateLiterals: boolean;
+  emailFormatAmbiguityIsAccountedFor: boolean;
 };
 
 export type TrustedCompileTimeMetaExplanations = {

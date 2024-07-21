@@ -202,9 +202,10 @@ export const meta: TrustedCompileTimeMeta = {
     branded: true,
     typedErrors: true,
     templateLiterals: true,
+    emailFormatAmbiguityIsAccountedFor: true,
   },
   explanations: {
-
+    emailFormatAmbiguityIsAccountedFor: `A default method for email validation is not provided, which makes this check pass.`,
   }
 }
 

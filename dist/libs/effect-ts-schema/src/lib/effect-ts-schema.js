@@ -97,8 +97,11 @@ exports.meta = {
         branded: true,
         typedErrors: true,
         templateLiterals: true,
+        emailFormatAmbiguityIsAccountedFor: true,
     },
-    explanations: {}
+    explanations: {
+        emailFormatAmbiguityIsAccountedFor: `A default method purposely is not provided, disclaimer is there https://github.com/effect-ts/effect/tree/main/packages/schema#email`,
+    }
 };
 // utils
 const mapResult = (r) => Either.isLeft(r)

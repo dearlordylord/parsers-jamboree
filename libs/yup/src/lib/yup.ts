@@ -89,7 +89,11 @@ export const meta: TrustedCompileTimeMeta = {
     branded: false,
     typedErrors: false,
     templateLiterals: false,
+    emailFormatAmbiguityIsAccountedFor: true,
   },
+  explanations: {
+    emailFormatAmbiguityIsAccountedFor: `Default method is present with a warning https://github.com/jquense/yup?tab=readme-ov-file#stringemailmessage-string--function-schema`,
+  }
 };
 
 export const decodeUser = (u: unknown): Result<unknown, User> => {

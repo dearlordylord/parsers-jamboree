@@ -138,9 +138,11 @@ export const meta: TrustedCompileTimeMeta = {
     branded: true,
     typedErrors: true,
     templateLiterals: false,
+    emailFormatAmbiguityIsAccountedFor: false,
   },
   explanations: {
     templateLiterals: 'Recognized but not supported yet https://github.com/colinhacks/zod/issues/566#issuecomment-890422215 https://github.com/colinhacks/zod/issues/419',
+    emailFormatAmbiguityIsAccountedFor: `The author's stance on emails is in GitHub https://github.com/colinhacks/zod/pull/2157 but not explicit in docs.`,
   }
 };
 
