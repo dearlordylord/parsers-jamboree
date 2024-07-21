@@ -114,7 +114,7 @@ const schema = {
 };
 const validate = ajv.compile(schema);
 const decodeUser = (u) => {
-    // the library mutates the input; with all the above; disqualified
+    // the library mutates the input
     const deepCopy = JSON.parse(JSON.stringify(u));
     const r = validate(deepCopy);
     if (r) {
@@ -134,7 +134,7 @@ const decodeUser = (u) => {
         return {
             _tag: 'right',
             // value: { ...u, createdAt, updatedAt, favouriteColours },
-            value: Object.assign({}, deepCopy),
+            value: deepCopy,
         };
     }
     // mutates itself adding .errors
@@ -147,6 +147,13 @@ const encodeUser = (u) => ({
 });
 exports.encodeUser = encodeUser;
 exports.meta = {
-    branded: false,
+    items: {
+        branded: false,
+        typedErrors: false,
+        templateLiterals: false,
+    },
+    explanations: {
+        typedErrors: 'https://ajv.js.org/guide/typescript.html#type-safe-error-handling - requires `as` - not good enough'
+    }
 };
 //# sourceMappingURL=ajv.js.map

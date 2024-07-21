@@ -152,7 +152,14 @@ export const encodeUser = (user: User): Result<TranscodeErrors, unknown> => {
 };
 
 export const meta: TrustedCompileTimeMeta = {
-  branded: true,
+  items: {
+    branded: true,
+    typedErrors: true,
+    templateLiterals: true,
+  },
+  explanations: {
+
+  }
 };
 
 // helpers, unrelated to the library

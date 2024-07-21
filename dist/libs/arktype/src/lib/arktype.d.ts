@@ -10,11 +10,7 @@ declare const userJson: import("arktype").Type<{
     favouriteColours: ("red" | "green" | "blue" | import("@arktype/schema").string.matching<"^#[a-fA-F0-9]{6}$">)[];
 }, {}>;
 type UserJson = typeof userJson.infer;
-type User = Omit<UserJson, 'favouriteColours' | 'createdAt' | 'updatedAt'> & {
-    createdAt: Date;
-    updatedAt: Date;
-    favouriteColours: Set<string>;
-};
+type User = UserJson;
 export declare const decodeUser: (u: unknown) => Result<string, User>;
 export declare const encodeUser: (_u: User) => Result<'the lib cannot do it', never>;
 export declare const meta: TrustedCompileTimeMeta;

@@ -9,6 +9,8 @@ import {
   TrustedCompileTimeMeta,
 } from '@parsers-jamboree/common';
 import { deepEqual } from './utils';
+import { contramap } from 'fp-ts/Ord';
+import { Ord } from 'fp-ts/string';
 
 type Breaker<T> = (t: T) => T;
 type Igor = typeof igor;
@@ -69,9 +71,8 @@ export const setHalfVisits: UserBreaker = mutateField((n: number) =>
   n % 1 === 0 ? n + 0.5 : n
 )('visits');
 
-// btw -1 is a valid JS date...
 export const setCreatedAtCyborgWar: UserBreaker = mutateField(
-  constant('-1000000')
+  constant('0')
 )('createdAt');
 
 export const setProfileArtist: UserBreaker = mutateField(
@@ -128,21 +129,23 @@ export const BREAKER_DESCRIPTIONS: {
   prefixCustomerId: 'adds an invalid prefix to the stripeId field',
   addTwoAtsToEmail: 'renders the email invalid by adding two @s',
   clearName: 'clears the name field',
-  addFavouriteTiger: 'adds an invalid colour to the favouriteColours field',
+  addFavouriteTiger: 'Adds an invalid colour to the favouriteColours field. Enough said.',
   addFavouriteRed:
-    'adds a duplicated valid colour to the favouriteColours field',
+    `Adds a duplicated valid colour to the favouriteColours field. Although in some cases it's ok, other times I'd like to have no garbage in my database. Having duplicated values in a collection with "set" semantics means that one side of interaction doesn't really know what it's doing, and this is a potential timebomb better to fix the earliest.`,
   setSubscriptionTypeBanana: 'sets the subscription field to banana',
   setHalfVisits: 'renders the visits field to be a float instead of an integer',
   setCreatedAtCyborgWar: 'sets invalid createdAt date',
   setProfileArtist: 'sets the valid profile field to an invalid structure',
-  addFileSystemUFOType: 'sets an invalid fileSystem field deep in the tree',
-  addFileSystemDupeFile: 'adds a duplicated value to the tree',
+  addFileSystemUFOType: 'An enum test not unlike the TIger test, but in composition with recursive data structures.',
+  addFileSystemDupeFile: 'Adds a duplicated value to the tree. My tree has the “unique list” semantics, so that shouldn’t be possible.',
 };
 
 const COMPILE_TIME_META_DESCRIPTIONS: {
-  [K in keyof TrustedCompileTimeMeta]: string;
+  [K in keyof TrustedCompileTimeMeta['items']]: string;
 } = {
   branded: 'branded types are supported',
+  typedErrors: 'typed errors are supported',
+  templateLiterals: 'template literals are supported',
 };
 
 export type TesterArgs = {
@@ -165,6 +168,10 @@ export const runTesters = ({
 }: TesterArgs): TesterResult => [
   ...pipe(
     Object.entries(BREAKERS),
+    A.sort(pipe(
+      Ord,
+      contramap(([k]) => k)
+    )),
     A.map(([k, f]) => ({
       key: k,
       title: BREAKER_DESCRIPTIONS[k as keyof typeof BREAKERS],
@@ -203,10 +210,10 @@ export const runTesters = ({
     ),
   },
   ...pipe(
-    Object.entries(meta),
+    Object.entries(meta.items),
     A.map(([k, v]) => ({
       key: k,
-      title: COMPILE_TIME_META_DESCRIPTIONS[k as keyof TrustedCompileTimeMeta],
+      title: COMPILE_TIME_META_DESCRIPTIONS[k as keyof TrustedCompileTimeMeta['items']],
       success: v,
     }))
   ),

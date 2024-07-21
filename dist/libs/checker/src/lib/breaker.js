@@ -7,6 +7,8 @@ const function_1 = require("fp-ts/function");
 const A = tslib_1.__importStar(require("fp-ts/Array"));
 const common_1 = require("@parsers-jamboree/common");
 const utils_1 = require("./utils");
+const Ord_1 = require("fp-ts/Ord");
+const string_1 = require("fp-ts/string");
 const switchFields = (f1, f2) => (x) => (Object.assign(Object.assign({}, x), { [f1]: x[f2], [f2]: x[f1] }));
 // typing isn't great, can break runtime with wrong "m"...
 const mutateField = (m) => (f) => (x) => (Object.assign(Object.assign({}, x), { [f]: m(x[f]) }));
@@ -24,8 +26,7 @@ exports.addFavouriteRed = mutateField((s) => [
 ])('favouriteColours');
 exports.setSubscriptionTypeBanana = mutateField((0, function_1.constant)('banana'))('subscription');
 exports.setHalfVisits = mutateField((n) => n % 1 === 0 ? n + 0.5 : n)('visits');
-// btw -1 is a valid JS date...
-exports.setCreatedAtCyborgWar = mutateField((0, function_1.constant)('-1000000'))('createdAt');
+exports.setCreatedAtCyborgWar = mutateField((0, function_1.constant)('0'))('createdAt');
 exports.setProfileArtist = mutateField((0, function_1.constant)({
     type: 'artist',
     boughtTracks: 10,
@@ -62,20 +63,22 @@ exports.BREAKER_DESCRIPTIONS = {
     prefixCustomerId: 'adds an invalid prefix to the stripeId field',
     addTwoAtsToEmail: 'renders the email invalid by adding two @s',
     clearName: 'clears the name field',
-    addFavouriteTiger: 'adds an invalid colour to the favouriteColours field',
-    addFavouriteRed: 'adds a duplicated valid colour to the favouriteColours field',
+    addFavouriteTiger: 'Adds an invalid colour to the favouriteColours field. Enough said.',
+    addFavouriteRed: `Adds a duplicated valid colour to the favouriteColours field. Although in some cases it's ok, other times I'd like to have no garbage in my database. Having duplicated values in a collection with "set" semantics means that one side of interaction doesn't really know what it's doing, and this is a potential timebomb better to fix the earliest.`,
     setSubscriptionTypeBanana: 'sets the subscription field to banana',
     setHalfVisits: 'renders the visits field to be a float instead of an integer',
     setCreatedAtCyborgWar: 'sets invalid createdAt date',
     setProfileArtist: 'sets the valid profile field to an invalid structure',
-    addFileSystemUFOType: 'sets an invalid fileSystem field deep in the tree',
-    addFileSystemDupeFile: 'adds a duplicated value to the tree',
+    addFileSystemUFOType: 'An enum test not unlike the TIger test, but in composition with recursive data structures.',
+    addFileSystemDupeFile: 'Adds a duplicated value to the tree. My tree has the “unique list” semantics, so that shouldn’t be possible.',
 };
 const COMPILE_TIME_META_DESCRIPTIONS = {
     branded: 'branded types are supported',
+    typedErrors: 'typed errors are supported',
+    templateLiterals: 'template literals are supported',
 };
 const runTesters = ({ decodeUser, encodeUser, meta, }) => [
-    ...(0, function_1.pipe)(Object.entries(exports.BREAKERS), A.map(([k, f]) => ({
+    ...(0, function_1.pipe)(Object.entries(exports.BREAKERS), A.sort((0, function_1.pipe)(string_1.Ord, (0, Ord_1.contramap)(([k]) => k))), A.map(([k, f]) => ({
         key: k,
         title: exports.BREAKER_DESCRIPTIONS[k],
         success: decodeUser(f(checker_1.igor))._tag === 'left',
@@ -95,7 +98,7 @@ const runTesters = ({ decodeUser, encodeUser, meta, }) => [
             ? { _tag: 'right', value: v }
             : { _tag: 'left', error: 'transformations are not possible' }), (v) => v._tag === 'right'),
     },
-    ...(0, function_1.pipe)(Object.entries(meta), A.map(([k, v]) => ({
+    ...(0, function_1.pipe)(Object.entries(meta.items), A.map(([k, v]) => ({
         key: k,
         title: COMPILE_TIME_META_DESCRIPTIONS[k],
         success: v,

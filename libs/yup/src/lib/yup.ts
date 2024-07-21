@@ -6,12 +6,16 @@ import {
   TrustedCompileTimeMeta,
 } from '@parsers-jamboree/common';
 
+// let isoDate = date().required().transform((v) => {
+//   // "v" is "any"
+// });
+
 // the developer's position is `let` all the time https://github.com/jquense/yup/pull/2227
 let userSchema = object({
   name: string().required(/*implicitly filters empty strings too*/),
   email: string().email().required(),
-  createdAt: date().required(),
-  updatedAt: date().required(),
+  createdAt: date().required(), // no transform possible in ts
+  updatedAt: date().required(), // no transform possible in ts
   subscription: string()
     .oneOf(SUBSCRIPTION_TYPES)
     .required(/*still "undefined" after oneOf*/),
@@ -81,7 +85,11 @@ let userSchema = object({
 type User = InferType<typeof userSchema>;
 
 export const meta: TrustedCompileTimeMeta = {
-  branded: false,
+  items: {
+    branded: false,
+    typedErrors: false,
+    templateLiterals: false,
+  },
 };
 
 export const decodeUser = (u: unknown): Result<unknown, User> => {

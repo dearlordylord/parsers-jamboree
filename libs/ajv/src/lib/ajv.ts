@@ -156,7 +156,7 @@ const schema: JSONSchemaType<UserJson> = {
 const validate = ajv.compile(schema);
 
 export const decodeUser = (u: unknown): Result<unknown, UserJson> => {
-  // the library mutates the input; with all the above; disqualified
+  // the library mutates the input
   const deepCopy = JSON.parse(JSON.stringify(u)) as unknown;
   const r = validate(deepCopy);
   if (r) {
@@ -176,7 +176,7 @@ export const decodeUser = (u: unknown): Result<unknown, UserJson> => {
     return {
       _tag: 'right',
       // value: { ...u, createdAt, updatedAt, favouriteColours },
-      value: { ...deepCopy },
+      value: deepCopy,
     };
   }
   // mutates itself adding .errors
@@ -189,5 +189,12 @@ export const encodeUser = (u: UserJson): Result<string, unknown> => ({
 });
 
 export const meta: TrustedCompileTimeMeta = {
-  branded: false,
+  items: {
+    branded: false,
+    typedErrors: false,
+    templateLiterals: false,
+  },
+  explanations: {
+    typedErrors: 'https://ajv.js.org/guide/typescript.html#type-safe-error-handling - requires `as` - not good enough'
+  }
 };

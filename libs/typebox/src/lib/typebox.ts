@@ -87,7 +87,16 @@ const FormatWhat = Type.String({
 type User = StaticDecode<typeof User>;
 
 export const meta: TrustedCompileTimeMeta = {
-  branded: true,
+  items: {
+    branded: false,
+    typedErrors: false,
+    templateLiterals: false,
+  },
+  explanations: {
+    branded: 'Can be simulated with decode/encode but no native support',
+    templateLiterals: 'Can be simulated with decode/encode but no native support',
+    typedErrors: 'No compile time support, we have to catch runtime',
+  }
 };
 
 export const decodeUser = (u: unknown): Result<ValueError[], User> => {

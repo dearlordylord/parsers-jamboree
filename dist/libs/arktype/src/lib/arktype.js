@@ -14,7 +14,7 @@ const userJson = (0, arktype_1.type)({
     createdAt: 'string',
     updatedAt: 'string',
     subscription: SUBSCRIPTION_TYPES_LITERAL,
-    stripeId: /cus_[a-zA-Z0-9]{14,}/,
+    stripeId: /^cus_[a-zA-Z0-9]{14,}$/,
     visits: 'integer>0',
     // https://github.com/arktypeio/arktype/issues/909 morphs aren't really here yet
     favouriteColours: `(${COLOURS_WITH_CODES_LITERAL})[]`,
@@ -22,23 +22,27 @@ const userJson = (0, arktype_1.type)({
 const decodeUser = (u) => {
     const result = userJson(u);
     return (0, common_1.chain)((u) => {
-        const favouriteColours = new Set(u.favouriteColours);
+        // const favouriteColours = new Set(u.favouriteColours);
         // if (favouriteColours.size !== u.favouriteColours.length) {
         //   return { _tag: 'left', error: 'favourite colours must be unique' };
         // }
-        const createdAt = new Date(u.createdAt);
+        // const createdAt = new Date(u.createdAt);
         // if (isNaN(createdAt.getTime())) {
         //   return { _tag: 'left', error: 'createdAt must be a valid ISO date' };
         // }
-        const updatedAt = new Date(u.updatedAt);
+        // const updatedAt = new Date(u.updatedAt);
         // if (isNaN(updatedAt.getTime())) {
         //   return { _tag: 'left', error: 'updatedAt must be a valid ISO date' };
         // }
         return {
             _tag: 'right',
-            value: Object.assign(Object.assign({}, u), { favouriteColours,
-                createdAt,
-                updatedAt }),
+            // value: {
+            //   ...u,
+            //   favouriteColours,
+            //   createdAt,
+            //   updatedAt,
+            // },
+            value: u,
         };
     })(mapResult(result));
 };
@@ -48,7 +52,15 @@ const encodeUser = (_u) => {
 };
 exports.encodeUser = encodeUser;
 exports.meta = {
-    branded: false,
+    items: {
+        branded: false,
+        typedErrors: true,
+        templateLiterals: false,
+    },
+    explanations: {
+        templateLiterals: 'WIP https://github.com/arktypeio/arktype/issues/491',
+        branded: 'WIP https://github.com/arktypeio/arktype/issues/741',
+    }
 };
 // utils
 const mapResult = (r) => r instanceof arktype_1.ArkErrors

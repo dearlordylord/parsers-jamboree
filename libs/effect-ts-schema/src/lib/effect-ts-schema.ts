@@ -24,8 +24,8 @@ const Email = NonEmptyString.pipe(
 
 const StripeIdBrand = Symbol.for('StripeId');
 
-const StripeId = Schema.TemplateLiteral(Schema.Literal('cus_'), Schema.String)
-  .pipe(Schema.pattern(/^cus_[a-zA-Z0-9]{14,}$/))
+const StripeId = Schema.TemplateLiteral(Schema.Literal('cus_'/*can be dryed*/), Schema.String)
+  .pipe(Schema.pattern(/^cus_[a-zA-Z0-9]{14,}$/)) // extra check for the second part
   .pipe(Schema.brand(StripeIdBrand));
 
 const ColourBrand = Symbol.for('Colour');
@@ -177,7 +177,14 @@ export const encodeUser = (u: User): Result<string, unknown> => {
 };
 
 export const meta: TrustedCompileTimeMeta = {
-  branded: true,
+  items: {
+    branded: true,
+    typedErrors: true,
+    templateLiterals: true,
+  },
+  explanations: {
+
+  }
 };
 
 // utils

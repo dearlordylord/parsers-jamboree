@@ -34,7 +34,7 @@ import {
   COLOURS,
   Result,
   SUBSCRIPTION_TYPES,
-  TrustedCompileTimeMeta,
+  TrustedCompileTimeMeta, TrustedCompileTimeMetaExplanations
 } from '@parsers-jamboree/common';
 
 const NonEmptyStringSchema = pipe(
@@ -68,6 +68,17 @@ const StripeCustomerIdSchemaOption2 = pipe(
   ),
   brand('StripeId')
 );
+
+// can't also find `special` referenced here https://github.com/fabian-hiller/valibot/issues/291
+// type StripeCustomerLiteral = `cus_${string}`;
+// const StripeCustomerIdSchemaOption3 = special<Key>((key:string) => {
+//   const parts = key.split("-");
+//   const num = parts.unshift();
+//   if (Number.isNaN(Number(num))) return false;
+//   const str = parts.join('-');
+//   if (typeof str !== "string") return false;
+//   return true;
+// });
 
 const NonNegativeIntegerSchema = pipe(
   number(),
@@ -207,7 +218,14 @@ export const encodeUser = (_u: User): Result<unknown, unknown> => {
 };
 
 export const meta: TrustedCompileTimeMeta = {
-  branded: true,
+  items: {
+    branded: true,
+    typedErrors: true,
+    templateLiterals: false,
+  },
+  explanations: {
+    templateLiterals: 'Not natively supported + I didn\'t manage to hack them into working without casting, see code comments',
+  }
 };
 
 // utils

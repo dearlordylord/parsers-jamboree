@@ -52,7 +52,16 @@ const FormatWhat = typebox_1.Type.String({
     format: 'what?',
 });
 exports.meta = {
-    branded: true,
+    items: {
+        branded: false,
+        typedErrors: false,
+        templateLiterals: false,
+    },
+    explanations: {
+        branded: 'Can be simulated with decode/encode but no native support',
+        templateLiterals: 'Can be simulated with decode/encode but no native support',
+        typedErrors: 'No compile time support, we have to catch runtime',
+    }
 };
 const decodeUser = (u) => {
     // flow control with exceptions

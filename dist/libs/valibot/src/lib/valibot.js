@@ -13,6 +13,16 @@ const StripeCustomerIdSchema = (0, valibot_1.pipe)((0, valibot_1.string)(), (0, 
 // we can do custom<`cus_${string}`>((v) => typeof v === 'string' && /cus_[a-zA-Z0-9]{14,}/.test(v)) to narrow the literal type further to cus_${string}
 // but custom() function API is lacking: I have to repeat regex + output type and do string check again manually
 const StripeCustomerIdSchemaOption2 = (0, valibot_1.pipe)((0, valibot_1.string)(), (0, valibot_1.custom)((v) => typeof v === 'string' && /cus_[a-zA-Z0-9]{14,}/.test(v)), (0, valibot_1.brand)('StripeId'));
+// can't also find `special` referenced here https://github.com/fabian-hiller/valibot/issues/291
+// type StripeCustomerLiteral = `cus_${string}`;
+// const StripeCustomerIdSchemaOption3 = special<Key>((key:string) => {
+//   const parts = key.split("-");
+//   const num = parts.unshift();
+//   if (Number.isNaN(Number(num))) return false;
+//   const str = parts.join('-');
+//   if (typeof str !== "string") return false;
+//   return true;
+// });
 const NonNegativeIntegerSchema = (0, valibot_1.pipe)((0, valibot_1.number)(), (0, valibot_1.integer)(), (0, valibot_1.minValue)(0), (0, valibot_1.brand)('NonNegativeInteger'));
 const VisitsSchema = (0, valibot_1.pipe)(NonNegativeIntegerSchema, (0, valibot_1.brand)('Visits'));
 const HexColourSchema = (0, valibot_1.pipe)((0, valibot_1.string)(), (0, valibot_1.regex)(/^#[a-fA-F0-9]{6}$/), (0, valibot_1.brand)('HexColour'));
@@ -81,7 +91,14 @@ const encodeUser = (_u) => {
 };
 exports.encodeUser = encodeUser;
 exports.meta = {
-    branded: true,
+    items: {
+        branded: true,
+        typedErrors: true,
+        templateLiterals: false,
+    },
+    explanations: {
+        templateLiterals: 'Not natively supported + I didn\'t manage to hack them into working without casting, see code comments',
+    }
 };
 // utils
 const mapResult = (r) => {

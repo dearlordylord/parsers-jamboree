@@ -104,24 +104,20 @@ const decodeUser = (u) => {
     return mapResult(result);
 };
 exports.decodeUser = decodeUser;
-/* they can't do it; probably not possible because of input parsing being lenient:
-
-const datetime = z.string().datetime();
-
-datetime.parse("2020-01-01T00:00:00Z"); // pass
-datetime.parse("2020-01-01T00:00:00.123Z"); // pass
-datetime.parse("2020-01-01T00:00:00.123456Z"); // pass
-
-- which makes it possible to encode into a different format that the input is in
-
-*  */
 const encodeUser = (_u) => ({
     _tag: 'left',
     error: 'the lib cannot do it',
 });
 exports.encodeUser = encodeUser;
 exports.meta = {
-    branded: true,
+    items: {
+        branded: true,
+        typedErrors: true,
+        templateLiterals: false,
+    },
+    explanations: {
+        templateLiterals: 'Recognized but not supported yet https://github.com/colinhacks/zod/issues/566#issuecomment-890422215 https://github.com/colinhacks/zod/issues/419',
+    }
 };
 // utils
 const mapResult = (r) => {

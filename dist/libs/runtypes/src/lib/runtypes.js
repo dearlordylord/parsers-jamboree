@@ -84,7 +84,12 @@ const decodeUser = (u) => {
 };
 exports.decodeUser = decodeUser;
 exports.meta = {
-    branded: true,
+    items: {
+        branded: true,
+        typedErrors: true,
+        templateLiterals: true,
+    },
+    explanations: {}
 };
 // actually since there's no transformation, it's just the same object; so "no-feature feature"
 // BUT also we can't check if a transformed object was passed or not; so I predict plenty of errors on this front;

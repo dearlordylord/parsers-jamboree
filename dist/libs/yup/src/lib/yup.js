@@ -3,12 +3,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.encodeUser = exports.decodeUser = exports.meta = void 0;
 const yup_1 = require("yup");
 const common_1 = require("@parsers-jamboree/common");
+// let isoDate = date().required().transform((v) => {
+//   // "v" is "any"
+// });
 // the developer's position is `let` all the time https://github.com/jquense/yup/pull/2227
 let userSchema = (0, yup_1.object)({
     name: (0, yup_1.string)().required( /*implicitly filters empty strings too*/),
     email: (0, yup_1.string)().email().required(),
-    createdAt: (0, yup_1.date)().required(),
-    updatedAt: (0, yup_1.date)().required(),
+    createdAt: (0, yup_1.date)().required(), // no transform possible in ts
+    updatedAt: (0, yup_1.date)().required(), // no transform possible in ts
     subscription: (0, yup_1.string)()
         .oneOf(common_1.SUBSCRIPTION_TYPES)
         .required( /*still "undefined" after oneOf*/),
@@ -62,7 +65,11 @@ let userSchema = (0, yup_1.object)({
         .required(),
 });
 exports.meta = {
-    branded: false,
+    items: {
+        branded: false,
+        typedErrors: false,
+        templateLiterals: false,
+    },
 };
 const decodeUser = (u) => {
     try {

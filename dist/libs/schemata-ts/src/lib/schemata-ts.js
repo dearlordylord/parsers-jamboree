@@ -70,7 +70,12 @@ const encodeUser = (user) => {
 };
 exports.encodeUser = encodeUser;
 exports.meta = {
-    branded: true,
+    items: {
+        branded: true,
+        typedErrors: true,
+        templateLiterals: true,
+    },
+    explanations: {}
 };
 // helpers, unrelated to the library
 const mapResult = (e) => (0, Either_1.isRight)(e)

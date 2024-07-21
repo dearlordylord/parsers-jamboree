@@ -1,4 +1,15 @@
 // something that we can only find out compile time
 export type TrustedCompileTimeMeta = {
-  branded: boolean;
+  items: TrustedCompileTimeMetaItems;
+  explanations?: TrustedCompileTimeMetaExplanations;
 };
+
+export type TrustedCompileTimeMetaItems = {
+  branded: boolean;
+  typedErrors: boolean;
+  templateLiterals: boolean;
+};
+
+export type TrustedCompileTimeMetaExplanations = {
+  [K in keyof TrustedCompileTimeMetaItems]?: string;
+}

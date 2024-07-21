@@ -11,8 +11,8 @@ const EmailBrand = Symbol.for('Email');
 // no built-in email combinator by-design (lot of definitions out there)
 const Email = NonEmptyString.pipe(schema_1.Schema.pattern(/^(?!\.)(?!.*\.\.)([A-Z0-9_+-.]*)[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i)).pipe(schema_1.Schema.brand(EmailBrand));
 const StripeIdBrand = Symbol.for('StripeId');
-const StripeId = schema_1.Schema.TemplateLiteral(schema_1.Schema.Literal('cus_'), schema_1.Schema.String)
-    .pipe(schema_1.Schema.pattern(/^cus_[a-zA-Z0-9]{14,}$/))
+const StripeId = schema_1.Schema.TemplateLiteral(schema_1.Schema.Literal('cus_' /*can be dryed*/), schema_1.Schema.String)
+    .pipe(schema_1.Schema.pattern(/^cus_[a-zA-Z0-9]{14,}$/)) // extra check for the second part
     .pipe(schema_1.Schema.brand(StripeIdBrand));
 const ColourBrand = Symbol.for('Colour');
 const Colour = schema_1.Schema.Literal(...common_1.COLOURS).pipe(schema_1.Schema.brand(ColourBrand));
@@ -93,7 +93,12 @@ const encodeUser = (u) => {
 };
 exports.encodeUser = encodeUser;
 exports.meta = {
-    branded: true,
+    items: {
+        branded: true,
+        typedErrors: true,
+        templateLiterals: true,
+    },
+    explanations: {}
 };
 // utils
 const mapResult = (r) => Either.isLeft(r)

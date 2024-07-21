@@ -58,7 +58,7 @@ const userJson = type({
   createdAt: 'string',
   updatedAt: 'string',
   subscription: SUBSCRIPTION_TYPES_LITERAL,
-  stripeId: /cus_[a-zA-Z0-9]{14,}/,
+  stripeId: /^cus_[a-zA-Z0-9]{14,}$/,
   visits: 'integer>0',
   // https://github.com/arktypeio/arktype/issues/909 morphs aren't really here yet
   favouriteColours: `(${COLOURS_WITH_CODES_LITERAL})[]`,
@@ -66,36 +66,39 @@ const userJson = type({
 
 type UserJson = typeof userJson.infer;
 
-type User = Omit<UserJson, 'favouriteColours' | 'createdAt' | 'updatedAt'> & {
-  createdAt: Date;
-  updatedAt: Date;
-  favouriteColours: Set<string>;
-};
+// type User = Omit<UserJson, 'favouriteColours' | 'createdAt' | 'updatedAt'> & {
+//   createdAt: Date;
+//   updatedAt: Date;
+//   favouriteColours: Set<string>;
+// };
+
+type User = UserJson;
 
 export const decodeUser = (u: unknown): Result<string, User> => {
   const result = userJson(u);
 
   return chain((u: UserJson): Result<string, User> => {
-    const favouriteColours = new Set(u.favouriteColours);
+    // const favouriteColours = new Set(u.favouriteColours);
     // if (favouriteColours.size !== u.favouriteColours.length) {
     //   return { _tag: 'left', error: 'favourite colours must be unique' };
     // }
-    const createdAt = new Date(u.createdAt);
+    // const createdAt = new Date(u.createdAt);
     // if (isNaN(createdAt.getTime())) {
     //   return { _tag: 'left', error: 'createdAt must be a valid ISO date' };
     // }
-    const updatedAt = new Date(u.updatedAt);
+    // const updatedAt = new Date(u.updatedAt);
     // if (isNaN(updatedAt.getTime())) {
     //   return { _tag: 'left', error: 'updatedAt must be a valid ISO date' };
     // }
     return {
       _tag: 'right',
-      value: {
-        ...u,
-        favouriteColours,
-        createdAt,
-        updatedAt,
-      },
+      // value: {
+      //   ...u,
+      //   favouriteColours,
+      //   createdAt,
+      //   updatedAt,
+      // },
+      value: u,
     };
   })(mapResult(result));
 };
@@ -105,8 +108,16 @@ export const encodeUser = (_u: User): Result<'the lib cannot do it', never> => {
 };
 
 export const meta: TrustedCompileTimeMeta = {
-  branded: false,
-};
+  items: {
+    branded: false,
+    typedErrors: true,
+    templateLiterals: false,
+  },
+  explanations: {
+    templateLiterals: 'WIP https://github.com/arktypeio/arktype/issues/491',
+    branded: 'WIP https://github.com/arktypeio/arktype/issues/741',
+  }
+}
 
 // utils
 

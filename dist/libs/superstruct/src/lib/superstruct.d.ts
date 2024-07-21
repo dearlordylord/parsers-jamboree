@@ -1,8 +1,8 @@
 import { Infer, Struct } from 'superstruct';
 import { Result, TrustedCompileTimeMeta } from '@parsers-jamboree/common';
 declare const User: Struct<{
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
     name: string;
     email: unknown;
     subscription: "free" | "pro" | "enterprise";
@@ -18,8 +18,8 @@ declare const User: Struct<{
     };
     fileSystem?: any;
 }, {
-    createdAt: Struct<Date, null>;
-    updatedAt: Struct<Date, null>;
+    createdAt: Struct<string, null>;
+    updatedAt: Struct<string, null>;
     name: Struct<string, null>;
     email: Struct<unknown, null>;
     subscription: Struct<"free" | "pro" | "enterprise", {

@@ -19,20 +19,20 @@ import {
   set,
   Struct,
   any,
+  regexp,
 } from 'superstruct';
 import {
   COLOURS,
-  EMAIL_REGEX_S,
+  EMAIL_REGEX_S, ISO_DATE_REGEX_S,
   PROFILE_TYPE_ARTIST,
   PROFILE_TYPE_LISTENER,
   Result,
   SUBSCRIPTION_TYPES,
-  TrustedCompileTimeMeta,
+  TrustedCompileTimeMeta
 } from '@parsers-jamboree/common';
 
-const MyNumber = coerce(number(), string(), (value) => parseFloat(value));
-
 const EMAIL_REGEX = new RegExp(EMAIL_REGEX_S);
+const ISO_DATE_REGEXP = new RegExp(ISO_DATE_REGEX_S);
 const isEmail = (value: string) => EMAIL_REGEX.test(value);
 
 // TODO fix their example https://github.com/ianstormtaylor/superstruct/blob/main/examples/custom-types.js - `code` not in Result
@@ -49,6 +49,9 @@ const Email = define('Email', (value) => {
     return true;
   }
 });
+
+const IsoDateString = refine(string(), 'IsoDateString', (s) => ISO_DATE_REGEXP.test(s));
+const IsoDate = coerce(date(), IsoDateString, (value) => new Date(value));
 
 // can go with `define` and branding but since the lib doesn't support out of the box let's skip it
 const NonNegative = refine(number(), 'NonNegative', (n) => n >= 0);
@@ -74,12 +77,6 @@ const ColourOrHex = union([Colour, HexColour]);
 const StripeCustomerId = pattern(string(), /^cus_[a-zA-Z0-9]{14,}$/);
 
 const SubscriptionType = enums(SUBSCRIPTION_TYPES);
-
-const IsoDateString = coerce(
-  date(),
-  string(),
-  (s) => new Date(s) /*date() will filter out invalid date objects implicitly*/
-);
 
 // loses the refinement after assign() https://github.com/ianstormtaylor/superstruct/issues/1188
 const IsoDateStringRange = refine(
@@ -142,7 +139,14 @@ const User = assign(
 type User = Infer<typeof User>;
 
 export const meta: TrustedCompileTimeMeta = {
-  branded: false,
+  items: {
+    branded: false,
+    typedErrors: false,
+    templateLiterals: false,
+  },
+  explanations: {
+    typedErrors: 'Need for instanceOf runtime check, not good enough',
+  }
 };
 
 export const decodeUser = (u: unknown): Result<string, User> => {

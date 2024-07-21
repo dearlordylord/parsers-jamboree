@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.encodeUser = exports.decodeUser = exports.meta = void 0;
 const superstruct_1 = require("superstruct");
 const common_1 = require("@parsers-jamboree/common");
-const MyNumber = (0, superstruct_1.coerce)((0, superstruct_1.number)(), (0, superstruct_1.string)(), (value) => parseFloat(value));
 const EMAIL_REGEX = new RegExp(common_1.EMAIL_REGEX_S);
+const ISO_DATE_REGEXP = new RegExp(common_1.ISO_DATE_REGEX_S);
 const isEmail = (value) => EMAIL_REGEX.test(value);
 // TODO fix their example https://github.com/ianstormtaylor/superstruct/blob/main/examples/custom-types.js - `code` not in Result
 const Email = (0, superstruct_1.define)('Email', (value) => {
@@ -22,6 +22,8 @@ const Email = (0, superstruct_1.define)('Email', (value) => {
         return true;
     }
 });
+const IsoDateString = (0, superstruct_1.refine)((0, superstruct_1.string)(), 'IsoDateString', (s) => ISO_DATE_REGEXP.test(s));
+const IsoDate = (0, superstruct_1.coerce)((0, superstruct_1.date)(), IsoDateString, (value) => new Date(value));
 // can go with `define` and branding but since the lib doesn't support out of the box let's skip it
 const NonNegative = (0, superstruct_1.refine)((0, superstruct_1.number)(), 'NonNegative', (n) => n >= 0);
 // can be "min(integer(), 0)" but I went this way to show intersections
@@ -40,7 +42,6 @@ const HexColour = (0, superstruct_1.pattern)((0, superstruct_1.string)(), /^#[a-
 const ColourOrHex = (0, superstruct_1.union)([Colour, HexColour]);
 const StripeCustomerId = (0, superstruct_1.pattern)((0, superstruct_1.string)(), /^cus_[a-zA-Z0-9]{14,}$/);
 const SubscriptionType = (0, superstruct_1.enums)(common_1.SUBSCRIPTION_TYPES);
-const IsoDateString = (0, superstruct_1.coerce)((0, superstruct_1.date)(), (0, superstruct_1.string)(), (s) => new Date(s) /*date() will filter out invalid date objects implicitly*/);
 // loses the refinement after assign() https://github.com/ianstormtaylor/superstruct/issues/1188
 const IsoDateStringRange = (0, superstruct_1.refine)((0, superstruct_1.object)({
     createdAt: IsoDateString,
@@ -78,7 +79,14 @@ const User = (0, superstruct_1.assign)((0, superstruct_1.object)({
     fileSystem: FileSystem,
 }), IsoDateStringRange);
 exports.meta = {
-    branded: false,
+    items: {
+        branded: false,
+        typedErrors: false,
+        templateLiterals: false,
+    },
+    explanations: {
+        typedErrors: 'Need for instanceOf runtime check, not good enough',
+    }
 };
 const decodeUser = (u) => {
     try {
