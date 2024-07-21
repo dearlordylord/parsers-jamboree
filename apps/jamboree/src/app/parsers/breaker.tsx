@@ -4,6 +4,7 @@ import { igor } from '@parsers-jamboree/checker/checker';
 import IconHeart from '~icons/mdi/heart';
 import IconHeartBroken from '~icons/mdi/heart-broken';
 import { runTesters } from '@parsers-jamboree/checker/breaker';
+import { FeatureNameAndExplanation } from './featureNameAndExplanation';
 
 type Props = {
   decodeUser: (u: unknown) => Result<unknown, unknown>;
@@ -25,32 +26,26 @@ export const Breaker = ({
   return (
     <div>
       <table>
-        <thead>
-          <tr>
-            {tests.map(({ key, title }) => {
-              return (
-                <th title={title} key={key}>
-                  {key}
-                </th>
-              );
-            })}
-          </tr>
-        </thead>
         <tbody>
-          <tr>
-            {tests.map(({ key, success }) => {
-              try {
-                return (
-                  <td key={key}>
-                    {success ? <IconHeart color="red" /> : <IconHeartBroken />}
-                  </td>
-                );
-              } catch (e) {
-                console.error(e);
-                return <td key={key}>ERROR</td>;
-              }
+
+            {tests.map(({ key, title, customTitle, success }) => {
+              return <tr>
+                <td><FeatureNameAndExplanation name={key} explanation={title} customExplanation={customTitle}/></td>
+                {(() => {
+                  try {
+                    return (
+                      <td key={key}>
+                        {success ? <IconHeart color="red" /> : <IconHeartBroken />}
+                      </td>
+                    );
+                  } catch (e) {
+                    console.error(e);
+                    return <td key={key}>ERROR</td>;
+                  }
+                })()}
+              </tr>
+
             })}
-          </tr>
         </tbody>
       </table>
     </div>

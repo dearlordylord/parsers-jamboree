@@ -8,17 +8,19 @@ import { RuntypesPage } from './pages/runtypes';
 import { AjvPage } from './pages/ajv';
 import { YupPage } from './pages/yup';
 import { SuperstructPage } from './pages/superstruct';
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { runTesters } from '@parsers-jamboree/checker/breaker';
+import { BreakerKey, runTesters } from '@parsers-jamboree/checker/breaker';
 import IconHeart from '~icons/mdi/heart';
 import IconHeartBroken from '~icons/mdi/heart-broken';
 import { libRuntimes, LIBS } from './runtimes';
 import { headStrict } from '../utils';
+import { FeatureNameAndExplanation } from './featureNameAndExplanation';
 
 export const parserTableColumn = (lib: (typeof LIBS)[number]) => [
   ...runTesters(libRuntimes[lib]).map(({ key, title, success }) => ({
     name: key,
+    title,
     c: success ? <IconHeart color="red" /> : <IconHeartBroken />,
   })),
 ];
@@ -106,9 +108,9 @@ export const ParserTable = (): React.ReactElement => {
           </tr>
         </thead>
         <tbody>
-          {firstColumn.map(({ name }, i) => (
+          {firstColumn.map(({ name, title }, i) => (
             <tr>
-              <td>{name}</td>
+              <td><FeatureNameAndExplanation name={name} explanation={title}/></td>
               {results.map((row) => (
                 <td key={i}>{row[i].c}</td>
               ))}

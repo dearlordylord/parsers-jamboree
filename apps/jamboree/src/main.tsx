@@ -2,13 +2,11 @@ import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 
+import '@coreui/coreui/dist/css/coreui.min.css'
 import 'highlight.js/styles/github-dark-dimmed.css';
 
-import App from './app/app';
-import { igor } from '@parsers-jamboree/checker/checker';
-import { prefixCustomerId } from '../../../libs/checker/src/lib/breaker';
 
-console.log('prefixCustomerId', prefixCustomerId(igor));
+import App from './app/app';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

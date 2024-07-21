@@ -9,8 +9,9 @@ import {
   TrustedCompileTimeMeta,
 } from '@parsers-jamboree/common';
 import { deepEqual } from './utils';
-import { contramap } from 'fp-ts/Ord';
+import { contramap, Ord as GOrd } from 'fp-ts/Ord';
 import { Ord } from 'fp-ts/string';
+import { toEntries } from 'fp-ts/Record';
 
 type Breaker<T> = (t: T) => T;
 type Igor = typeof igor;
@@ -130,8 +131,9 @@ export const BREAKER_DESCRIPTIONS: {
   addTwoAtsToEmail: 'Renders the email invalid by adding two @s',
   clearName: 'Clears the name field',
   addFavouriteTiger:
-    'Adds an invalid colour to the favouriteColours field. Enough said.',
-  addFavouriteRed: `Adds a duplicated valid colour to the favouriteColours field. Although in some cases it's ok, other times I'd like to have no garbage in my database. Having duplicated values in a collection with "set" semantics means that one side of interaction doesn't really know what it's doing, and this is a potential timebomb better to fix the earliest.`,
+    'Adds an invalid colour to the favouriteColours field.',
+  // Although in some cases it's ok, other times I'd like to have no garbage in my database. Having duplicated values in a collection with "set" semantics means that one side of interaction doesn't really know what it's doing, and this is a potential timebomb better to fix the earliest.
+  addFavouriteRed: `Adds a duplicated valid colour to the favouriteColours field.`,
   setSubscriptionTypeBanana: 'Sets the subscription field to banana',
   setHalfVisits: 'Renders the visits field to be a float instead of an integer',
   setCreatedAtCyborgWar: 'Sets invalid createdAt date',
@@ -158,11 +160,19 @@ export type TesterArgs = {
   meta: TrustedCompileTimeMeta;
 };
 
+const encodedEqualsInputSpecialBreakerKey = 'encodedEqualsInput' as const;
+const transformationsPossibleSpecialBreakerKey = 'transformationsPossible' as const;
+
+export type BreakerKey = keyof typeof BREAKERS | keyof TrustedCompileTimeMeta['items'] | typeof encodedEqualsInputSpecialBreakerKey | typeof transformationsPossibleSpecialBreakerKey;
+
 export type TesterResult = {
-  key: string;
+  key: BreakerKey;
   title: string;
+  customTitle?: string;
   success: boolean;
 }[];
+
+export const SOrd = <T extends string = string>() => Ord as GOrd<T>;
 
 export const runTesters = ({
   decodeUser,
@@ -170,21 +180,23 @@ export const runTesters = ({
   meta,
 }: TesterArgs): TesterResult => [
   ...pipe(
-    Object.entries(BREAKERS),
+    BREAKERS,
+    toEntries,
     A.sort(
       pipe(
-        Ord,
+        SOrd<keyof typeof BREAKERS>(),
         contramap(([k]) => k)
       )
     ),
     A.map(([k, f]) => ({
       key: k,
       title: BREAKER_DESCRIPTIONS[k as keyof typeof BREAKERS],
+      customTitle: meta.explanations?.[k as keyof TrustedCompileTimeMeta['items']],
       success: decodeUser(f(igor))._tag === 'left',
     }))
   ),
   {
-    key: 'encodedEqualsInput',
+    key: encodedEqualsInputSpecialBreakerKey,
     title: 'decode then encode doesnt break the input',
     success: deepEqual(
       {
@@ -195,7 +207,7 @@ export const runTesters = ({
     ),
   },
   {
-    key: 'transformationsPossible',
+    key: transformationsPossibleSpecialBreakerKey,
     title: 'transformations are possible',
     success: pipe(
       igor,
@@ -215,13 +227,15 @@ export const runTesters = ({
     ),
   },
   ...pipe(
-    Object.entries(meta.items),
+    meta.items,
+    toEntries,
     A.map(([k, v]) => ({
       key: k,
       title:
         COMPILE_TIME_META_DESCRIPTIONS[
           k as keyof TrustedCompileTimeMeta['items']
         ],
+      customTitle: meta.explanations?.[k as keyof TrustedCompileTimeMeta['items']],
       success: v,
     }))
   ),
