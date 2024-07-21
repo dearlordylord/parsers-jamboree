@@ -1,5 +1,6 @@
 import { igor } from './checker';
 import { Result, TrustedCompileTimeMeta } from '@parsers-jamboree/common';
+import { Ord as GOrd } from 'fp-ts/Ord';
 type Breaker<T> = (t: T) => T;
 type Igor = typeof igor;
 type UserBreaker = Breaker<Igor>;
@@ -37,10 +38,15 @@ export type TesterArgs = {
     encodeUser: (u: unknown) => Result<unknown, unknown>;
     meta: TrustedCompileTimeMeta;
 };
+declare const encodedEqualsInputSpecialBreakerKey: "encodedEqualsInput";
+declare const transformationsPossibleSpecialBreakerKey: "transformationsPossible";
+export type BreakerKey = keyof typeof BREAKERS | keyof TrustedCompileTimeMeta['items'] | typeof encodedEqualsInputSpecialBreakerKey | typeof transformationsPossibleSpecialBreakerKey;
 export type TesterResult = {
-    key: string;
+    key: BreakerKey;
     title: string;
+    customTitle?: string;
     success: boolean;
 }[];
+export declare const SOrd: <T extends string = string>() => GOrd<T>;
 export declare const runTesters: ({ decodeUser, encodeUser, meta, }: TesterArgs) => TesterResult;
 export {};

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.runTesters = exports.BREAKER_DESCRIPTIONS = exports.BREAKERS = exports.addFileSystemDupeFile = exports.addFileSystemUFOType = exports.setProfileArtist = exports.setCreatedAtCyborgWar = exports.setHalfVisits = exports.setSubscriptionTypeBanana = exports.addFavouriteRed = exports.addFavouriteTiger = exports.clearName = exports.addTwoAtsToEmail = exports.prefixCustomerId = exports.switchDates = void 0;
+exports.runTesters = exports.SOrd = exports.BREAKER_DESCRIPTIONS = exports.BREAKERS = exports.addFileSystemDupeFile = exports.addFileSystemUFOType = exports.setProfileArtist = exports.setCreatedAtCyborgWar = exports.setHalfVisits = exports.setSubscriptionTypeBanana = exports.addFavouriteRed = exports.addFavouriteTiger = exports.clearName = exports.addTwoAtsToEmail = exports.prefixCustomerId = exports.switchDates = void 0;
 const tslib_1 = require("tslib");
 const checker_1 = require("./checker");
 const function_1 = require("fp-ts/function");
@@ -9,6 +9,7 @@ const common_1 = require("@parsers-jamboree/common");
 const utils_1 = require("./utils");
 const Ord_1 = require("fp-ts/Ord");
 const string_1 = require("fp-ts/string");
+const Record_1 = require("fp-ts/Record");
 const switchFields = (f1, f2) => (x) => (Object.assign(Object.assign({}, x), { [f1]: x[f2], [f2]: x[f1] }));
 // typing isn't great, can break runtime with wrong "m"...
 const mutateField = (m) => (f) => (x) => (Object.assign(Object.assign({}, x), { [f]: m(x[f]) }));
@@ -63,8 +64,9 @@ exports.BREAKER_DESCRIPTIONS = {
     prefixCustomerId: 'Adds an invalid prefix to the stripeId field',
     addTwoAtsToEmail: 'Renders the email invalid by adding two @s',
     clearName: 'Clears the name field',
-    addFavouriteTiger: 'Adds an invalid colour to the favouriteColours field. Enough said.',
-    addFavouriteRed: `Adds a duplicated valid colour to the favouriteColours field. Although in some cases it's ok, other times I'd like to have no garbage in my database. Having duplicated values in a collection with "set" semantics means that one side of interaction doesn't really know what it's doing, and this is a potential timebomb better to fix the earliest.`,
+    addFavouriteTiger: 'Adds an invalid colour to the favouriteColours field.',
+    // Although in some cases it's ok, other times I'd like to have no garbage in my database. Having duplicated values in a collection with "set" semantics means that one side of interaction doesn't really know what it's doing, and this is a potential timebomb better to fix the earliest.
+    addFavouriteRed: `Adds a duplicated valid colour to the favouriteColours field.`,
     setSubscriptionTypeBanana: 'Sets the subscription field to banana',
     setHalfVisits: 'Renders the visits field to be a float instead of an integer',
     setCreatedAtCyborgWar: 'Sets invalid createdAt date',
@@ -76,16 +78,24 @@ const COMPILE_TIME_META_DESCRIPTIONS = {
     branded: 'Branded types are supported',
     typedErrors: 'Typed errors are supported',
     templateLiterals: 'Template literals are supported',
-    emailFormatAmbiguityIsAccountedFor: `Email format ambiguity is accounted for either in API or in Docs. The library doesn't perpetuate irresponsible approach to email validation.`
+    emailFormatAmbiguityIsAccountedFor: `Email format ambiguity is accounted for either in API or in Docs. The library doesn't perpetuate irresponsible approach to email validation.`,
 };
+const encodedEqualsInputSpecialBreakerKey = 'encodedEqualsInput';
+const transformationsPossibleSpecialBreakerKey = 'transformationsPossible';
+const SOrd = () => string_1.Ord;
+exports.SOrd = SOrd;
 const runTesters = ({ decodeUser, encodeUser, meta, }) => [
-    ...(0, function_1.pipe)(Object.entries(exports.BREAKERS), A.sort((0, function_1.pipe)(string_1.Ord, (0, Ord_1.contramap)(([k]) => k))), A.map(([k, f]) => ({
-        key: k,
-        title: exports.BREAKER_DESCRIPTIONS[k],
-        success: decodeUser(f(checker_1.igor))._tag === 'left',
-    }))),
+    ...(0, function_1.pipe)(exports.BREAKERS, Record_1.toEntries, A.sort((0, function_1.pipe)((0, exports.SOrd)(), (0, Ord_1.contramap)(([k]) => k))), A.map(([k, f]) => {
+        var _a;
+        return ({
+            key: k,
+            title: exports.BREAKER_DESCRIPTIONS[k],
+            customTitle: (_a = meta.explanations) === null || _a === void 0 ? void 0 : _a[k],
+            success: decodeUser(f(checker_1.igor))._tag === 'left',
+        });
+    })),
     {
-        key: 'encodedEqualsInput',
+        key: encodedEqualsInputSpecialBreakerKey,
         title: 'decode then encode doesnt break the input',
         success: (0, utils_1.deepEqual)({
             _tag: 'right',
@@ -93,17 +103,21 @@ const runTesters = ({ decodeUser, encodeUser, meta, }) => [
         }, (0, function_1.pipe)(checker_1.igor, JSON.stringify, JSON.parse, decodeUser, (0, common_1.chain)(encodeUser))),
     },
     {
-        key: 'transformationsPossible',
+        key: transformationsPossibleSpecialBreakerKey,
         title: 'transformations are possible',
         success: (0, function_1.pipe)(checker_1.igor, JSON.stringify, JSON.parse, decodeUser, (0, common_1.chain)((v) => (v /*don't bother with decoded type here; outputs are various*/ === null || v === void 0 ? void 0 : v['favouriteColours']) instanceof Set
             ? { _tag: 'right', value: v }
             : { _tag: 'left', error: 'transformations are not possible' }), (v) => v._tag === 'right'),
     },
-    ...(0, function_1.pipe)(Object.entries(meta.items), A.map(([k, v]) => ({
-        key: k,
-        title: COMPILE_TIME_META_DESCRIPTIONS[k],
-        success: v,
-    }))),
+    ...(0, function_1.pipe)(meta.items, Record_1.toEntries, A.map(([k, v]) => {
+        var _a;
+        return ({
+            key: k,
+            title: COMPILE_TIME_META_DESCRIPTIONS[k],
+            customTitle: (_a = meta.explanations) === null || _a === void 0 ? void 0 : _a[k],
+            success: v,
+        });
+    })),
 ];
 exports.runTesters = runTesters;
 //# sourceMappingURL=breaker.js.map

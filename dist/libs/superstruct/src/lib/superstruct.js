@@ -87,8 +87,8 @@ exports.meta = {
     },
     explanations: {
         typedErrors: 'Need for instanceOf runtime check, not good enough',
-        emailFormatAmbiguityIsAccountedFor: 'The user of the library is prompted to create their own custom email validator.'
-    }
+        emailFormatAmbiguityIsAccountedFor: 'The user of the library is prompted to create their own custom email validator.',
+    },
 };
 const decodeUser = (u) => {
     try {
