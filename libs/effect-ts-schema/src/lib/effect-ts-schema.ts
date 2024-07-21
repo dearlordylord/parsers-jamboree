@@ -24,7 +24,10 @@ const Email = NonEmptyString.pipe(
 
 const StripeIdBrand = Symbol.for('StripeId');
 
-const StripeId = Schema.TemplateLiteral(Schema.Literal('cus_'/*can be dryed*/), Schema.String)
+const StripeId = Schema.TemplateLiteral(
+  Schema.Literal('cus_' /*can be dryed*/),
+  Schema.String
+)
   .pipe(Schema.pattern(/^cus_[a-zA-Z0-9]{14,}$/)) // extra check for the second part
   .pipe(Schema.brand(StripeIdBrand));
 
@@ -185,7 +188,7 @@ export const meta: TrustedCompileTimeMeta = {
   },
   explanations: {
     emailFormatAmbiguityIsAccountedFor: `A default method purposely is not provided, disclaimer is there https://github.com/effect-ts/effect/tree/main/packages/schema#email`,
-  }
+  },
 };
 
 // utils

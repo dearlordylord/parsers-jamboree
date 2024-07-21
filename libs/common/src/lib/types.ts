@@ -13,4 +13,4 @@ export type TrustedCompileTimeMetaItems = {
 
 export type TrustedCompileTimeMetaExplanations = {
   [K in keyof TrustedCompileTimeMetaItems]?: string;
-}
+};

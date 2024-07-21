@@ -95,10 +95,11 @@ export const meta: TrustedCompileTimeMeta = {
   },
   explanations: {
     branded: 'Can be simulated with decode/encode but no native support',
-    templateLiterals: 'Can be simulated with decode/encode but no native support',
+    templateLiterals:
+      'Can be simulated with decode/encode but no native support',
     typedErrors: 'No compile time support, we have to catch runtime',
     emailFormatAmbiguityIsAccountedFor: `A default email format check method doesn't work so I assume it's not defined at all. See also Ajv email explanation for more context.`,
-  }
+  },
 };
 
 export const decodeUser = (u: unknown): Result<ValueError[], User> => {

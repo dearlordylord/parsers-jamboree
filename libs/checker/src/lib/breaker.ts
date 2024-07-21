@@ -71,9 +71,9 @@ export const setHalfVisits: UserBreaker = mutateField((n: number) =>
   n % 1 === 0 ? n + 0.5 : n
 )('visits');
 
-export const setCreatedAtCyborgWar: UserBreaker = mutateField(
-  constant('0')
-)('createdAt');
+export const setCreatedAtCyborgWar: UserBreaker = mutateField(constant('0'))(
+  'createdAt'
+);
 
 export const setProfileArtist: UserBreaker = mutateField(
   constant({
@@ -129,15 +129,17 @@ export const BREAKER_DESCRIPTIONS: {
   prefixCustomerId: 'Adds an invalid prefix to the stripeId field',
   addTwoAtsToEmail: 'Renders the email invalid by adding two @s',
   clearName: 'Clears the name field',
-  addFavouriteTiger: 'Adds an invalid colour to the favouriteColours field. Enough said.',
-  addFavouriteRed:
-    `Adds a duplicated valid colour to the favouriteColours field. Although in some cases it's ok, other times I'd like to have no garbage in my database. Having duplicated values in a collection with "set" semantics means that one side of interaction doesn't really know what it's doing, and this is a potential timebomb better to fix the earliest.`,
+  addFavouriteTiger:
+    'Adds an invalid colour to the favouriteColours field. Enough said.',
+  addFavouriteRed: `Adds a duplicated valid colour to the favouriteColours field. Although in some cases it's ok, other times I'd like to have no garbage in my database. Having duplicated values in a collection with "set" semantics means that one side of interaction doesn't really know what it's doing, and this is a potential timebomb better to fix the earliest.`,
   setSubscriptionTypeBanana: 'Sets the subscription field to banana',
   setHalfVisits: 'Renders the visits field to be a float instead of an integer',
   setCreatedAtCyborgWar: 'Sets invalid createdAt date',
   setProfileArtist: 'Sets the valid profile field to an invalid structure',
-  addFileSystemUFOType: 'An enum test not unlike the TIger test, but in composition with recursive data structures.',
-  addFileSystemDupeFile: 'Adds a duplicated value to the tree. My tree has the “unique list” semantics, so that shouldn’t be possible.',
+  addFileSystemUFOType:
+    'An enum test not unlike the TIger test, but in composition with recursive data structures.',
+  addFileSystemDupeFile:
+    'Adds a duplicated value to the tree. My tree has the “unique list” semantics, so that shouldn’t be possible.',
 };
 
 const COMPILE_TIME_META_DESCRIPTIONS: {
@@ -146,7 +148,7 @@ const COMPILE_TIME_META_DESCRIPTIONS: {
   branded: 'Branded types are supported',
   typedErrors: 'Typed errors are supported',
   templateLiterals: 'Template literals are supported',
-  emailFormatAmbiguityIsAccountedFor: `Email format ambiguity is accounted for either in API or in Docs. The library doesn't perpetuate irresponsible approach to email validation.`
+  emailFormatAmbiguityIsAccountedFor: `Email format ambiguity is accounted for either in API or in Docs. The library doesn't perpetuate irresponsible approach to email validation.`,
 };
 
 export type TesterArgs = {
@@ -169,10 +171,12 @@ export const runTesters = ({
 }: TesterArgs): TesterResult => [
   ...pipe(
     Object.entries(BREAKERS),
-    A.sort(pipe(
-      Ord,
-      contramap(([k]) => k)
-    )),
+    A.sort(
+      pipe(
+        Ord,
+        contramap(([k]) => k)
+      )
+    ),
     A.map(([k, f]) => ({
       key: k,
       title: BREAKER_DESCRIPTIONS[k as keyof typeof BREAKERS],
@@ -214,7 +218,10 @@ export const runTesters = ({
     Object.entries(meta.items),
     A.map(([k, v]) => ({
       key: k,
-      title: COMPILE_TIME_META_DESCRIPTIONS[k as keyof TrustedCompileTimeMeta['items']],
+      title:
+        COMPILE_TIME_META_DESCRIPTIONS[
+          k as keyof TrustedCompileTimeMeta['items']
+        ],
       success: v,
     }))
   ),

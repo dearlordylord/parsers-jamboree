@@ -13,18 +13,21 @@ import * as RA from 'fp-ts/ReadOnlyArray';
 import { pipe } from 'fp-ts/function';
 import { Ord } from 'fp-ts/string';
 
-export const LIBS = pipe([
-  'schemata-ts',
-  'zod',
-  'arktype',
-  'effect-schema',
-  'typebox',
-  'valibot',
-  'runtypes',
-  'ajv',
-  'yup',
-  'superstruct',
-] as const, RA.sort(Ord));
+export const LIBS = pipe(
+  [
+    'schemata-ts',
+    'zod',
+    'arktype',
+    'effect-schema',
+    'typebox',
+    'valibot',
+    'runtypes',
+    'ajv',
+    'yup',
+    'superstruct',
+  ] as const,
+  RA.sort(Ord)
+);
 
 export const libRuntimes: {
   [K in (typeof LIBS)[number]]: TesterArgs;

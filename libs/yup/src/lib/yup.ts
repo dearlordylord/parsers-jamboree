@@ -28,7 +28,7 @@ let userSchema = object({
   //   return new Set(v);
   // }),
   favouriteColours: mixed(
-    (input: any): input is Set<typeof COLOURS[number] | `#${string}`> =>
+    (input: any): input is Set<(typeof COLOURS)[number] | `#${string}`> =>
       input instanceof
         Set /*parse/validate the contents yourself, propagate errors yourself?*/ &&
       [...input.values()].every(
@@ -93,7 +93,7 @@ export const meta: TrustedCompileTimeMeta = {
   },
   explanations: {
     emailFormatAmbiguityIsAccountedFor: `Default method is present with a warning https://github.com/jquense/yup?tab=readme-ov-file#stringemailmessage-string--function-schema`,
-  }
+  },
 };
 
 export const decodeUser = (u: unknown): Result<unknown, User> => {
