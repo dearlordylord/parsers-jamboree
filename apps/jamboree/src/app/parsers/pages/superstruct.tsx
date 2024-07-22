@@ -11,7 +11,6 @@ import { meta } from '@parsers-jamboree/valibot/valibot';
 export const SuperstructPage = (): React.ReactElement => {
   return (
     <div>
-      <h1>Superstruct Page</h1>
       <ParserComponent
         code={code}
         encodeUser={encodeUser}

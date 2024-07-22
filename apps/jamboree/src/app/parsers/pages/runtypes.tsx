@@ -12,7 +12,6 @@ import { ParserComponent } from '../component';
 export const RuntypesPage = (): React.ReactElement => {
   return (
     <div>
-      <h1>Runtypes Page</h1>
       <ParserComponent
         code={code}
         encodeUser={encodeUser}

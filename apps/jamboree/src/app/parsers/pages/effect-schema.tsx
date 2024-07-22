@@ -11,7 +11,6 @@ import { meta } from '@parsers-jamboree/valibot/valibot';
 export const EffectSchemaPage = (): React.ReactElement => {
   return (
     <div>
-      <h1>Effect-schema Page</h1>
       <ParserComponent
         code={code}
         encodeUser={encodeUser}

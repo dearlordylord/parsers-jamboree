@@ -8,7 +8,6 @@ import { ParserComponent } from '../component';
 export const YupPage = (): React.ReactElement => {
   return (
     <div>
-      <h1>Yup Page</h1>
       <ParserComponent
         code={code}
         encodeUser={encodeUser}

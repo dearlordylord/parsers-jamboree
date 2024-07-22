@@ -12,7 +12,6 @@ import { ParserComponent } from '../component';
 export const ArktypePage = (): React.ReactElement => {
   return (
     <div>
-      <h1>Arktype Page</h1>
       <ParserComponent
         code={code}
         encodeUser={encodeUser}

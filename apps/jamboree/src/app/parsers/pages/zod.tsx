@@ -8,7 +8,6 @@ import { ParserComponent } from '../component';
 export const ZodPage = (): React.ReactElement => {
   return (
     <div>
-      <h1>Zod Page</h1>
       <ParserComponent
         code={code}
         encodeUser={encodeUser}

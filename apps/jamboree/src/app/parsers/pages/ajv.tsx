@@ -8,7 +8,6 @@ import { ParserComponent } from '../component';
 export const AjvPage = (): React.ReactElement => {
   return (
     <div>
-      <h1>Ajv Page</h1>
       <ParserComponent
         code={code}
         encodeUser={encodeUser}

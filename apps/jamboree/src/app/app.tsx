@@ -10,40 +10,47 @@ import { LIBS } from './parsers/runtimes';
 export function App() {
   return (
     <div>
-      {/* START: routes */}
-      {/* These routes and navigation have been generated for you */}
-      {/* Feel free to move and update them to fit your needs */}
-      <br />
-      <hr />
-      <br />
-      <div role="navigation">
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          {LIBS.map((name) => (
-            <li key={name}>
-              <Link to={`/${name}`}>{rogues[name].label}</Link>
-              <span> </span>
-              <span style={{ fontSize: '0.5em' }}>
-                <a href={rogues[name].link} target="_blank" rel="noreferrer">
-                  {rogues[name].link}
-                </a>
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
       <Routes>
         <Route
           path="/"
           element={
             <div>
-              <ParserTable />
+              <br/>
+              <hr/>
+              <br/>
+              <div role="navigation">
+                <ul>
+                  <li>
+                    <Link to="/">Home</Link>
+                  </li>
+                  <li>
+                    <Link to="/summary">Summary</Link>
+                  </li>
+                  {LIBS.map((name) => (
+                    <li key={name}>
+                      <Link to={`/${name}`}>{rogues[name].label}</Link>
+                      <span> </span>
+                      <span style={{fontSize: '0.5em'}}>
+                <a href={rogues[name].link} target="_blank" rel="noreferrer">
+                  {rogues[name].link}
+                </a>
+              </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           }
         />
-        {Object.entries(rogues).map(([name, { label, link }]) => (
+        <Route
+          path="/summary"
+          element={
+            <div>
+              <ParserTable/>
+            </div>
+          }
+        />
+        {Object.entries(rogues).map(([name, {label, link}]) => (
           <Route
             key={name}
             path={`/${name}`}
