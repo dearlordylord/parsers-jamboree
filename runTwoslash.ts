@@ -19,6 +19,7 @@ const schemataTsPath = './libs/schemata-ts/src/lib/schemata-ts.ts';
 const superstructPath = './libs/superstruct/src/lib/superstruct.ts';
 const typeboxPath = './libs/typebox/src/lib/typebox.ts';
 const valibotPath = './libs/valibot/src/lib/valibot.ts';
+const valitaPath = './libs/valita/src/lib/valita.ts';
 const yupPath = './libs/yup/src/lib/yup.ts';
 const zodPath = './libs/zod/src/lib/zod.ts';
 
@@ -33,6 +34,7 @@ const sources: {
   superstruct: superstructPath,
   typebox: typeboxPath,
   valibot: valibotPath,
+  valita: valitaPath,
   yup: yupPath,
   zod: zodPath,
 };

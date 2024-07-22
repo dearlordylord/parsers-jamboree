@@ -9,6 +9,7 @@ import * as runtypes from '@parsers-jamboree/runtypes/runtypes';
 import * as ajv from '@parsers-jamboree/ajv/ajv';
 import * as yup from '@parsers-jamboree/yup/yup';
 import * as superstruct from '@parsers-jamboree/superstruct/superstruct';
+import * as valita from '@parsers-jamboree/valita/valita';
 import * as RA from 'fp-ts/ReadOnlyArray';
 import { pipe } from 'fp-ts/function';
 import { Ord } from 'fp-ts/string';
@@ -25,6 +26,7 @@ export const LIBS = pipe(
     'ajv',
     'yup',
     'superstruct',
+    'valita',
   ] as const,
   RA.sort(Ord)
 );
@@ -33,13 +35,14 @@ export const libRuntimes: {
   [K in (typeof LIBS)[number]]: TesterArgs;
 } = {
   'schemata-ts': schemataTs,
-  zod: zod,
-  arktype: arktype,
+  zod,
+  arktype,
   'effect-schema': effectSchema,
-  typebox: typebox,
-  valibot: valibot,
-  runtypes: runtypes,
-  ajv: ajv,
-  yup: yup,
-  superstruct: superstruct,
+  typebox,
+  valibot,
+  runtypes,
+  ajv,
+  yup,
+  superstruct,
+  valita,
 };

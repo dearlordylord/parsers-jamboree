@@ -4,6 +4,7 @@ import { ArktypePage } from './pages/arktype';
 import { EffectSchemaPage } from './pages/effect-schema';
 import { TypeboxPage } from './pages/typebox';
 import { ValibotPage } from './pages/valibot';
+import { ValitaPage } from './pages/valita';
 import { RuntypesPage } from './pages/runtypes';
 import { AjvPage } from './pages/ajv';
 import { YupPage } from './pages/yup';
@@ -45,6 +46,7 @@ export const pages: {
   ajv: AjvPage,
   yup: YupPage,
   superstruct: SuperstructPage,
+  valita: ValitaPage,
 };
 
 export const rogues: Rogues = {
@@ -87,6 +89,10 @@ export const rogues: Rogues = {
   superstruct: {
     label: 'superstruct',
     link: 'https://github.com/ianstormtaylor/superstruct',
+  },
+  valita: {
+    label: 'valita',
+    link: 'https://github.com/badrap/valita',
   },
 };
 

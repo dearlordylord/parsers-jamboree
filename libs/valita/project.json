@@ -1,0 +1,19 @@
+{
+  "name": "valita",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/valita/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/valita",
+        "main": "libs/valita/src/index.ts",
+        "tsConfig": "libs/valita/tsconfig.lib.json",
+        "assets": ["libs/valita/*.md"]
+      }
+    }
+  }
+}

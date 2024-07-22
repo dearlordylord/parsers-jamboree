@@ -84,15 +84,9 @@ const User = Type.Transform(
   Type.Intersect([
     Type.Object({
       name: Type.String({
-        minLength: 1, // TODO branded
+        minLength: 1,
       }),
-      // email: Type.String({
-      //   // unknown format "email" runtime error despite being in types
-      //   format: 'email',
-      // }),
       email: Email,
-      // where's ISO8601? opinionated
-      // createdAt: Type.Date(),
       subscription: SubscriptionType,
       stripeId: StripeId,
       visits: Type.Integer({
