@@ -61,9 +61,11 @@ const FileSystem =   Type.Recursive(Self => Type.Intersect([Type.Object({
   }),
   Type.Object({
     type: Type.Literal('directory'),
-    children: Type.Transform(
-      Type.Array(Self)
-    ).Decode((v: never[]/*can't check for uniqueness of name here; the values type is "never"*/) => v).Encode(v => v),
+    // transform doesn't work if the type is recursive https://github.com/sinclairzx81/typebox/issues/895
+    // children: Type.Transform(
+    //   Type.Array(Self)
+    // ).Decode((v: never[]/*can't check for uniqueness of name here; the values type is "never"*/) => v).Encode(v => v),
+    children: Type.Array(Self),
   }),
 ])]));
 
