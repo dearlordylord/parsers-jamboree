@@ -27,9 +27,8 @@ export const Breaker = ({
     <div>
       <table>
         <tbody>
-
             {tests.map(({ key, title, customTitle, success }) => {
-              return <tr>
+              return <tr key={key}>
                 <td><FeatureNameAndExplanation name={key} explanation={title} customExplanation={customTitle}/></td>
                 {(() => {
                   try {

@@ -67,50 +67,71 @@ const FileSystem =   Type.Recursive(Self => Type.Intersect([Type.Object({
   }),
 ])]));
 
-const User = Type.Object({
-  name: Type.String({
-    minLength: 1, // TODO branded
-  }),
-  // email: Type.String({
-  //   // unknown format "email" runtime error despite being in types
-  //   format: 'email',
-  // }),
-  email: Email,
-  // where's ISO8601? opinionated
-  // createdAt: Type.Date(),
+const DatesUnordered = Type.Object({
   createdAt: IsoDate,
   updatedAt: IsoDate,
-  subscription: SubscriptionType,
-  stripeId: StripeId,
-  visits: Type.Integer({
-    minimum: 0, // TODO how to define my own checks? transform?
-  }),
-  favouriteColours: Type.Transform(Type.Array(ColourOrHex, { uniqueItems: true }))
-    .Decode((value) => {
-      const r = new Set(value);
-      // already done in { uniqueItems: true } but won't hurt to check again, especially that we converted already
-      if (r.size !== value.length) {
-        throw new Error('Expected unique items');
-      }
-      return r;
-    })
-    .Encode((value) => [...value]),
-  profile: Type.Union([
-    Type.Object({
-      type: Type.Literal('listener'),
-      boughtTracks: Type.Integer({
-        minimum: 0,
-      }),
-    }),
-    Type.Object({
-      type: Type.Literal('artist'),
-      publishedTracks: Type.Integer({
-        minimum: 0,
-      }),
-    }),
-  ]),
-  fileSystem: FileSystem,
 });
+
+// "Cannot intersect transform types" - gives an error, not hiding it - respectable
+// const Dates = Type.Transform(DatesUnordered).Decode((v) => {
+//   if (v.createdAt > v.updatedAt) {
+//     throw new Error('createdAt must be less or equal than updatedAt');
+//   }
+//   return v;
+// }).Encode(v => v);
+
+const User = Type.Transform(
+  Type.Intersect([
+    Type.Object({
+      name: Type.String({
+        minLength: 1, // TODO branded
+      }),
+      // email: Type.String({
+      //   // unknown format "email" runtime error despite being in types
+      //   format: 'email',
+      // }),
+      email: Email,
+      // where's ISO8601? opinionated
+      // createdAt: Type.Date(),
+      subscription: SubscriptionType,
+      stripeId: StripeId,
+      visits: Type.Integer({
+        minimum: 0, // TODO how to define my own checks? transform?
+      }),
+      favouriteColours: Type.Transform(Type.Array(ColourOrHex, { uniqueItems: true }))
+        .Decode((value) => {
+          const r = new Set(value);
+          // already done in { uniqueItems: true } but won't hurt to check again, especially that we converted already
+          if (r.size !== value.length) {
+            throw new Error('Expected unique items');
+          }
+          return r;
+        })
+        .Encode((value) => [...value]),
+      profile: Type.Union([
+        Type.Object({
+          type: Type.Literal('listener'),
+          boughtTracks: Type.Integer({
+            minimum: 0,
+          }),
+        }),
+        Type.Object({
+          type: Type.Literal('artist'),
+          publishedTracks: Type.Integer({
+            minimum: 0,
+          }),
+        }),
+      ]),
+      fileSystem: FileSystem,
+    }),
+    DatesUnordered,
+  ])
+).Decode((v) => {
+  if (v.createdAt > v.updatedAt) {
+    throw new Error('createdAt must be less or equal than updatedAt');
+  }
+  return v;
+}).Encode(v => v);
 
 type S = User['stripeId'];
 

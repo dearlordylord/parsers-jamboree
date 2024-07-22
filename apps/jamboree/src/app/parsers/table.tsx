@@ -98,7 +98,7 @@ export const ParserTable = (): React.ReactElement => {
     <div>
       <table>
         <thead>
-          <tr>
+          <tr key="header">
             <th></th>
             {LIBS.map((lib) => (
               <th key={lib}>
@@ -109,7 +109,7 @@ export const ParserTable = (): React.ReactElement => {
         </thead>
         <tbody>
           {firstColumn.map(({ name, title }, i) => (
-            <tr>
+            <tr key={`${name}-${i}`}>
               <td><FeatureNameAndExplanation name={name} explanation={title}/></td>
               {results.map((row) => (
                 <td key={i}>{row[i].c}</td>
