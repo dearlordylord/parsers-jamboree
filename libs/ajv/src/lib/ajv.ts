@@ -194,6 +194,7 @@ export const meta: TrustedCompileTimeMeta = {
     typedErrors: false,
     templateLiterals: false,
     emailFormatAmbiguityIsAccountedFor: true,
+    acceptsTypedInput: false
   },
   explanations: {
     typedErrors:

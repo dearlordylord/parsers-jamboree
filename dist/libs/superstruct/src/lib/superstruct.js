@@ -84,6 +84,7 @@ exports.meta = {
         typedErrors: false,
         templateLiterals: false,
         emailFormatAmbiguityIsAccountedFor: true,
+        acceptsTypedInput: false,
     },
     explanations: {
         typedErrors: 'Need for instanceOf runtime check, not good enough',

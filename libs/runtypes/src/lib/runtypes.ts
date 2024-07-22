@@ -190,9 +190,7 @@ export const decodeUser = (u: unknown): Result<string, User> => {
     // }
     return {
       _tag: 'right',
-      value: {
-        ...u,
-      },
+      value: u,
     };
   })(firstLayerResultMapped);
 };
@@ -203,6 +201,7 @@ export const meta: TrustedCompileTimeMeta = {
     typedErrors: true,
     templateLiterals: true,
     emailFormatAmbiguityIsAccountedFor: true,
+    acceptsTypedInput: false,
   },
   explanations: {
     emailFormatAmbiguityIsAccountedFor: `A default method for email validation is not provided, which makes this check pass.`,

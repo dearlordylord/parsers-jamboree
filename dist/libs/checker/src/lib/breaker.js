@@ -79,6 +79,7 @@ const COMPILE_TIME_META_DESCRIPTIONS = {
     typedErrors: 'Typed errors are supported',
     templateLiterals: 'Template literals are supported',
     emailFormatAmbiguityIsAccountedFor: `Email format ambiguity is accounted for either in API or in Docs. The library doesn't perpetuate irresponsible approach to email validation.`,
+    acceptsTypedInput: 'The library accepts not only unknown/any types as validation input, but more refined "intermediate" types as well.',
 };
 const encodedEqualsInputSpecialBreakerKey = 'encodedEqualsInput';
 const transformationsPossibleSpecialBreakerKey = 'transformationsPossible';

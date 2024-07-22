@@ -100,6 +100,7 @@ const userSchema = zod_1.z
     return zod_1.z.NEVER;
 });
 const decodeUser = (u) => {
+    userSchema.parse(u);
     const result = userSchema.safeParse(u);
     return mapResult(result);
 };
@@ -115,6 +116,7 @@ exports.meta = {
         typedErrors: true,
         templateLiterals: false,
         emailFormatAmbiguityIsAccountedFor: false,
+        acceptsTypedInput: false,
     },
     explanations: {
         templateLiterals: 'Recognized but not supported yet https://github.com/colinhacks/zod/issues/566#issuecomment-890422215 https://github.com/colinhacks/zod/issues/419',

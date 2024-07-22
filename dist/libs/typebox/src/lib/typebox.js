@@ -57,6 +57,7 @@ exports.meta = {
         typedErrors: false,
         templateLiterals: false,
         emailFormatAmbiguityIsAccountedFor: true,
+        acceptsTypedInput: false,
     },
     explanations: {
         branded: 'Can be simulated with decode/encode but no native support',

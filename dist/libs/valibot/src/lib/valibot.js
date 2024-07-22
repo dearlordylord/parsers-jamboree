@@ -96,6 +96,7 @@ exports.meta = {
         typedErrors: true,
         templateLiterals: false,
         emailFormatAmbiguityIsAccountedFor: true,
+        acceptsTypedInput: false,
     },
     explanations: {
         templateLiterals: "Not natively supported + I didn't manage to hack them into working without casting, see code comments.",

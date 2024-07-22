@@ -122,6 +122,7 @@ const userSchema = z
 type User = z.infer<typeof userSchema>;
 
 export const decodeUser = (u: unknown): Result<unknown, User> => {
+  userSchema.parse(u);
   const result = userSchema.safeParse(u);
   return mapResult(result);
 };
@@ -139,6 +140,7 @@ export const meta: TrustedCompileTimeMeta = {
     typedErrors: true,
     templateLiterals: false,
     emailFormatAmbiguityIsAccountedFor: false,
+    acceptsTypedInput: false,
   },
   explanations: {
     templateLiterals:

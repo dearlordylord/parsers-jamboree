@@ -9,6 +9,7 @@ export type TrustedCompileTimeMetaItems = {
   typedErrors: boolean;
   templateLiterals: boolean;
   emailFormatAmbiguityIsAccountedFor: boolean;
+  acceptsTypedInput: boolean;
 };
 
 export type TrustedCompileTimeMetaExplanations = {

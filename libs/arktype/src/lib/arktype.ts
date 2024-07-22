@@ -113,6 +113,7 @@ export const meta: TrustedCompileTimeMeta = {
     typedErrors: true,
     templateLiterals: false,
     emailFormatAmbiguityIsAccountedFor: false,
+    acceptsTypedInput: false,
   },
   explanations: {
     templateLiterals: 'WIP https://github.com/arktypeio/arktype/issues/491',
