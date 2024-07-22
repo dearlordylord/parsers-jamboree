@@ -5,8 +5,7 @@ import {
   decodeUser,
   meta,
 } from '@parsers-jamboree/runtypes/runtypes';
-import code from '../../../../../../libs/runtypes/src/lib/runtypes?raw';
-// import common from '../../../../../../libs/common/src/lib/common.ts?raw';
+import code from '../../../generated/runtypes.html?raw';
 import { ParserComponent } from '../component';
 
 export const RuntypesPage = (): React.ReactElement => {

@@ -4,7 +4,7 @@ import {
   encodeUser,
   decodeUser,
 } from '@parsers-jamboree/effect-ts-schema/effect-ts-schema';
-import code from '../../../../../../libs/effect-ts-schema/src/lib/effect-ts-schema?raw';
+import code from '../../../generated/effect-schema.html?raw';
 import { ParserComponent } from '../component';
 import { meta } from '@parsers-jamboree/valibot/valibot';
 

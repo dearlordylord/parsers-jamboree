@@ -4,7 +4,7 @@ import {
   encodeUser,
   decodeUser,
 } from '@parsers-jamboree/superstruct/superstruct';
-import code from '../../../../../../libs/superstruct/src/lib/superstruct?raw';
+import code from '../../../generated/superstruct.html?raw';
 import { ParserComponent } from '../component';
 import { meta } from '@parsers-jamboree/valibot/valibot';
 

@@ -78,29 +78,31 @@ const ProfileArtistSchema = S.Struct({
 
 const ProfileSchema = S.Union(ProfileListenerSchema, ProfileArtistSchema);
 
+const DirectoryTypeLiteral = S.Literal('directory');
 type FileSystem = (
   | {
-      readonly type: 'directory';
-      readonly children: readonly FileSystem[];
+    type: OutputOf<typeof DirectoryTypeLiteral>;
+      children: readonly FileSystem[];
     }
   | {
-      readonly type: 'file';
+    type: 'file';
     }
 ) & {
-  readonly name: S.NonEmptyString;
+  name: S.NonEmptyString;
 };
 
 export const FileSystemSchema: Schema<FileSystem, FileSystem> = S.Intersect(
   S.Union(
     S.Struct({
-      type: S.Literal('directory'),
+      type: DirectoryTypeLiteral,
       children: pipe(
         S.Array(S.Lazy('FileSystem', () => FileSystemSchema)),
         S.Refine(
           (c): c is FileSystem[] =>
             c.length === new Set(c.map((f) => f.name)).size,
           'Uniq files/dirs'
-        )
+        ),
+        S.Readonly // workaround for twoslash syntax highlighter; not strictly necessary here
       ),
     }),
     S.Struct({

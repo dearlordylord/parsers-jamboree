@@ -5,7 +5,7 @@ import {
   decodeUser,
   meta,
 } from '@parsers-jamboree/typebox/typebox';
-import code from '../../../../../../libs/typebox/src/lib/typebox?raw';
+import code from '../../../generated/typebox.html?raw';
 import { ParserComponent } from '../component';
 
 export const TypeboxPage = (): React.ReactElement => {

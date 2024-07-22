@@ -21,9 +21,9 @@ type Props<T, E, EE> = {
 };
 
 export const ParserComponent = <T, E, EE>({
-  code,
   encodeUser,
   validUser,
+  code,
   ...rest
 }: Props<T, E, EE>): React.ReactElement => {
   const defaultInput = JSON.stringify(validUser, null, 2);
@@ -56,7 +56,6 @@ export const ParserComponent = <T, E, EE>({
         ].sort();
   const printKeyOrderF = (k1: unknown, k2: unknown) =>
     printKeyOrder.indexOf(k1 as string) - printKeyOrder.indexOf(k2 as string);
-  const [parserCode, setParserCode] = useState(code);
   const [parsed, setParsed] = useState<Result<unknown, T>>({
     _tag: 'left',
     error:
@@ -122,7 +121,8 @@ export const ParserComponent = <T, E, EE>({
 
       <h2>Parser code</h2>
       <div>
-        <Highlighter content={parserCode} language="typescript" />
+        {/*<Highlighter content={parserCode} language="typescript" />*/}
+        <div dangerouslySetInnerHTML={{__html: code}}/>
       </div>
       <h2>Parsed result</h2>
       <div>

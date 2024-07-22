@@ -5,7 +5,7 @@ import {
   decodeUser,
   meta,
 } from '@parsers-jamboree/valibot/valibot';
-import code from '../../../../../../libs/valibot/src/lib/valibot?raw';
+import code from '../../../generated/valibot.html?raw';
 import { ParserComponent } from '../component';
 
 export const ValibotPage = (): React.ReactElement => {

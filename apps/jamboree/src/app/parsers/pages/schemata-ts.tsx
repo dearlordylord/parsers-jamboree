@@ -4,8 +4,7 @@ import {
   encodeUser,
   decodeUser,
 } from '@parsers-jamboree/schemata-ts/schemata-ts';
-import code from '../../../../../../libs/schemata-ts/src/lib/schemata-ts.ts?raw';
-// import common from '../../../../../../libs/common/src/lib/common.ts?raw';
+import code from '../../../generated/schemata-ts.html?raw';
 import { ParserComponent } from '../component';
 import { meta } from '@parsers-jamboree/valibot/valibot';
 
