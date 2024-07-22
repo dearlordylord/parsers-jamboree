@@ -1,4 +1,4 @@
-import { Type, StaticDecode } from '@sinclair/typebox';
+import { Type, StaticDecode, TObject, TIntersect, TString, TUnion, TArray, TRef } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
 import {
   COLOURS,
@@ -51,6 +51,22 @@ const Email = Type.Transform(
   .Decode((value) => value as typeof value & EmailBrand)
   .Encode((value) => value as Exclude<typeof value, EmailBrand>);
 
+const FileSystem =   Type.Recursive(Self => Type.Intersect([Type.Object({
+  name: Type.String({
+    minLength: 1,
+  }),
+}), Type.Union([
+  Type.Object({
+    type: Type.Literal('file'),
+  }),
+  Type.Object({
+    type: Type.Literal('directory'),
+    children: Type.Transform(
+      Type.Array(Self)
+    ).Decode((v: never[]/*can't check for uniqueness of name here; the values type is "never"*/) => v).Encode(v => v),
+  }),
+])]));
+
 const User = Type.Object({
   name: Type.String({
     minLength: 1, // TODO branded
@@ -69,9 +85,31 @@ const User = Type.Object({
   visits: Type.Integer({
     minimum: 0, // TODO how to define my own checks? transform?
   }),
-  favouriteColours: Type.Transform(Type.Array(ColourOrHex))
-    .Decode((value) => new Set(value))
+  favouriteColours: Type.Transform(Type.Array(ColourOrHex, { uniqueItems: true }))
+    .Decode((value) => {
+      const r = new Set(value);
+      // already done in { uniqueItems: true } but won't hurt to check again, especially that we converted already
+      if (r.size !== value.length) {
+        throw new Error('Expected unique items');
+      }
+      return r;
+    })
     .Encode((value) => [...value]),
+  profile: Type.Union([
+    Type.Object({
+      type: Type.Literal('listener'),
+      boughtTracks: Type.Integer({
+        minimum: 0,
+      }),
+    }),
+    Type.Object({
+      type: Type.Literal('artist'),
+      publishedTracks: Type.Integer({
+        minimum: 0,
+      }),
+    }),
+  ]),
+  fileSystem: FileSystem,
 });
 
 type S = User['stripeId'];

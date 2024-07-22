@@ -6,7 +6,7 @@ import {
   Result,
   SUBSCRIPTION_TYPES,
   TrustedCompileTimeMeta,
-} from '@parsers-jamboree/common';
+  } from '@parsers-jamboree/common';
 
 // formats don't seem to be type-checked; skipping
 // import addFormats from "ajv-formats"
