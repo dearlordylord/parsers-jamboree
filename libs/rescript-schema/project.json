@@ -1,0 +1,19 @@
+{
+  "name": "rescript-schema",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/rescript-schema/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/rescript-schema",
+        "main": "libs/rescript-schema/src/index.ts",
+        "tsConfig": "libs/rescript-schema/tsconfig.lib.json",
+        "assets": ["libs/rescript-schema/*.md"]
+      }
+    }
+  }
+}

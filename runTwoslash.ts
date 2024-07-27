@@ -22,6 +22,7 @@ const valibotPath = './libs/valibot/src/lib/valibot.ts';
 const valitaPath = './libs/valita/src/lib/valita.ts';
 const yupPath = './libs/yup/src/lib/yup.ts';
 const zodPath = './libs/zod/src/lib/zod.ts';
+const rescriptSchemaPath = './libs/rescript-schema/src/lib/rescript-schema.ts';
 
 const sources: {
   [K in (typeof LIBS)[number]]: string;
@@ -37,6 +38,7 @@ const sources: {
   valita: valitaPath,
   yup: yupPath,
   zod: zodPath,
+  'rescript-schema': rescriptSchemaPath,
 };
 
 const rewriteCommonLibPath = (code: string) => code.replace('@parsers-jamboree/common', './libs/common/src/index');

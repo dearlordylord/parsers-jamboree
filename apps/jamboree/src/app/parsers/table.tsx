@@ -9,6 +9,7 @@ import { RuntypesPage } from './pages/runtypes';
 import { AjvPage } from './pages/ajv';
 import { YupPage } from './pages/yup';
 import { SuperstructPage } from './pages/superstruct';
+import { RescriptSchemaPage } from './pages/rescript-schema';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BreakerKey, runTesters } from '@parsers-jamboree/checker/breaker';
@@ -48,6 +49,7 @@ export const pages: {
   yup: YupPage,
   superstruct: SuperstructPage,
   valita: ValitaPage,
+  'rescript-schema': RescriptSchemaPage,
 };
 
 export const rogues: Rogues = {
@@ -94,6 +96,10 @@ export const rogues: Rogues = {
   valita: {
     label: 'valita',
     link: 'https://github.com/badrap/valita',
+  },
+  'rescript-schema': {
+    label: 'rescript-schema',
+    link: 'https://github.com/DZakh/rescript-schema',
   },
 };
 

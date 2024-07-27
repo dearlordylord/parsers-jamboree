@@ -10,6 +10,7 @@ import * as ajv from '@parsers-jamboree/ajv/ajv';
 import * as yup from '@parsers-jamboree/yup/yup';
 import * as superstruct from '@parsers-jamboree/superstruct/superstruct';
 import * as valita from '@parsers-jamboree/valita/valita';
+import * as rescriptSchema from '@parsers-jamboree/rescript-schema/rescript-schema';
 import * as RA from 'fp-ts/ReadOnlyArray';
 import { pipe } from 'fp-ts/function';
 import { Ord } from 'fp-ts/string';
@@ -27,6 +28,7 @@ export const LIBS = pipe(
     'yup',
     'superstruct',
     'valita',
+    'rescript-schema',
   ] as const,
   RA.sort(Ord)
 );
@@ -45,4 +47,5 @@ export const libRuntimes: {
   yup,
   superstruct,
   valita,
+  'rescript-schema': rescriptSchema,
 };
