@@ -84,8 +84,8 @@ const SubscriptionType = enums(SUBSCRIPTION_TYPES);
 // loses the refinement after assign() https://github.com/ianstormtaylor/superstruct/issues/1188
 const IsoDateStringRange = refine(
   object({
-    createdAt: IsoDateString,
-    updatedAt: IsoDateString,
+    createdAt: IsoDate,
+    updatedAt: IsoDate,
   }),
   'DateRange',
   (value) => {
@@ -110,7 +110,7 @@ const uniqArray = <T>(s: Struct<T>) =>
   });
 
 const arrayToSet = <T>(s: Struct<T>) =>
-  coerce(array(s), set(s), (v) => new Set(v));
+  coerce(uniqArray(s), set(s), (v) => new Set(v));
 
 const FavouriteColours = arrayToSet(ColourOrHex);
 

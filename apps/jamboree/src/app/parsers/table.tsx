@@ -17,6 +17,7 @@ import IconHeartBroken from '~icons/mdi/heart-broken';
 import { libRuntimes, LIBS } from './runtimes';
 import { headStrict } from '../utils';
 import { FeatureNameAndExplanation } from './featureNameAndExplanation';
+import * as fs from 'node:fs';
 
 export const parserTableColumn = (lib: (typeof LIBS)[number]) => [
   ...runTesters(libRuntimes[lib]).map(({ key, title, success }) => ({
