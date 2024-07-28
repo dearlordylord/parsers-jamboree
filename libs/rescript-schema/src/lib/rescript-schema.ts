@@ -1,8 +1,19 @@
 import * as S from "rescript-schema";
 import { COLOURS, Result, SUBSCRIPTION_TYPES, TrustedCompileTimeMeta } from '@parsers-jamboree/common';
 
+type TupleToLiteral<T extends readonly unknown[]> = T extends readonly [
+  infer K,
+  ...infer REST
+]
+  ? K extends string
+    ? [S.Schema<K>, ...TupleToLiteral<REST>]
+    : never
+  : [];
+
 // no brands
-const subscriptionSchema = S.literal(SUBSCRIPTION_TYPES);
+const subscriptionSchema = S.union(
+  SUBSCRIPTION_TYPES.map(S.literal) as TupleToLiteral<typeof SUBSCRIPTION_TYPES>
+);
 
 const hexColourRegexString = `^#[a-fA-F0-9]{6}$`;
 const hexColourSchema = S.refine(S.string, (value, s) => {
@@ -12,11 +23,19 @@ const hexColourSchema = S.refine(S.string, (value, s) => {
     }
 });
 
-const colourSchema = S.union([S.literal(COLOURS), hexColourSchema]);
+const colourSchema = S.union([
+  ...COLOURS.map(S.literal) as TupleToLiteral<typeof COLOURS>
+  , hexColourSchema]);
 
 const timeConcernTimelessSchema = S.object({
   createdAt: S.datetime(S.string),
   updatedAt: S.datetime(S.string),
+});
+
+const timeConcernSchema = S.refine(timeConcernTimelessSchema, (value, s) => {
+  if (value.createdAt > value.updatedAt) {
+    throw s.fail("createdAt must be less or equal than updatedAt")
+  }
 });
 
 const integerSchema = S.refine(S.number, (value, s) => {
@@ -31,6 +50,7 @@ const nonNegativeNumberSchema = S.refine(S.number, (value, s) => {
   }
 });
 
+/// note: union silently loses refinements; it makes certain tests fail; I consider it an incomplete feature
 const nonNegativeIntegerSchema = S.union([nonNegativeNumberSchema, integerSchema]);
 
 const stripeIdRegexString = `^cus_[a-zA-Z0-9]{14,}$`;
@@ -54,13 +74,19 @@ const setSchema = <T>(schema: S.Schema<T>) => S.transform(
   // TODO can the uniqueness be checked here?
   a => new Set(a),
   a => Array.from(a)
-)
+);
+
+const nonEmptyStringSchema = S.refine(S.string, (value, s) => {
+  if (value.length === 0) {
+    throw s.fail("Must be non-empty")
+  }
+});
 
 const userSchema = S.merge(
-  timeConcernTimelessSchema,
+  timeConcernSchema,
   S.object({
-    name: S.string,
-    email: S.email(S.string),
+    name: nonEmptyStringSchema,
+    email: S.email(nonEmptyStringSchema),
     subscription: subscriptionSchema,
     stripeId: stripeIdSchema,
     visits: nonNegativeIntegerSchema,
@@ -86,11 +112,11 @@ export const decodeUser = (u: unknown): Result<unknown, User> => mapResult(userS
 
 export const encodeUser = (u: User): Result<unknown, unknown> => mapResult(userSchema.serialize(u));
 
-const mapResult = <T>(r: S.Result<T>): Result<S.Error,T> => {
+const mapResult = <T>(r: S.Result<T>): Result<string,T> => {
   if (r.success) {
     return { _tag: 'right', value: r.value };
   } else {
-    return { _tag: 'left', error: r.error };
+    return { _tag: 'left', error: r.error.message };
   }
 };
 
