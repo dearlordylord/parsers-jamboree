@@ -10,6 +10,7 @@ import { AjvPage } from './pages/ajv';
 import { YupPage } from './pages/yup';
 import { SuperstructPage } from './pages/superstruct';
 import { RescriptSchemaPage } from './pages/rescript-schema';
+import { DecodersPage } from './pages/decoders';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BreakerKey, runTesters } from '@parsers-jamboree/checker/breaker';
@@ -50,6 +51,7 @@ export const pages: {
   superstruct: SuperstructPage,
   valita: ValitaPage,
   'rescript-schema': RescriptSchemaPage,
+  decoders: DecodersPage,
 };
 
 export const rogues: Rogues = {
@@ -100,6 +102,10 @@ export const rogues: Rogues = {
   'rescript-schema': {
     label: 'rescript-schema',
     link: 'https://github.com/DZakh/rescript-schema',
+  },
+  decoders: {
+    label: 'decoders',
+    link: 'https://github.com/nvie/decoders',
   },
 };
 
