@@ -50,18 +50,56 @@ const nonNegativeNumberSchema = S.refine(S.number, (value, s) => {
   }
 });
 
-/// note: union silently loses refinements; it makes certain tests fail; I consider it an incomplete feature
-const nonNegativeIntegerSchema = S.union([nonNegativeNumberSchema, integerSchema]);
+// no composability; have to repeat
+const nonNegativeIntegerSchema = S.refine(integerSchema, (value, s) => {
+  if (value < 0) {
+    throw s.fail("Must be a positive number")
+  }
+});
+
+const nonEmptyStringSchema = S.refine(S.string, (value, s) => {
+  if (value.length === 0) {
+    throw s.fail("Must be non-empty")
+  }
+});
 
 const stripeIdRegexString = `^cus_[a-zA-Z0-9]{14,}$`;
-const stripeIdSchema = S.refine(S.string, (value, s) => {
+const stripeIdSchema = S.refine(nonEmptyStringSchema, (value, s) => {
   if (!value.match(stripeIdRegexString)) {
     throw s.fail("Stripe id must be in the format cus_XXXXXXXXXXXXXX")
   }
 });
 
-// .recursive is in docs but is missing from the lib api. https://github.com/DZakh/rescript-schema/issues/80
-const fileSystemSchema = S.unknown
+type FileSystem = (
+  | {
+      readonly type: 'directory';
+      readonly children: readonly FileSystem[];
+    }
+  | {
+      readonly type: 'file';
+    }
+) & {
+  readonly name: string;
+};
+
+const fileSystemSchema: S.Schema<FileSystem> = S.recursive((schema) =>   S.union([
+  S.object({
+    type: S.literal('directory'),
+    children: S.refine(S.array(schema), (value, s) => {
+      const names = new Set(value.map((f) => f.name));
+      if (names.size !== value.length) {
+        throw s.fail("Expected unique names in the children")
+      }
+    }),
+    // no composability; have to repeat
+    name: nonEmptyStringSchema,
+  }),
+  S.object({
+    type: S.literal('file'),
+    // no composability; have to repeat
+    name: nonEmptyStringSchema,
+  }),
+]));
 
 const uniqArraySchema = <T>(schema: S.Schema<T>) => S.refine(S.array(schema), (value, s) => {
   const set = new Set(value);
@@ -75,12 +113,6 @@ const setSchema = <T>(schema: S.Schema<T>) => S.transform(
   a => new Set(a),
   a => Array.from(a)
 );
-
-const nonEmptyStringSchema = S.refine(S.string, (value, s) => {
-  if (value.length === 0) {
-    throw s.fail("Must be non-empty")
-  }
-});
 
 const userSchema = S.merge(
   timeConcernSchema,
@@ -131,3 +163,17 @@ export const meta: TrustedCompileTimeMeta = {
   explanations: {
   },
 };
+
+export const EMPTY = Symbol.for('EMPTY');
+
+export const head = <T>(a: readonly T[]) =>
+  a.length === 0 ? EMPTY : a[0];
+
+export type HeadError<T> = Exclude<ReturnType<typeof head<T>>, T>;
+
+export const TOO_MANY = Symbol.for('TOO_MANY');
+
+export const headExclusive = <T>(a: readonly T[]) =>
+  a.length > 1 ? TOO_MANY : head(a);
+
+export type HeadExclusiveError<T> = Exclude<ReturnType<typeof headExclusive<T>>, T>;

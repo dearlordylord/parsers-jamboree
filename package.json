@@ -25,7 +25,7 @@
     "react-dom": "18.3.1",
     "react-json-tree": "^0.19.0",
     "react-router-dom": "6.11.2",
-    "rescript-schema": "^8.0.1",
+    "rescript-schema": "^8.0.2",
     "runtypes": "^6.7.0",
     "schemata-ts": "^2.2.3",
     "superstruct": "^2.0.0",
