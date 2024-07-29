@@ -27,14 +27,25 @@ export const Breaker = ({
     <div>
       <table>
         <tbody>
-            {tests.map(({ key, title, customTitle, success }) => {
-              return <tr key={key}>
-                <td><FeatureNameAndExplanation name={key} explanation={title} customExplanation={customTitle}/></td>
+          {tests.map(({ key, title, customTitle, success }) => {
+            return (
+              <tr key={key}>
+                <td>
+                  <FeatureNameAndExplanation
+                    name={key}
+                    explanation={title}
+                    customExplanation={customTitle}
+                  />
+                </td>
                 {(() => {
                   try {
                     return (
                       <td key={key}>
-                        {success ? <IconHeart color="red" /> : <IconHeartBroken />}
+                        {success ? (
+                          <IconHeart color="red" />
+                        ) : (
+                          <IconHeartBroken />
+                        )}
                       </td>
                     );
                   } catch (e) {
@@ -43,8 +54,8 @@ export const Breaker = ({
                   }
                 })()}
               </tr>
-
-            })}
+            );
+          })}
         </tbody>
       </table>
     </div>

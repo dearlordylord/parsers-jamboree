@@ -130,8 +130,7 @@ export const BREAKER_DESCRIPTIONS: {
   prefixCustomerId: 'Adds an invalid prefix to the stripeId field',
   addTwoAtsToEmail: 'Renders the email invalid by adding two @s',
   clearName: 'Clears the name field',
-  addFavouriteTiger:
-    'Adds an invalid colour to the favouriteColours field.',
+  addFavouriteTiger: 'Adds an invalid colour to the favouriteColours field.',
   // Although in some cases it's ok, other times I'd like to have no garbage in my database. Having duplicated values in a collection with "set" semantics means that one side of interaction doesn't really know what it's doing, and this is a potential timebomb better to fix the earliest.
   addFavouriteRed: `Adds a duplicated valid colour to the favouriteColours field.`,
   setSubscriptionTypeBanana: 'Sets the subscription field to banana',
@@ -151,7 +150,8 @@ const COMPILE_TIME_META_DESCRIPTIONS: {
   typedErrors: 'Typed errors are supported',
   templateLiterals: 'Template literals are supported',
   emailFormatAmbiguityIsAccountedFor: `Email format ambiguity is accounted for either in API or in Docs. The library doesn't perpetuate irresponsible approach to email validation.`,
-  acceptsTypedInput: 'The library accepts not only unknown/any types as validation input, but more refined "intermediate" types as well.',
+  acceptsTypedInput:
+    'The library accepts not only unknown/any types as validation input, but more refined "intermediate" types as well.',
 };
 
 export type TesterArgs = {
@@ -162,9 +162,14 @@ export type TesterArgs = {
 };
 
 const encodedEqualsInputSpecialBreakerKey = 'encodedEqualsInput' as const;
-const transformationsPossibleSpecialBreakerKey = 'transformationsPossible' as const;
+const transformationsPossibleSpecialBreakerKey =
+  'transformationsPossible' as const;
 
-export type BreakerKey = keyof typeof BREAKERS | keyof TrustedCompileTimeMeta['items'] | typeof encodedEqualsInputSpecialBreakerKey | typeof transformationsPossibleSpecialBreakerKey;
+export type BreakerKey =
+  | keyof typeof BREAKERS
+  | keyof TrustedCompileTimeMeta['items']
+  | typeof encodedEqualsInputSpecialBreakerKey
+  | typeof transformationsPossibleSpecialBreakerKey;
 
 export type TesterResult = {
   key: BreakerKey;
@@ -192,7 +197,8 @@ export const runTesters = ({
     A.map(([k, f]) => ({
       key: k,
       title: BREAKER_DESCRIPTIONS[k as keyof typeof BREAKERS],
-      customTitle: meta.explanations?.[k as keyof TrustedCompileTimeMeta['items']],
+      customTitle:
+        meta.explanations?.[k as keyof TrustedCompileTimeMeta['items']],
       success: decodeUser(f(igor))._tag === 'left',
     }))
   ),
@@ -236,7 +242,8 @@ export const runTesters = ({
         COMPILE_TIME_META_DESCRIPTIONS[
           k as keyof TrustedCompileTimeMeta['items']
         ],
-      customTitle: meta.explanations?.[k as keyof TrustedCompileTimeMeta['items']],
+      customTitle:
+        meta.explanations?.[k as keyof TrustedCompileTimeMeta['items']],
       success: v,
     }))
   ),

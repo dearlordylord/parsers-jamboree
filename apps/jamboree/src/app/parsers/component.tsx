@@ -122,7 +122,7 @@ export const ParserComponent = <T, E, EE>({
       <h2>Parser code</h2>
       <div>
         {/*<Highlighter content={parserCode} language="typescript" />*/}
-        <div dangerouslySetInnerHTML={{__html: code}}/>
+        <div dangerouslySetInnerHTML={{ __html: code }} />
       </div>
       <h2>Parsed result</h2>
       <div>

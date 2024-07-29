@@ -1,9 +1,5 @@
-import {
-  codeToHtml,
-} from 'shiki'
-import {
-  transformerTwoslash,
-} from '@shikijs/twoslash';
+import { codeToHtml } from 'shiki';
+import { transformerTwoslash } from '@shikijs/twoslash';
 import fs from 'node:fs';
 import { promisify } from 'node:util';
 import { LIBS } from './apps/jamboree/src/app/parsers/runtimes';
@@ -43,17 +39,20 @@ const sources: {
   decoders: decodersPath,
 };
 
-const rewriteCommonLibPath = (code: string) => code.replace('@parsers-jamboree/common', './libs/common/src/index');
+const rewriteCommonLibPath = (code: string) =>
+  code.replace('@parsers-jamboree/common', './libs/common/src/index');
 
 Object.entries(sources).forEach(([lib, path]) => {
   const promise = readFile(path, 'utf8');
-  promise.then(code => codeToHtml(rewriteCommonLibPath(code), {
-    lang: 'ts',
-    theme: 'vitesse-dark',
-    transformers: [
-      transformerTwoslash(),
-    ],
-  })).then(html => {
-    return writeFile(`./apps/jamboree/src/generated/${lib}.html`, html);
-  });
+  promise
+    .then((code) =>
+      codeToHtml(rewriteCommonLibPath(code), {
+        lang: 'ts',
+        theme: 'vitesse-dark',
+        transformers: [transformerTwoslash()],
+      })
+    )
+    .then((html) => {
+      return writeFile(`./apps/jamboree/src/generated/${lib}.html`, html);
+    });
 });

@@ -1,6 +1,10 @@
 import React from 'react';
 import { igor } from '@parsers-jamboree/checker/checker';
-import { encodeUser, decodeUser, meta } from '@parsers-jamboree/decoders/decoders';
+import {
+  encodeUser,
+  decodeUser,
+  meta,
+} from '@parsers-jamboree/decoders/decoders';
 import code from '../../../generated/decoders.html?raw';
 import { ParserComponent } from '../component';
 

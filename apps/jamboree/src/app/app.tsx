@@ -6,7 +6,6 @@ import React from 'react';
 import { pages, ParserTable, rogues } from './parsers/table';
 import { LIBS } from './parsers/runtimes';
 
-
 export function App() {
   return (
     <div>
@@ -15,9 +14,9 @@ export function App() {
           path="/"
           element={
             <div>
-              <br/>
-              <hr/>
-              <br/>
+              <br />
+              <hr />
+              <br />
               <div role="navigation">
                 <ul>
                   <li>
@@ -30,11 +29,15 @@ export function App() {
                     <li key={name}>
                       <Link to={`/${name}`}>{rogues[name].label}</Link>
                       <span> </span>
-                      <span style={{fontSize: '0.5em'}}>
-                <a href={rogues[name].link} target="_blank" rel="noreferrer">
-                  {rogues[name].link}
-                </a>
-              </span>
+                      <span style={{ fontSize: '0.5em' }}>
+                        <a
+                          href={rogues[name].link}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {rogues[name].link}
+                        </a>
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -46,11 +49,11 @@ export function App() {
           path="/summary"
           element={
             <div>
-              <ParserTable/>
+              <ParserTable />
             </div>
           }
         />
-        {Object.entries(rogues).map(([name, {label, link}]) => (
+        {Object.entries(rogues).map(([name, { label, link }]) => (
           <Route
             key={name}
             path={`/${name}`}

@@ -2,9 +2,8 @@ import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 
-import '@coreui/coreui/dist/css/coreui.min.css'
+import '@coreui/coreui/dist/css/coreui.min.css';
 import 'highlight.js/styles/github-dark-dimmed.css';
-
 
 import App from './app/app';
 

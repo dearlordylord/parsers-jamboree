@@ -1,4 +1,13 @@
-import { Type, StaticDecode, TObject, TIntersect, TString, TUnion, TArray, TRef } from '@sinclair/typebox';
+import {
+  Type,
+  StaticDecode,
+  TObject,
+  TIntersect,
+  TString,
+  TUnion,
+  TArray,
+  TRef,
+} from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
 import {
   COLOURS,
@@ -51,23 +60,28 @@ const Email = Type.Transform(
   .Decode((value) => value as typeof value & EmailBrand)
   .Encode((value) => value as Exclude<typeof value, EmailBrand>);
 
-const FileSystem =   Type.Recursive(Self => Type.Intersect([Type.Object({
-  name: Type.String({
-    minLength: 1,
-  }),
-}), Type.Union([
-  Type.Object({
-    type: Type.Literal('file'),
-  }),
-  Type.Object({
-    type: Type.Literal('directory'),
-    // transform doesn't work if the type is recursive https://github.com/sinclairzx81/typebox/issues/895
-    // children: Type.Transform(
-    //   Type.Array(Self)
-    // ).Decode((v: never[]/*can't check for uniqueness of name here; the values type is "never"*/) => v).Encode(v => v),
-    children: Type.Array(Self),
-  }),
-])]));
+const FileSystem = Type.Recursive((Self) =>
+  Type.Intersect([
+    Type.Object({
+      name: Type.String({
+        minLength: 1,
+      }),
+    }),
+    Type.Union([
+      Type.Object({
+        type: Type.Literal('file'),
+      }),
+      Type.Object({
+        type: Type.Literal('directory'),
+        // transform doesn't work if the type is recursive https://github.com/sinclairzx81/typebox/issues/895
+        // children: Type.Transform(
+        //   Type.Array(Self)
+        // ).Decode((v: never[]/*can't check for uniqueness of name here; the values type is "never"*/) => v).Encode(v => v),
+        children: Type.Array(Self),
+      }),
+    ]),
+  ])
+);
 
 const DatesUnordered = Type.Object({
   createdAt: IsoDate,
@@ -94,7 +108,9 @@ const User = Type.Transform(
       visits: Type.Integer({
         minimum: 0, // TODO how to define my own checks? transform?
       }),
-      favouriteColours: Type.Transform(Type.Array(ColourOrHex, { uniqueItems: true }))
+      favouriteColours: Type.Transform(
+        Type.Array(ColourOrHex, { uniqueItems: true })
+      )
         .Decode((value) => {
           const r = new Set(value);
           // already done in { uniqueItems: true } but won't hurt to check again, especially that we converted already
@@ -122,12 +138,14 @@ const User = Type.Transform(
     }),
     DatesUnordered,
   ])
-).Decode((v) => {
-  if (v.createdAt > v.updatedAt) {
-    throw new Error('createdAt must be less or equal than updatedAt');
-  }
-  return v;
-}).Encode(v => v);
+)
+  .Decode((v) => {
+    if (v.createdAt > v.updatedAt) {
+      throw new Error('createdAt must be less or equal than updatedAt');
+    }
+    return v;
+  })
+  .Encode((v) => v);
 
 type S = User['stripeId'];
 

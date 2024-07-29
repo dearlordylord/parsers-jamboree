@@ -81,11 +81,11 @@ const ProfileSchema = S.Union(ProfileListenerSchema, ProfileArtistSchema);
 const DirectoryTypeLiteral = S.Literal('directory');
 type FileSystem = (
   | {
-    type: OutputOf<typeof DirectoryTypeLiteral>;
+      type: OutputOf<typeof DirectoryTypeLiteral>;
       children: readonly FileSystem[];
     }
   | {
-    type: 'file';
+      type: 'file';
     }
 ) & {
   name: S.NonEmptyString;

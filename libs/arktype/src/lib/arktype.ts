@@ -1,10 +1,11 @@
 import { ArkErrors, type } from 'arktype';
 import {
   chain,
-  COLOURS, ISO_DATE_REGEX,
+  COLOURS,
+  ISO_DATE_REGEX,
   Result,
   SUBSCRIPTION_TYPES,
-  TrustedCompileTimeMeta
+  TrustedCompileTimeMeta,
 } from '@parsers-jamboree/common';
 import { Objects, Pipe, Strings, Tuples } from 'hotscript';
 import Mutable = Objects.Mutable;
@@ -36,19 +37,20 @@ const COLOURS_WITH_CODES_LITERAL =
   `(${COLOURS_LITERAL})|/${hexColorRegexString}/` as const;
 
 const isoDateString = type('string').narrow((s, ctx) => {
-  console.log('testing ' , s)
-  if (!ISO_DATE_REGEX.test(s))
-    return ctx.mustBe('a valid ISO date string');
+  console.log('testing ', s);
+  if (!ISO_DATE_REGEX.test(s)) return ctx.mustBe('a valid ISO date string');
   return true;
 });
 
-const favouriteColours = type(`(${COLOURS_WITH_CODES_LITERAL})[]`).narrow((v, ctx) => {
-  const set = new Set(v);
-  if (set.size !== v.length) {
-    return ctx.mustBe('favourite colours must be unique');
+const favouriteColours = type(`(${COLOURS_WITH_CODES_LITERAL})[]`).narrow(
+  (v, ctx) => {
+    const set = new Set(v);
+    if (set.size !== v.length) {
+      return ctx.mustBe('favourite colours must be unique');
+    }
+    return true;
   }
-  return true;
-});
+);
 
 // TODO
 const fileSystem = type('any');
