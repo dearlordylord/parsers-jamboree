@@ -1,4 +1,4 @@
-import { ArkErrors, type } from 'arktype';
+import { ArkErrors, type, scope, Type } from 'arktype';
 import {
   chain,
   COLOURS,
@@ -42,6 +42,8 @@ const isoDateString = type('string').narrow((s, ctx) => {
   return true;
 });
 
+
+
 const favouriteColours = type(`(${COLOURS_WITH_CODES_LITERAL})[]`).narrow(
   (v, ctx) => {
     const set = new Set(v);
@@ -52,10 +54,49 @@ const favouriteColours = type(`(${COLOURS_WITH_CODES_LITERAL})[]`).narrow(
   }
 );
 
-// TODO
-const fileSystem = type('any');
-// TODO
-const profile = type('any');
+const profile = type({
+  type: "'listener'",
+  boughtTracks: 'integer>0',
+}, '|', {
+  type: "'artist'",
+  publishedTracks: 'integer>0',
+});
+
+type FileSystem = (
+  | {
+      type: 'directory';
+      children: FileSystem[];
+    }
+  | {
+      type: 'file';
+    }
+) & {
+  name: string;
+};
+
+const fileSystem: Type<FileSystem> = (() => {
+  const $ = scope({
+    filename: '0<string<255',
+    file: {
+      type: "'file'",
+      name: 'filename',
+    },
+    directory: {
+      type: "'directory'",
+      name: 'filename',
+      children: 'root[]',
+      // https://discord.com/channels/957797212103016458/1268741826119077962
+      // children: type('root[]').narrow((v, ctx) => {
+      //   if (new Set(v.map((f) => f.name)).size !== v.length) {
+      //     return ctx.mustBe('names must be unique in a directory');
+      //   }
+      //   return true;
+      // }),
+    },
+    root: 'file|directory',
+  }).export('root');
+  return type($.root);
+})();
 
 const userJson = type({
   name: '0<string<255',
@@ -86,12 +127,7 @@ type User = UserJson;
 export const decodeUser = (u: unknown): Result<string, User> => {
   const result = userJson(u);
 
-  return chain((u: UserJson): Result<string, User> => {
-    return {
-      _tag: 'right',
-      value: u,
-    };
-  })(mapResult(result));
+  return mapResult(result);
 };
 
 export const encodeUser = (_u: User): Result<'the lib cannot do it', never> => {
@@ -109,7 +145,7 @@ export const meta: TrustedCompileTimeMeta = {
   explanations: {
     templateLiterals: 'WIP https://github.com/arktypeio/arktype/issues/491',
     branded: 'WIP https://github.com/arktypeio/arktype/issues/741',
-    emailFormatAmbiguityIsAccountedFor: `A default method is provided but there's no disclaimer in the docs. The valid email assumed to be /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$/ in source code.`,
+    emailFormatAmbiguityIsAccountedFor: `A default method is provided but there's no disclaimer in the docs. The valid email assumed to be /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$/ in source code. I think this is because the docs aren't fully there yet.`,
   },
 };
 

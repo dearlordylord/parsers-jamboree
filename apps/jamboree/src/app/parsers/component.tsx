@@ -101,7 +101,10 @@ export const ParserComponent = <T, E, EE>({
         meta={rest.meta}
       />
       <h2 id={inputId}>Input</h2>
-      <form onSubmit={() => setInput(defaultInput)}>
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        setInput(defaultInput)
+      }}>
         {input !== defaultInput ? (
           <button type="submit">Reset input</button>
         ) : null}

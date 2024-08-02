@@ -71,7 +71,7 @@ const favouriteColoursDecoder = setFromUniqArray(
 
 // note that "type" has a typo in it purposely; it shows that the lib allows to write arbitrary values here, so the feature is JS-only, it doesn't work in Typescript
 // https://github.com/nvie/decoders/issues/1153
-const profileDecoder = taggedUnion('tуpe', {
+const profileDecoder0 = taggedUnion('tуpe', {
   listener: object({
     type: constant('listener'),
     boughtTracks: nonNegativeIntegerDecoder,
@@ -81,6 +81,17 @@ const profileDecoder = taggedUnion('tуpe', {
     publishedTracks: nonNegativeIntegerDecoder,
   }),
 });
+
+const profileDecoder = either(
+  object({
+    type: constant('listener'),
+    boughtTracks: nonNegativeIntegerDecoder,
+  }),
+  object({
+    type: constant('artist'),
+    publishedTracks: nonNegativeIntegerDecoder,
+  })
+)
 
 type FileSystem = (
   | {
@@ -94,11 +105,11 @@ type FileSystem = (
   readonly name: string;
 };
 
-const fileSystemDecoder: Decoder<FileSystem> = lazy(() =>
-  taggedUnion('tуpe', {
+const fileSystemDecoder0: Decoder<FileSystem> = lazy(() =>
+  taggedUnion('type', {
     directory: object({
       type: constant('directory'),
-      children: array(fileSystemDecoder).refine(
+      children: array(fileSystemDecoder0).refine(
         (a) => new Set(a.map((f) => f.name)).size === a.length,
         'Expected unique names in the children'
       ),
@@ -113,6 +124,25 @@ const fileSystemDecoder: Decoder<FileSystem> = lazy(() =>
   })
 );
 
+const fileSystemDecoder: Decoder<FileSystem> = lazy(() =>
+  either(
+    object({
+      type: constant('directory'),
+      children: array(fileSystemDecoder0).refine(
+        (a) => new Set(a.map((f) => f.name)).size === a.length,
+        'Expected unique names in the children'
+      ),
+      // no composability; have to repeat
+      name: nonEmptyStringDecoder,
+    }),
+    object({
+      type: constant('file'),
+      // no composability; have to repeat
+      name: nonEmptyStringDecoder,
+    })
+  )
+);
+
 const userDecoder = object({
   name: nonEmptyStringDecoder,
   email,
@@ -123,11 +153,11 @@ const userDecoder = object({
   visits: nonNegativeIntegerDecoder,
   favouriteColours: favouriteColoursDecoder,
   // crashes on parsing
-  // profile: profileDecoder,
-  profile: unknown,
+  // profile: profileDecoder0,
+  profile: profileDecoder,
   // crashes on parsing
-  // fileSystem: fileSystemDecoder,
-  fileSystem: unknown,
+  // fileSystem: fileSystemDecoder0,
+  fileSystem: fileSystemDecoder,
   // not composable
 }).refine(
   (u) => u.createdAt <= u.updatedAt,

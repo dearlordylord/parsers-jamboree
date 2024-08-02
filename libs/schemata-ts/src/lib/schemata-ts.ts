@@ -162,7 +162,7 @@ export const meta: TrustedCompileTimeMeta = {
     acceptsTypedInput: true,
   },
   explanations: {
-    emailFormatAmbiguityIsAccountedFor: `Derives RFC 5321 email with https://github.com/skeate/kuvio string combinators. In good faith, I assume it works, but also can be treated as N/A.`,
+    emailFormatAmbiguityIsAccountedFor: `Derives RFC 5321 email with https://github.com/skeate/kuvio string combinators. In good faith, I assume it works.`,
   },
 };
 

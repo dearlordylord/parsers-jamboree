@@ -44,24 +44,7 @@ const timeConcernSchema = S.refine(timeConcernTimelessSchema, (value, s) => {
   }
 });
 
-const integerSchema = S.refine(S.number, (value, s) => {
-  if (value % 1 !== 0) {
-    throw s.fail('Must be an integer');
-  }
-});
-
-const nonNegativeNumberSchema = S.refine(S.number, (value, s) => {
-  if (value < 0) {
-    throw s.fail('Must be a positive number');
-  }
-});
-
-// no composability; have to repeat
-const nonNegativeIntegerSchema = S.refine(integerSchema, (value, s) => {
-  if (value < 0) {
-    throw s.fail('Must be a positive number');
-  }
-});
+const nonNegativeIntegerSchema = S.integerMin(S.integer, 0);
 
 const nonEmptyStringSchema = S.refine(S.string, (value, s) => {
   if (value.length === 0) {
