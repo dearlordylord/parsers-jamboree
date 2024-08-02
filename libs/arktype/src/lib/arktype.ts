@@ -62,41 +62,28 @@ const profile = type({
   publishedTracks: 'integer>0',
 });
 
-type FileSystem = (
-  | {
-      type: 'directory';
-      children: FileSystem[];
-    }
-  | {
-      type: 'file';
-    }
-) & {
-  name: string;
-};
-
-const fileSystem: Type<FileSystem> = (() => {
-  const $ = scope({
-    filename: '0<string<255',
-    file: {
-      type: "'file'",
-      name: 'filename',
-    },
-    directory: {
-      type: "'directory'",
-      name: 'filename',
-      children: 'root[]',
-      // https://discord.com/channels/957797212103016458/1268741826119077962
-      // children: type('root[]').narrow((v, ctx) => {
-      //   if (new Set(v.map((f) => f.name)).size !== v.length) {
-      //     return ctx.mustBe('names must be unique in a directory');
-      //   }
-      //   return true;
-      // }),
-    },
-    root: 'file|directory',
-  }).export('root');
-  return type($.root);
-})();
+const fileSystem = scope({
+  filename: '0<string<255',
+  file: {
+    type: "'file'",
+    name: 'filename',
+  },
+  directory: {
+    type: "'directory'",
+    name: 'filename',
+    children: [
+      "root[]",
+      ":",
+      (v, ctx) => {
+        if (new Set(v.map(f => f.name)).size !== v.length) {
+          return ctx.mustBe("names must be unique in a directory")
+        }
+        return true
+      }
+    ]
+  },
+  root: 'file|directory',
+}).resolve('root');
 
 const userJson = type({
   name: '0<string<255',
