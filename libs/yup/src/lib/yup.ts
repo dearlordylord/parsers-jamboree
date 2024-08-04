@@ -1,10 +1,5 @@
-import { object, string, number, date, InferType, array, mixed } from 'yup';
-import {
-  COLOURS,
-  Result,
-  SUBSCRIPTION_TYPES,
-  TrustedCompileTimeMeta,
-} from '@parsers-jamboree/common';
+import { date, InferType, mixed, number, object, string } from 'yup';
+import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
 
 // let isoDate = date().required().transform((v) => {
 //   // "v" is "any"
@@ -84,19 +79,6 @@ let userSchema = object({
 
 type User = InferType<typeof userSchema>;
 
-export const meta: TrustedCompileTimeMeta = {
-  items: {
-    branded: false,
-    typedErrors: false,
-    templateLiterals: false,
-    emailFormatAmbiguityIsAccountedFor: true,
-    acceptsTypedInput: false,
-  },
-  explanations: {
-    emailFormatAmbiguityIsAccountedFor: `Default method is present with a warning https://github.com/jquense/yup?tab=readme-ov-file#stringemailmessage-string--function-schema`,
-  },
-};
-
 export const decodeUser = (u: unknown): Result<unknown, User> => {
   try {
     return { _tag: 'right', value: userSchema.cast(u) };
@@ -108,7 +90,7 @@ export const decodeUser = (u: unknown): Result<unknown, User> => {
   }
 };
 
-export const encodeUser = (u: User): Result<unknown, unknown> => ({
+export const encodeUser = (_u: User): Result<unknown, unknown> => ({
   _tag: 'left',
   error: 'the lib cannot do it',
 });

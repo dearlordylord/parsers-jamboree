@@ -1,12 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { igor } from '@parsers-jamboree/checker/checker';
-import {
-  encodeUser,
-  decodeUser,
-  meta,
-} from '@parsers-jamboree/typebox/typebox';
+import { encodeUser, decodeUser } from '@parsers-jamboree/typebox/typebox';
 import code from '../../../generated/typebox.html?raw';
 import { ParserComponent } from '../component';
+import { meta } from '@parsers-jamboree/typebox/meta';
 
 export const TypeboxPage = (): React.ReactElement => {
   return (

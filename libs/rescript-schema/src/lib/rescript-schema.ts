@@ -1,10 +1,5 @@
 import * as S from 'rescript-schema';
-import {
-  COLOURS,
-  Result,
-  SUBSCRIPTION_TYPES,
-  TrustedCompileTimeMeta,
-} from '@parsers-jamboree/common';
+import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
 
 type TupleToLiteral<T extends readonly unknown[]> = T extends readonly [
   infer K,
@@ -145,30 +140,3 @@ const mapResult = <T>(r: S.Result<T>): Result<string, T> => {
     return { _tag: 'left', error: r.error.message };
   }
 };
-
-export const meta: TrustedCompileTimeMeta = {
-  items: {
-    branded: false,
-    typedErrors: true,
-    templateLiterals: false,
-    emailFormatAmbiguityIsAccountedFor: false,
-    acceptsTypedInput: false,
-  },
-  explanations: {},
-};
-
-export const EMPTY = Symbol.for('EMPTY');
-
-export const head = <T>(a: readonly T[]) => (a.length === 0 ? EMPTY : a[0]);
-
-export type HeadError<T> = Exclude<ReturnType<typeof head<T>>, T>;
-
-export const TOO_MANY = Symbol.for('TOO_MANY');
-
-export const headExclusive = <T>(a: readonly T[]) =>
-  a.length > 1 ? TOO_MANY : head(a);
-
-export type HeadExclusiveError<T> = Exclude<
-  ReturnType<typeof headExclusive<T>>,
-  T
->;

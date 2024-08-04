@@ -1,30 +1,21 @@
 import {
   array,
-  iso8601,
-  number,
-  object,
-  optional,
-  string,
-  Result as Result_,
+  constant,
+  Decoder,
   DecodeResult,
   DecoderType,
+  either,
   email,
+  iso8601,
+  lazy,
+  number,
+  object,
   oneOf,
   regex,
+  string,
   taggedUnion,
-  constant,
-  lazy,
-  setFromArray,
-  either,
-  Decoder,
-  unknown,
 } from 'decoders';
-import {
-  COLOURS,
-  Result,
-  SUBSCRIPTION_TYPES,
-  TrustedCompileTimeMeta,
-} from '@parsers-jamboree/common';
+import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
 
 const nonEmptyStringDecoder = string.refine(
   (s) => s.length > 0,
@@ -91,7 +82,7 @@ const profileDecoder = either(
     type: constant('artist'),
     publishedTracks: nonNegativeIntegerDecoder,
   })
-)
+);
 
 type FileSystem = (
   | {
@@ -171,20 +162,6 @@ export const decodeUser = (u: unknown): Result<string, User> =>
 
 export const encodeUser = (_u: User): Result<unknown, unknown> => {
   return { _tag: 'left', error: 'the lib cannot do it' };
-};
-
-export const meta: TrustedCompileTimeMeta = {
-  items: {
-    branded: false,
-    typedErrors: true,
-    templateLiterals: false,
-    emailFormatAmbiguityIsAccountedFor: false,
-    acceptsTypedInput: false,
-  },
-  explanations: {
-    emailFormatAmbiguityIsAccountedFor:
-      'Regex used in code, no disclaimer in docs',
-  },
 };
 
 // utils

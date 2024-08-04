@@ -11,15 +11,15 @@ import { YupPage } from './pages/yup';
 import { SuperstructPage } from './pages/superstruct';
 import { RescriptSchemaPage } from './pages/rescript-schema';
 import { DecodersPage } from './pages/decoders';
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { BreakerKey, runTesters } from '@parsers-jamboree/checker/breaker';
+import { runTesters } from '@parsers-jamboree/checker/breaker';
 import IconHeart from '~icons/mdi/heart';
 import IconHeartBroken from '~icons/mdi/heart-broken';
 import { libRuntimes, LIBS } from './runtimes';
 import { headStrict } from '../utils';
 import { FeatureNameAndExplanation } from './featureNameAndExplanation';
-import * as fs from 'node:fs';
+import { useIsIframe } from '../iframe';
 
 export const parserTableColumn = (lib: (typeof LIBS)[number]) => [
   ...runTesters(libRuntimes[lib]).map(({ key, title, success }) => ({
@@ -113,6 +113,7 @@ export const ParserTable = (): React.ReactElement => {
   const results = LIBS.map((lib) => parserTableColumn(lib));
   // assume format is stable
   const firstColumn = headStrict(results);
+  const isIframe = useIsIframe();
   return (
     <div>
       <table>
@@ -121,7 +122,13 @@ export const ParserTable = (): React.ReactElement => {
             <th></th>
             {LIBS.map((lib) => (
               <th key={lib}>
-                <Link to={`/${lib}`}>{rogues[lib].label}</Link>
+                {isIframe ? (
+                  <Link target="_blank" to={`${rogues[lib].link}`}>
+                    {rogues[lib].label}
+                  </Link>
+                ) : (
+                  <Link to={`/${lib}`}>{rogues[lib].label}</Link>
+                )}
               </th>
             ))}
           </tr>

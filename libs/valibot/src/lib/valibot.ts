@@ -1,42 +1,36 @@
 import {
-  email,
-  string,
-  pipe,
-  object,
-  minLength,
+  array,
+  BaseIssue,
+  BaseSchema,
   brand,
+  check,
+  custom,
+  email,
+  flatten,
+  forward,
+  GenericSchema,
   InferOutput,
-  literal,
-  picklist,
-  regex,
   integer,
+  intersect,
+  isoTimestamp,
+  lazy,
+  literal,
+  minLength,
   minValue,
   number,
-  union,
-  variant,
-  custom,
+  object,
+  partialCheck,
+  picklist,
+  pipe,
+  regex,
   safeParse,
   SafeParseResult,
-  flatten,
-  array,
-  check,
+  string,
   transform,
-  BaseIssue,
-  isoTimestamp,
-  intersect,
-  lazy,
-  GenericSchema,
-  BaseSchema,
-  forward,
-  partialCheck,
+  union,
+  variant,
 } from 'valibot';
-import {
-  COLOURS,
-  Result,
-  SUBSCRIPTION_TYPES,
-  TrustedCompileTimeMeta,
-  TrustedCompileTimeMetaExplanations,
-} from '@parsers-jamboree/common';
+import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
 
 const NonEmptyStringSchema = pipe(
   string(),
@@ -209,28 +203,11 @@ const UserSchema = intersect([
 
 type User = InferOutput<typeof UserSchema>;
 
-export const decodeUser = (u: unknown): Result<unknown, User> => {
-  const result = safeParse(UserSchema, u);
-  return mapResult(result);
-};
+export const decodeUser = (u: unknown): Result<unknown, User> =>
+  mapResult(safeParse(UserSchema, u));
 
 export const encodeUser = (_u: User): Result<unknown, unknown> => {
   return { _tag: 'left', error: 'the lib cannot do it' };
-};
-
-export const meta: TrustedCompileTimeMeta = {
-  items: {
-    branded: true,
-    typedErrors: true,
-    templateLiterals: false,
-    emailFormatAmbiguityIsAccountedFor: true,
-    acceptsTypedInput: false,
-  },
-  explanations: {
-    templateLiterals:
-      "Not natively supported + I didn't manage to hack them into working without casting, see code comments.",
-    emailFormatAmbiguityIsAccountedFor: `A disclaimer is present in the doce https://valibot.dev/api/email/`,
-  },
 };
 
 // utils

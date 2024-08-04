@@ -6,7 +6,8 @@ import {
 } from '@parsers-jamboree/effect-ts-schema/effect-ts-schema';
 import code from '../../../generated/effect-schema.html?raw';
 import { ParserComponent } from '../component';
-import { meta } from '@parsers-jamboree/valibot/valibot';
+
+import { meta } from '@parsers-jamboree/valibot/meta';
 
 export const EffectSchemaPage = (): React.ReactElement => {
   return (

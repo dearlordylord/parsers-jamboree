@@ -1,12 +1,6 @@
-import { z, ZodObject, ZodRawShape } from 'zod';
-import {
-  COLOURS,
-  Result,
-  SUBSCRIPTION_TYPES,
-  TrustedCompileTimeMeta,
-} from '@parsers-jamboree/common';
+import { z } from 'zod';
+import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
 import { SafeParseReturnType } from 'zod/lib/types';
-import * as S from 'schemata-ts/schemata/index';
 
 // https://github.com/colinhacks/zod?tab=readme-ov-file#brand
 const userNameSchema = z.string().min(1).max(255).brand('userName');
@@ -121,10 +115,8 @@ const userSchema = z
 
 type User = z.infer<typeof userSchema>;
 
-export const decodeUser = (u: unknown): Result<unknown, User> => {
-  const result = userSchema.safeParse(u);
-  return mapResult(result);
-};
+export const decodeUser = (u: unknown): Result<unknown, User> =>
+  mapResult(userSchema.safeParse(u));
 
 export const encodeUser = (
   _u: User
@@ -132,21 +124,6 @@ export const encodeUser = (
   _tag: 'left',
   error: 'the lib cannot do it',
 });
-
-export const meta: TrustedCompileTimeMeta = {
-  items: {
-    branded: true,
-    typedErrors: true,
-    templateLiterals: false,
-    emailFormatAmbiguityIsAccountedFor: false,
-    acceptsTypedInput: false,
-  },
-  explanations: {
-    templateLiterals:
-      'Recognized but not supported yet https://github.com/colinhacks/zod/issues/566#issuecomment-890422215 https://github.com/colinhacks/zod/issues/419',
-    emailFormatAmbiguityIsAccountedFor: `The author's stance on emails is in GitHub https://github.com/colinhacks/zod/pull/2157 but not explicit in docs.`,
-  },
-};
 
 // utils
 

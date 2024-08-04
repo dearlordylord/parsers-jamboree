@@ -46,7 +46,7 @@ type UserJson = {
   };
 };
 
-// more flexibility with addKeyword (not typed well)
+// more flexibility with addKeyword (but not typed well)
 const schema: JSONSchemaType<UserJson> = {
   type: 'object',
   properties: {

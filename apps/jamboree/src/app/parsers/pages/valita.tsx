@@ -1,8 +1,9 @@
 import React from 'react';
 import { igor } from '@parsers-jamboree/checker/checker';
-import { encodeUser, decodeUser, meta } from '@parsers-jamboree/valita/valita';
+import { encodeUser, decodeUser } from '@parsers-jamboree/valita/valita';
 import code from '../../../generated/valita.html?raw';
 import { ParserComponent } from '../component';
+import { meta } from '@parsers-jamboree/valita/meta';
 
 export const ValitaPage = (): React.ReactElement => {
   return (

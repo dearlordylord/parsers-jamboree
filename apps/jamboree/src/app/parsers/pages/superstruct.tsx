@@ -6,7 +6,8 @@ import {
 } from '@parsers-jamboree/superstruct/superstruct';
 import code from '../../../generated/superstruct.html?raw';
 import { ParserComponent } from '../component';
-import { meta } from '@parsers-jamboree/valibot/valibot';
+
+import { meta } from '@parsers-jamboree/valibot/meta';
 
 export const SuperstructPage = (): React.ReactElement => {
   return (

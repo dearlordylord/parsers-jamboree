@@ -1,11 +1,6 @@
 import { ParseResult, Schema, TreeFormatter } from '@effect/schema';
 import * as Either from 'effect/Either';
-import {
-  COLOURS,
-  Result,
-  SUBSCRIPTION_TYPES,
-  TrustedCompileTimeMeta,
-} from '@parsers-jamboree/common';
+import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
 import { ParseError } from '@effect/schema/ParseResult';
 
 const NonEmptyStringBrand = Symbol.for('NonEmptyString');
@@ -170,27 +165,11 @@ const User = UserEntangled;
 
 type User = Schema.Schema.Type<typeof User>;
 
-export const decodeUser = (u: unknown): Result<string, User> => {
-  const result = Schema.decodeUnknownEither(User)(u);
-  return mapResult(result);
-};
+export const decodeUser = (u: unknown): Result<string, User> =>
+  mapResult(Schema.decodeUnknownEither(User)(u));
 
 export const encodeUser = (u: User): Result<string, unknown> => {
   return mapResult(Schema.encodeEither(User)(u));
-};
-
-export const meta: TrustedCompileTimeMeta = {
-  items: {
-    branded: true,
-    typedErrors: true,
-    templateLiterals: true,
-    emailFormatAmbiguityIsAccountedFor: true,
-    acceptsTypedInput: true,
-  },
-  explanations: {
-    emailFormatAmbiguityIsAccountedFor: `A default method purposely is not provided, disclaimer is there https://github.com/effect-ts/effect/tree/main/packages/schema#email`,
-    acceptsTypedInput: `And "unknown"s are parsed explicitly with decodeUnknown* APIs`,
-  },
 };
 
 // utils

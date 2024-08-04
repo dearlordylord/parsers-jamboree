@@ -4,8 +4,8 @@ import {
   ISO_DATE_REGEX_S,
   Result,
   SUBSCRIPTION_TYPES,
-  TrustedCompileTimeMeta,
 } from '@parsers-jamboree/common';
+import { Infer, ValitaResult } from '@badrap/valita/src';
 
 const colour = v.union(...COLOURS.map(v.literal));
 const hexColour = v
@@ -112,28 +112,24 @@ const user = v
 
 type User = v.Infer<typeof user>;
 
-export const decodeUser = (u: unknown): Result<unknown, User> => {
-  const r = user.try(u);
-  if (r.ok) {
-    return { _tag: 'right', value: r.value };
-  } else {
-    return {_tag: 'left', error: `${r.message}\n${r.issues.map(i => `${i.path}: ${i.code}`).join('\n')}`};
-  }
-};
+export const decodeUser = (u: unknown): Result<string, User> =>
+  mapResult(user.try(u));
 
 export const encodeUser = (_u: User): Result<unknown, unknown> => {
   return { _tag: 'left', error: 'the lib cannot do it' };
 };
 
-export const meta: TrustedCompileTimeMeta = {
-  items: {
-    branded: false,
-    typedErrors: true,
-    templateLiterals: false,
-    emailFormatAmbiguityIsAccountedFor: true,
-    acceptsTypedInput: false,
-  },
-  explanations: {
-    emailFormatAmbiguityIsAccountedFor: `Default method is not present, no mention in docs.`,
-  },
+// utils
+
+const mapResult = (r: ValitaResult<User>): Result<string, User> => {
+  if (r.ok) {
+    return { _tag: 'right', value: r.value };
+  } else {
+    return {
+      _tag: 'left',
+      error: `${r.message}\n${r.issues
+        .map((i) => `${i.path}: ${i.code}`)
+        .join('\n')}`,
+    };
+  }
 };

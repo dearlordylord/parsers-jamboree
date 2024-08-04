@@ -94,87 +94,104 @@ export const ParserComponent = <T, E, EE>({
   const inputId = useId();
   return (
     <div>
-      <h2>Feature test results</h2>
-      <Breaker
-        decodeUser={rest.decodeUser}
-        encodeUser={encodeUser}
-        meta={rest.meta}
-      />
-      <h2 id={inputId}>Input</h2>
-      <form onSubmit={(e) => {
-        e.preventDefault();
-        setInput(defaultInput)
-      }}>
-        {input !== defaultInput ? (
-          <button type="submit">Reset input</button>
-        ) : null}
-        <div>
-          <Editor
-            theme="vs-dark"
-            height="300px"
-            width="500px"
-            language="json"
-            value={input}
-            onChange={(e) => {
-              setInput(e || '');
-            }}
+      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+        <div style={{ flex: '1 1 auto' }}>
+          <h2>Feature test results</h2>
+          <Breaker
+            decodeUser={rest.decodeUser}
+            encodeUser={encodeUser}
+            meta={rest.meta}
           />
         </div>
-      </form>
+        <div style={{ flex: '1 1 auto', flexWrap: 'wrap', display: 'flex' }}>
+          <div style={{ flex: '1 1 auto' }}>
+            <div style={{ flex: '1 1 auto' }}>
+              <h2 id={inputId}>Input</h2>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setInput(defaultInput);
+                }}
+              >
+                {input !== defaultInput ? (
+                  <button type="submit">Reset input</button>
+                ) : null}
+                <div>
+                  <Editor
+                    theme="vs-dark"
+                    height="300px"
+                    width="500px"
+                    language="json"
+                    value={input}
+                    onChange={(e) => {
+                      setInput(e || '');
+                    }}
+                  />
+                </div>
+              </form>
+            </div>
+
+            <div style={{ flex: '1 1 auto' }}>
+              <h2>Parsed result</h2>
+              <div>
+                {parsed._tag === 'left' ? (
+                  <span>{JSON.stringify(parsed.error, null, 2)}</span>
+                ) : (
+                  <JSONTree
+                    data={parsed.value}
+                    sortObjectKeys={printKeyOrderF}
+                    hideRoot
+                    valueRenderer={(s, v) => {
+                      if (v instanceof Date) {
+                        return <span>{`JS Date('${s}')`}</span>;
+                      }
+                      return <span>{JSON.stringify(s)}</span>;
+                    }}
+                    labelRenderer={(
+                      keyPath: KeyPath,
+                      nodeType: string,
+                      expanded: boolean,
+                      expandable: boolean
+                    ) => {
+                      if (get(parsed.value, keyPath) instanceof Set) {
+                        return <span>(JS Set) {keyPath[0]}:</span>;
+                      }
+
+                      return <span>{keyPath[0]}:</span>;
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+          <div style={{ flex: '1 1 auto' }}>
+            <h2>Encoded back to JSON</h2>
+            <div>
+              <Highlighter content={encoded} language="json" />
+            </div>
+            {encodedMatchesInput ? (
+              <span>
+                {' '}
+                ✅ Matches{' '}
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById(inputId)?.scrollIntoView();
+                  }}
+                >
+                  input
+                </button>
+              </span>
+            ) : null}
+          </div>
+        </div>
+      </div>
 
       <h2>Parser code</h2>
       <div>
         {/*<Highlighter content={parserCode} language="typescript" />*/}
         <div dangerouslySetInnerHTML={{ __html: code }} />
       </div>
-      <h2>Parsed result</h2>
-      <div>
-        {parsed._tag === 'left' ? (
-          <span>{JSON.stringify(parsed.error, null, 2)}</span>
-        ) : (
-          <JSONTree
-            data={parsed.value}
-            sortObjectKeys={printKeyOrderF}
-            hideRoot
-            valueRenderer={(s, v) => {
-              if (v instanceof Date) {
-                return <span>{`JS Date('${s}')`}</span>;
-              }
-              return <span>{JSON.stringify(s)}</span>;
-            }}
-            labelRenderer={(
-              keyPath: KeyPath,
-              nodeType: string,
-              expanded: boolean,
-              expandable: boolean
-            ) => {
-              if (get(parsed.value, keyPath) instanceof Set) {
-                return <span>(JS Set) {keyPath[0]}:</span>;
-              }
-
-              return <span>{keyPath[0]}:</span>;
-            }}
-          />
-        )}
-      </div>
-      <h2>Encoded back to JSON</h2>
-      <div>
-        <Highlighter content={encoded} language="json" />
-      </div>
-      {encodedMatchesInput ? (
-        <span>
-          {' '}
-          ✅ Matches{' '}
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              document.getElementById(inputId)?.scrollIntoView();
-            }}
-          >
-            input
-          </button>
-        </span>
-      ) : null}
     </div>
   );
 };

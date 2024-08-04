@@ -1,6 +1,6 @@
 import * as S from 'schemata-ts/schemata/index';
 import * as Nt from 'schemata-ts/newtype';
-import type { InputOf, OutputOf, Schema } from 'schemata-ts/Schema';
+import type { OutputOf, Schema } from 'schemata-ts/Schema';
 import * as k from 'kuvio';
 import { pipe } from 'fp-ts/function';
 import { Ord } from 'fp-ts/lib/Ord';
@@ -14,7 +14,6 @@ import {
   PROFILE_TYPE_LISTENER,
   Result,
   SUBSCRIPTION_TYPES,
-  TrustedCompileTimeMeta,
 } from '@parsers-jamboree/common';
 
 // by the pattern of schemata/UUID.ts
@@ -143,38 +142,15 @@ export const UserSchema = pipe(
 
 const userTranscoder = deriveTranscoder(UserSchema);
 
-export const decodeUser = (user: unknown): Result<TranscodeErrors, User> => {
-  const result = userTranscoder.decode(user);
-  return mapResult(result);
-};
+export const decodeUser = (user: unknown): Result<TranscodeErrors, User> =>
+  mapResult(userTranscoder.decode(user));
 
-export const encodeUser = (user: User): Result<TranscodeErrors, unknown> => {
-  const result = userTranscoder.encode(user);
-  return mapResult(result);
-};
+export const encodeUser = (user: User): Result<TranscodeErrors, unknown> =>
+  mapResult(userTranscoder.encode(user));
 
-export const meta: TrustedCompileTimeMeta = {
-  items: {
-    branded: true,
-    typedErrors: true,
-    templateLiterals: true,
-    emailFormatAmbiguityIsAccountedFor: true,
-    acceptsTypedInput: true,
-  },
-  explanations: {
-    emailFormatAmbiguityIsAccountedFor: `Derives RFC 5321 email with https://github.com/skeate/kuvio string combinators. In good faith, I assume it works.`,
-  },
-};
+// helpers
 
-// helpers, unrelated to the library
 const mapResult = <E, T>(e: Either<E, T>): Result<E, T> =>
   isRight(e)
     ? { _tag: 'right', value: e.right }
     : { _tag: 'left', error: e.left };
-const unwrapEither = <E, T>(e: Either<E, T>): T => {
-  if (isRight(e)) {
-    return e.right;
-  } else {
-    throw new Error(JSON.stringify(e.left));
-  }
-};

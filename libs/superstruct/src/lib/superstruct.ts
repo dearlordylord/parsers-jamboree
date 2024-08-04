@@ -1,25 +1,24 @@
 import {
+  any,
   array,
+  assign,
+  coerce,
+  date,
+  define,
+  enums,
   Infer,
+  integer,
+  intersection,
+  literal,
   number,
   object,
-  string,
-  coerce,
-  define,
-  literal,
-  refine,
-  union,
-  enums,
-  intersection,
   pattern,
-  integer,
-  date,
-  assign,
-  StructError,
+  refine,
   set,
+  string,
   Struct,
-  any,
-  regexp,
+  StructError,
+  union,
 } from 'superstruct';
 import {
   COLOURS,
@@ -29,7 +28,6 @@ import {
   PROFILE_TYPE_LISTENER,
   Result,
   SUBSCRIPTION_TYPES,
-  TrustedCompileTimeMeta,
 } from '@parsers-jamboree/common';
 
 const EMAIL_REGEX = new RegExp(EMAIL_REGEX_S);
@@ -141,35 +139,30 @@ const User = assign(
 
 type User = Infer<typeof User>;
 
-export const meta: TrustedCompileTimeMeta = {
-  items: {
-    branded: false,
-    typedErrors: true,
-    templateLiterals: false,
-    emailFormatAmbiguityIsAccountedFor: true,
-    acceptsTypedInput: false,
-  },
-  explanations: {
-    emailFormatAmbiguityIsAccountedFor:
-      'The user of the library is prompted to create their own custom email validator.',
-  },
+export const decodeUser = (u: unknown): Result<string, User> =>
+  mapResult(User.validate(u));
+
+export const encodeUser = (_u: User): Result<string, unknown> => {
+  return { _tag: 'left', error: 'the lib cannot do it' };
 };
 
-export const decodeUser = (u: unknown): Result<string, User> => {
-  const r = User.validate(u);
+// utils
+
+const mapResult = <E, T>(
+  r: [StructError, undefined] | [undefined, T]
+): Result<string, T> => {
   if (r[0]) {
-    return { _tag: 'left',         error: JSON.stringify(
+    return {
+      _tag: 'left',
+      error: JSON.stringify(
         {
           failures: r[0].failures(),
           message: r[0].message,
         },
         null,
         2
-      ) };
+      ),
+    };
   }
   return { _tag: 'right', value: r[1] };
-};
-
-export const encodeUser = (u: User): Result<string, unknown> => {
-  return { _tag: 'left', error: 'the lib cannot do it' };
 };

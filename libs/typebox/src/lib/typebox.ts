@@ -1,13 +1,4 @@
-import {
-  Type,
-  StaticDecode,
-  TObject,
-  TIntersect,
-  TString,
-  TUnion,
-  TArray,
-  TRef,
-} from '@sinclair/typebox';
+import { StaticDecode, Type } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
 import {
   COLOURS,
@@ -15,7 +6,6 @@ import {
   ISO_DATE_REGEX_S,
   Result,
   SUBSCRIPTION_TYPES,
-  TrustedCompileTimeMeta,
 } from '@parsers-jamboree/common';
 import { ValueError } from '@sinclair/typebox/build/cjs/errors/errors';
 
@@ -158,23 +148,6 @@ const FormatWhat = Type.String({
 });
 
 type User = StaticDecode<typeof User>;
-
-export const meta: TrustedCompileTimeMeta = {
-  items: {
-    branded: false,
-    typedErrors: false,
-    templateLiterals: false,
-    emailFormatAmbiguityIsAccountedFor: true,
-    acceptsTypedInput: false,
-  },
-  explanations: {
-    branded: 'Can be simulated with decode/encode but no native support',
-    templateLiterals:
-      'Can be simulated with decode/encode but no native support',
-    typedErrors: "Value.Check() + Value.Errors() can be used, but it loses transformations; features don't compose so I have to fail one of them arbitrarily.",
-    emailFormatAmbiguityIsAccountedFor: `A default email format check method doesn't work so I assume it's not defined at all. See also Ajv email explanation for more context.`,
-  },
-};
 
 export const decodeUser = (u: unknown): Result<ValueError[], User> => {
   try {

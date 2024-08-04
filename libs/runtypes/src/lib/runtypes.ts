@@ -1,18 +1,17 @@
 import {
-  Boolean,
-  Number,
-  String,
-  Literal,
   Array,
-  Result as LibResult,
-  Record,
-  Union,
-  Template,
-  Static,
-  RuntypeBrand,
   Intersect,
   Lazy,
+  Literal,
+  Number,
+  Record,
+  Result as LibResult,
   Runtype,
+  RuntypeBrand,
+  Static,
+  String,
+  Template,
+  Union,
 } from 'runtypes';
 import {
   chain,
@@ -21,10 +20,8 @@ import {
   ISO_DATE_REGEX_S,
   PROFILE_TYPE_ARTIST,
   PROFILE_TYPE_LISTENER,
-  PROFILE_TYPES,
   Result,
   SUBSCRIPTION_TYPES,
-  TrustedCompileTimeMeta,
 } from '@parsers-jamboree/common';
 
 const NonNegative = Number.withConstraint((n) => n >= 0).withBrand(
@@ -170,43 +167,8 @@ const UserJson = Intersect(
 
 type User = Static<typeof UserJson>;
 
-export const decodeUser = (u: unknown): Result<string, User> => {
-  const firstLayerResult = UserJson.validate(u);
-  const firstLayerResultMapped = mapResult(firstLayerResult);
-  // the lib cannot transform, not planned https://github.com/runtypes/runtypes/issues/56
-  // this function also doesn't collect errors
-  return chain((u: User): Result<string, User> => {
-    // const favouriteColours = new Set(u.favouriteColours);
-    // if (favouriteColours.size !== u.favouriteColours.length) {
-    //   return { _tag: 'left', error: 'favourite colours must be unique' };
-    // }
-    // const createdAt = new Date(u.createdAt);
-    // if (isNaN(createdAt.getTime())) {
-    //   return { _tag: 'left', error: 'createdAt must be a valid ISO date' };
-    // }
-    // const updatedAt = new Date(u.updatedAt);
-    // if (isNaN(updatedAt.getTime())) {
-    //   return { _tag: 'left', error: 'updatedAt must be a valid ISO date' };
-    // }
-    return {
-      _tag: 'right',
-      value: u,
-    };
-  })(firstLayerResultMapped);
-};
-
-export const meta: TrustedCompileTimeMeta = {
-  items: {
-    branded: true,
-    typedErrors: true,
-    templateLiterals: true,
-    emailFormatAmbiguityIsAccountedFor: true,
-    acceptsTypedInput: false,
-  },
-  explanations: {
-    emailFormatAmbiguityIsAccountedFor: `A default method for email validation is not provided, which makes this check pass.`,
-  },
-};
+export const decodeUser = (u: unknown): Result<string, User> =>
+  mapResult(UserJson.validate(u));
 
 // actually since there's no transformation, it's just the same object; so "no-feature feature"
 // BUT also we can't check if a transformed object was passed or not; so I predict plenty of errors on this front;
@@ -221,4 +183,7 @@ export const encodeUser = (_u: User): Result<string, unknown> => ({
 const mapResult = <T>(r: LibResult<T>): Result<string, T> =>
   r.success
     ? { _tag: 'right', value: r.value }
-    : { _tag: 'left', error: r.message /*todo code, details*/ };
+    : {
+        _tag: 'left',
+        error: `${r.message}\n${JSON.stringify(r.details, null, 2)}\n${r.code}`,
+      };

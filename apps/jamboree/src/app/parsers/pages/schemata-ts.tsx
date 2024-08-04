@@ -6,7 +6,8 @@ import {
 } from '@parsers-jamboree/schemata-ts/schemata-ts';
 import code from '../../../generated/schemata-ts.html?raw';
 import { ParserComponent } from '../component';
-import { meta } from '@parsers-jamboree/valibot/valibot';
+
+import { meta } from '@parsers-jamboree/valibot/meta';
 
 // monaco.languages.typescript.typescriptDefaults.addExtraLib(
 //   common,
