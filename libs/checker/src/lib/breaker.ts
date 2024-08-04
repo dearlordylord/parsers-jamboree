@@ -198,7 +198,7 @@ export const runTesters = ({
       key: k,
       title: BREAKER_DESCRIPTIONS[k as keyof typeof BREAKERS],
       customTitle:
-        meta.explanations?.[k as keyof TrustedCompileTimeMeta['items']],
+        meta.explanations ? meta.explanations[k as keyof TrustedCompileTimeMeta['items']] : undefined,
       success: decodeUser(f(igor))._tag === 'left',
     }))
   ),
@@ -243,7 +243,7 @@ export const runTesters = ({
           k as keyof TrustedCompileTimeMeta['items']
         ],
       customTitle:
-        meta.explanations?.[k as keyof TrustedCompileTimeMeta['items']],
+        meta.explanations ? meta.explanations[k as keyof TrustedCompileTimeMeta['items']] : undefined,
       success: v,
     }))
   ),
