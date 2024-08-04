@@ -11,6 +11,6 @@ export const meta: TrustedCompileTimeMeta = {
   explanations: {
     templateLiterals:
       "Not natively supported + I didn't manage to hack them into working without casting, see code comments.",
-    emailFormatAmbiguityIsAccountedFor: `A disclaimer is present in the doce https://valibot.dev/api/email/`,
+    emailFormatAmbiguityIsAccountedFor: `A disclaimer is present in the docs https://valibot.dev/api/email/`,
   },
 };
