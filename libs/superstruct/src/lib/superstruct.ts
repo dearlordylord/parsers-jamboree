@@ -144,39 +144,30 @@ type User = Infer<typeof User>;
 export const meta: TrustedCompileTimeMeta = {
   items: {
     branded: false,
-    typedErrors: false,
+    typedErrors: true,
     templateLiterals: false,
     emailFormatAmbiguityIsAccountedFor: true,
     acceptsTypedInput: false,
   },
   explanations: {
-    typedErrors: 'Need for instanceOf runtime check, not good enough',
     emailFormatAmbiguityIsAccountedFor:
       'The user of the library is prompted to create their own custom email validator.',
   },
 };
 
 export const decodeUser = (u: unknown): Result<string, User> => {
-  try {
-    const c = User.create(u);
-    return { _tag: 'right', value: c };
-  } catch (e: unknown) {
-    if (e instanceof StructError) {
-      return {
-        _tag: 'left',
-        error: JSON.stringify(
-          {
-            failures: e.failures(),
-            message: e.message,
-          },
-          null,
-          2
-        ),
-      };
-    } else {
-      return { _tag: 'left', error: 'error interpreting the error!' };
-    }
+  const r = User.validate(u);
+  if (r[0]) {
+    return { _tag: 'left',         error: JSON.stringify(
+        {
+          failures: r[0].failures(),
+          message: r[0].message,
+        },
+        null,
+        2
+      ) };
   }
+  return { _tag: 'right', value: r[1] };
 };
 
 export const encodeUser = (u: User): Result<string, unknown> => {

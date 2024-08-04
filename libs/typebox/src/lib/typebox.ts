@@ -171,13 +171,12 @@ export const meta: TrustedCompileTimeMeta = {
     branded: 'Can be simulated with decode/encode but no native support',
     templateLiterals:
       'Can be simulated with decode/encode but no native support',
-    typedErrors: 'No compile time support, we have to catch runtime',
+    typedErrors: "Value.Check() + Value.Errors() can be used, but it loses transformations; features don't compose so I have to fail one of them arbitrarily.",
     emailFormatAmbiguityIsAccountedFor: `A default email format check method doesn't work so I assume it's not defined at all. See also Ajv email explanation for more context.`,
   },
 };
 
 export const decodeUser = (u: unknown): Result<ValueError[], User> => {
-  // flow control with exceptions
   try {
     const r = Value.Decode(User, u);
     return { _tag: 'right', value: r };

@@ -113,13 +113,11 @@ const user = v
 type User = v.Infer<typeof user>;
 
 export const decodeUser = (u: unknown): Result<unknown, User> => {
-  try {
-    return { _tag: 'right', value: user.parse(u) };
-  } catch (e) {
-    return {
-      _tag: 'left',
-      error: (e as any).message,
-    };
+  const r = user.try(u);
+  if (r.ok) {
+    return { _tag: 'right', value: r.value };
+  } else {
+    return {_tag: 'left', error: `${r.message}\n${r.issues.map(i => `${i.path}: ${i.code}`).join('\n')}`};
   }
 };
 
@@ -130,7 +128,7 @@ export const encodeUser = (_u: User): Result<unknown, unknown> => {
 export const meta: TrustedCompileTimeMeta = {
   items: {
     branded: false,
-    typedErrors: false,
+    typedErrors: true,
     templateLiterals: false,
     emailFormatAmbiguityIsAccountedFor: true,
     acceptsTypedInput: false,
