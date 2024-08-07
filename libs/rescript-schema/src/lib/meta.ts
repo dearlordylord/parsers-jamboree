@@ -7,6 +7,9 @@ export const meta: TrustedCompileTimeMeta = {
     templateLiterals: false,
     emailFormatAmbiguityIsAccountedFor: false,
     acceptsTypedInput: false,
+    canGenerateJsonSchema: true,
   },
-  explanations: {},
+  explanations: {
+    canGenerateJsonSchema: 'Core feature, moved to a separate package https://github.com/DZakh/rescript-json-schema'
+  },
 };

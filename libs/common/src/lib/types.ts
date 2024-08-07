@@ -10,6 +10,7 @@ export type TrustedCompileTimeMetaItems = {
   templateLiterals: boolean;
   emailFormatAmbiguityIsAccountedFor: boolean;
   acceptsTypedInput: boolean;
+  canGenerateJsonSchema: boolean;
 };
 
 export type TrustedCompileTimeMetaExplanations = {

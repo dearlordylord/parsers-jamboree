@@ -31,6 +31,7 @@
       "@parsers-jamboree/runtypes/*": ["libs/runtypes/src/lib/*"],
       "@parsers-jamboree/schemata-ts/*": ["libs/schemata-ts/src/lib/*"],
       "@parsers-jamboree/superstruct/*": ["libs/superstruct/src/lib/*"],
+      "@parsers-jamboree/tschema/*": ["libs/tschema/src/lib/*"],
       "@parsers-jamboree/typebox/*": ["libs/typebox/src/lib/*"],
       "@parsers-jamboree/valibot/*": ["libs/valibot/src/lib/*"],
       "@parsers-jamboree/valita/*": ["libs/valita/src/lib/*"],

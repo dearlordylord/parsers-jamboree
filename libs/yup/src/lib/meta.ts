@@ -7,6 +7,7 @@ export const meta: TrustedCompileTimeMeta = {
     templateLiterals: false,
     emailFormatAmbiguityIsAccountedFor: true,
     acceptsTypedInput: false,
+    canGenerateJsonSchema: false,
   },
   explanations: {
     emailFormatAmbiguityIsAccountedFor: `Default method is present with a warning https://github.com/jquense/yup?tab=readme-ov-file#stringemailmessage-string--function-schema`,

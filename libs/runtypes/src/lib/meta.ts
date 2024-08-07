@@ -7,6 +7,7 @@ export const meta: TrustedCompileTimeMeta = {
     templateLiterals: true,
     emailFormatAmbiguityIsAccountedFor: true,
     acceptsTypedInput: false,
+    canGenerateJsonSchema: false,
   },
   explanations: {
     emailFormatAmbiguityIsAccountedFor: `A default method for email validation is not provided, which makes this check pass.`,

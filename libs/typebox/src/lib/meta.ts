@@ -7,6 +7,7 @@ export const meta: TrustedCompileTimeMeta = {
     templateLiterals: false,
     emailFormatAmbiguityIsAccountedFor: true,
     acceptsTypedInput: false,
+    canGenerateJsonSchema: true,
   },
   explanations: {
     branded: 'Can be simulated with decode/encode but no native support',
@@ -15,5 +16,6 @@ export const meta: TrustedCompileTimeMeta = {
     typedErrors:
       "Value.Check() + Value.Errors() can be used, but it loses transformations; features don't compose so I have to fail one of them arbitrarily.",
     emailFormatAmbiguityIsAccountedFor: `A default email format check method doesn't work so I assume it's not defined at all. See also Ajv email explanation for more context.`,
+    canGenerateJsonSchema: 'Core feature'
   },
 };

@@ -7,6 +7,7 @@ export const meta: TrustedCompileTimeMeta = {
     templateLiterals: false,
     emailFormatAmbiguityIsAccountedFor: false,
     acceptsTypedInput: false,
+    canGenerateJsonSchema: false,
   },
   explanations: {
     emailFormatAmbiguityIsAccountedFor:
