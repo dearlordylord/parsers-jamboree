@@ -140,29 +140,21 @@ const User = assign(
 type User = Infer<typeof User>;
 
 export const decodeUser = (u: unknown): Result<string, User> =>
-  mapResult(User.validate(u));
+// .validate() loses coercions e.g. IsoDate; I have to choose either or
+{
+  try {
+    const r = User.create(u);
+    return { _tag: 'right', value: r };
+  } catch (e) {
+    return {
+      _tag: 'left',
+      error: e instanceof StructError
+        ? JSON.stringify(e.failures(), null, 2)
+        : 'error interpreting the error! have a good day',
+    };
+  }
+}
 
 export const encodeUser = (_u: User): Result<string, unknown> => {
   return { _tag: 'left', error: 'the lib cannot do it' };
-};
-
-// utils
-
-const mapResult = <E, T>(
-  r: [StructError, undefined] | [undefined, T]
-): Result<string, T> => {
-  if (r[0]) {
-    return {
-      _tag: 'left',
-      error: JSON.stringify(
-        {
-          failures: r[0].failures(),
-          message: r[0].message,
-        },
-        null,
-        2
-      ),
-    };
-  }
-  return { _tag: 'right', value: r[1] };
 };
