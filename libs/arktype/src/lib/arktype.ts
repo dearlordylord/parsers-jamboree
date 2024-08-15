@@ -35,7 +35,6 @@ const COLOURS_WITH_CODES_LITERAL =
   `(${COLOURS_LITERAL})|/${hexColorRegexString}/` as const;
 
 const isoDateString = type('string').narrow((s, ctx) => {
-  console.log('testing ', s);
   if (!ISO_DATE_REGEX.test(s)) return ctx.mustBe('a valid ISO date string');
   return true;
 });
