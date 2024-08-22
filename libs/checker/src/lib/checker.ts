@@ -3,7 +3,7 @@ import {
   SUBSCRIPTION_TYPE_PRO,
 } from '@parsers-jamboree/common';
 
-export const igor = {
+export const igor = Object.freeze({
   name: 'igor',
   email: 'igor@loskutoff.com',
   createdAt: '1990-01-01T00:00:00.000Z',
@@ -41,4 +41,4 @@ export const igor = {
       },
     ],
   },
-};
+});

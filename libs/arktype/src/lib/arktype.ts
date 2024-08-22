@@ -39,6 +39,10 @@ const isoDateString = type('string').narrow((s, ctx) => {
   return true;
 });
 
+const isoDate = isoDateString.pipe(
+  (s) => new Date(s)
+);
+
 const favouriteColours = type(`(${COLOURS_WITH_CODES_LITERAL})[]`).narrow(
   (v, ctx) => {
     const set = new Set(v);
@@ -48,6 +52,8 @@ const favouriteColours = type(`(${COLOURS_WITH_CODES_LITERAL})[]`).narrow(
     return true;
   }
 );
+
+const favouriteColoursSet = favouriteColours.pipe(a => new Set(a));
 
 const profile = type(
   {
@@ -87,20 +93,16 @@ const fileSystem = scope({
 const userJson = type({
   name: '0<string<255',
   email: 'email',
-  // https://github.com/arktypeio/arktype/issues/909 morphs aren't really here yet
-  createdAt: isoDateString,
-  updatedAt: isoDateString,
+  createdAt: isoDate,
+  updatedAt: isoDate,
   subscription: SUBSCRIPTION_TYPES_LITERAL,
   stripeId: /^cus_[a-zA-Z0-9]{14,}$/,
   visits: 'integer>0',
-  // https://github.com/arktypeio/arktype/issues/909 morphs aren't really here yet
-  favouriteColours,
+  favouriteColours: favouriteColoursSet,
   profile,
   fileSystem,
 }).narrow((u, ctx) => {
-  const createdAt = new Date(u.createdAt);
-  const updatedAt = new Date(u.updatedAt);
-  if (updatedAt < createdAt) {
+  if (u.updatedAt < u.createdAt) {
     return ctx.mustBe('createdAt must be less or equal than updatedAt');
   }
   return true;
@@ -111,7 +113,8 @@ type UserJson = typeof userJson.infer;
 type User = UserJson;
 
 export const decodeUser = (u: unknown): Result<string, User> =>
-  mapResult(userJson(u));
+  // the lib mutates the input
+  mapResult(userJson(JSON.parse(JSON.stringify(u))));
 
 export const encodeUser = (_u: User): Result<'the lib cannot do it', never> => {
   return { _tag: 'left', error: 'the lib cannot do it' };
