@@ -95,7 +95,7 @@ const userJson = type({
   email: 'email',
   createdAt: isoDate,
   updatedAt: isoDate,
-  subscription: SUBSCRIPTION_TYPES_LITERAL,
+  subscription: ['===', ...SUBSCRIPTION_TYPES] as const,
   stripeId: /^cus_[a-zA-Z0-9]{14,}$/,
   visits: 'integer>0',
   favouriteColours: favouriteColoursSet,
