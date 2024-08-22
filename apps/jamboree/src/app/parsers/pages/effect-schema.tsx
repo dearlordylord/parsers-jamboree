@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import { igor } from '@parsers-jamboree/checker/checker';
 import {
   encodeUser,
@@ -7,7 +7,7 @@ import {
 import code from '../../../generated/effect-schema.html?raw';
 import { ParserComponent } from '../component';
 
-import { meta } from '@parsers-jamboree/valibot/meta';
+import { meta } from '@parsers-jamboree/effect-ts-schema/meta';
 
 export const EffectSchemaPage = (): React.ReactElement => {
   return (
