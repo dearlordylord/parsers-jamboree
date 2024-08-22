@@ -117,16 +117,17 @@ export const ParserComponent = <T, E, EE>({
                   <button type="submit">Reset input</button>
                 ) : null}
                 <div>
-                  <Editor
-                    theme="vs-dark"
-                    height="300px"
-                    width="500px"
-                    language="json"
-                    value={input}
-                    onChange={(e) => {
-                      setInput(e || '');
-                    }}
-                  />
+                  <Highlighter content={input} language="json" />
+                  {/*<Editor*/}
+                  {/*  theme="vs-dark"*/}
+                  {/*  height="300px"*/}
+                  {/*  width="500px"*/}
+                  {/*  language="json"*/}
+                  {/*  value={input}*/}
+                  {/*  onChange={(e) => {*/}
+                  {/*    setInput(e || '');*/}
+                  {/*  }}*/}
+                  {/*/>*/}
                 </div>
               </form>
             </div>
