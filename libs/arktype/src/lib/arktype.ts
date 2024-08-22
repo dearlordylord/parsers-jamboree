@@ -27,12 +27,8 @@ const SUBSCRIPTION_TYPES_LITERAL = SUBSCRIPTION_TYPES.map(
 
 type ColourTypeLiteral = TupleToLiteral<typeof COLOURS>;
 
-const COLOURS_LITERAL = COLOURS.map((t) => `'${t}'` as const).join(
-  '|'
-) as ColourTypeLiteral;
-const hexColorRegexString = `^#[a-fA-F0-9]{6}$`;
-const COLOURS_WITH_CODES_LITERAL =
-  `(${COLOURS_LITERAL})|/${hexColorRegexString}/` as const;
+const COLOURS_LITERAL = ['===', ...COLOURS] as const;
+
 
 const isoDateString = type('string').narrow((s, ctx) => {
   if (!ISO_DATE_REGEX.test(s)) return ctx.mustBe('a valid ISO date string');
@@ -43,7 +39,10 @@ const isoDate = isoDateString.pipe(
   (s) => new Date(s)
 );
 
-const favouriteColours = type(`(${COLOURS_WITH_CODES_LITERAL})[]`).narrow(
+const hexColorRegexString = `^#[a-fA-F0-9]{6}$`;
+const COLOURS_WITH_CODES_LITERAL = [COLOURS_LITERAL, '|', `/${hexColorRegexString}/`] as const;
+
+const favouriteColours = type([COLOURS_WITH_CODES_LITERAL, '[]']).narrow(
   (v, ctx) => {
     const set = new Set(v);
     if (set.size !== v.length) {
