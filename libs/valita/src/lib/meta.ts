@@ -11,6 +11,6 @@ export const meta: TrustedCompileTimeMeta = {
   },
   explanations: {
     emailFormatAmbiguityIsAccountedFor: `Default method is not present, no mention in docs.`,
-    canGenerateJsonSchema: 'https://github.com/badrap/valita/issues/14'
+    canGenerateJsonSchema: 'https://github.com/badrap/valita/issues/14',
   },
 };

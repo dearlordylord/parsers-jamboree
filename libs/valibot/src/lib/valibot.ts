@@ -50,7 +50,9 @@ const HexColourSchema = v.pipe(
 
 const ColourSchema = v.pipe(v.picklist(COLOURS), v.brand('Colour'));
 
-const uniqArray = <S extends v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>>(
+const uniqArray = <
+  S extends v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>
+>(
   schema: S
 ) =>
   v.pipe(
@@ -175,6 +177,9 @@ const mapResult = (
   if (r.success) {
     return { _tag: 'right', value: r.output };
   } else {
-    return { _tag: 'left', error: JSON.stringify(v.flatten(r.issues), null, 2) };
+    return {
+      _tag: 'left',
+      error: JSON.stringify(v.flatten(r.issues), null, 2),
+    };
   }
 };

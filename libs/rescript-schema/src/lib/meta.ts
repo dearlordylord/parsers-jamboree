@@ -10,6 +10,7 @@ export const meta: TrustedCompileTimeMeta = {
     canGenerateJsonSchema: true,
   },
   explanations: {
-    canGenerateJsonSchema: 'Core feature, moved to a separate package https://github.com/DZakh/rescript-json-schema'
+    canGenerateJsonSchema:
+      'Core feature, moved to a separate package https://github.com/DZakh/rescript-json-schema',
   },
 };

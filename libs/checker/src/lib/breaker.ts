@@ -152,7 +152,8 @@ const COMPILE_TIME_META_DESCRIPTIONS: {
   emailFormatAmbiguityIsAccountedFor: `Email format ambiguity is accounted for either in API or in Docs. The library doesn't perpetuate irresponsible approach to email validation.`,
   acceptsTypedInput:
     'The library accepts not only unknown/any types as validation input, but more refined "intermediate" types as well.',
-  canGenerateJsonSchema: 'Whether the schema can be serialized to cross-system communication. Became more relevant with OpenAI introducing structured outputs.'
+  canGenerateJsonSchema:
+    'Whether the schema can be serialized to cross-system communication. Became more relevant with OpenAI introducing structured outputs.',
 };
 
 export type TesterArgs = {
@@ -198,8 +199,9 @@ export const runTesters = ({
     A.map(([k, f]) => ({
       key: k,
       title: BREAKER_DESCRIPTIONS[k as keyof typeof BREAKERS],
-      customTitle:
-        meta.explanations ? meta.explanations[k as keyof TrustedCompileTimeMeta['items']] : undefined,
+      customTitle: meta.explanations
+        ? meta.explanations[k as keyof TrustedCompileTimeMeta['items']]
+        : undefined,
       success: decodeUser(f(igor))._tag === 'left',
     }))
   ),
@@ -243,8 +245,9 @@ export const runTesters = ({
         COMPILE_TIME_META_DESCRIPTIONS[
           k as keyof TrustedCompileTimeMeta['items']
         ],
-      customTitle:
-        meta.explanations ? meta.explanations[k as keyof TrustedCompileTimeMeta['items']] : undefined,
+      customTitle: meta.explanations
+        ? meta.explanations[k as keyof TrustedCompileTimeMeta['items']]
+        : undefined,
       success: v,
     }))
   ),

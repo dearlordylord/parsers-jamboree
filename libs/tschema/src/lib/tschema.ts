@@ -5,7 +5,7 @@ let HexColour = t.string({
   pattern: '^#[a-fA-F0-9]{6}$',
 });
 
-let Colour = t.one(...COLOURS.map(c => t.constant(c)));
+let Colour = t.one(...COLOURS.map((c) => t.constant(c)));
 
 let FavouriteColour = t.one(Colour, HexColour);
 
@@ -21,7 +21,7 @@ let Profile = t.one(
     publishedTracks: t.integer({
       minimum: 0,
     }),
-  }),
+  })
 );
 
 let User = t.object({
@@ -37,7 +37,11 @@ let User = t.object({
   updatedAt: t.string({
     format: 'date-time',
   }),
-  subscription: t.one(t.constant('free'), t.constant('pro'), t.constant('enterprise')),
+  subscription: t.one(
+    t.constant('free'),
+    t.constant('pro'),
+    t.constant('enterprise')
+  ),
   stripeId: t.string({
     pattern: '^cus_[a-zA-Z0-9]{14,}$',
   }),

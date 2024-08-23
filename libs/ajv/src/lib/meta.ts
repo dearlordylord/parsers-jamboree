@@ -7,12 +7,13 @@ export const meta: TrustedCompileTimeMeta = {
     templateLiterals: false,
     emailFormatAmbiguityIsAccountedFor: true,
     acceptsTypedInput: false,
-    canGenerateJsonSchema: true
+    canGenerateJsonSchema: true,
   },
   explanations: {
     typedErrors:
       'https://ajv.js.org/guide/typescript.html#type-safe-error-handling - requires `as` - not good enough',
     emailFormatAmbiguityIsAccountedFor: `I assume the lib mirrors the standard, so it's rather "Not applicable".`,
-    canGenerateJsonSchema: "Core feature. JSON Schema is a parser definition language here. It's not exactly 'generates' JSON Schema, it *is* JSON Schema."
-  }
+    canGenerateJsonSchema:
+      "Core feature. JSON Schema is a parser definition language here. It's not exactly 'generates' JSON Schema, it *is* JSON Schema.",
+  },
 };

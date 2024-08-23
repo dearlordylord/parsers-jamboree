@@ -4,7 +4,7 @@ import {
   PROFILE_TYPE_ARTIST,
   PROFILE_TYPE_LISTENER,
   Result,
-  SUBSCRIPTION_TYPES
+  SUBSCRIPTION_TYPES,
 } from '@parsers-jamboree/common';
 
 // formats don't seem to be type-checked; skipping
@@ -189,4 +189,3 @@ export const encodeUser = (u: UserJson): Result<string, unknown> => ({
   _tag: 'left',
   error: 'the lib cannot do it',
 });
-

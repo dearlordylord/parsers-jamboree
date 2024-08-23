@@ -13,6 +13,7 @@ export const meta: TrustedCompileTimeMeta = {
     templateLiterals:
       "Not natively supported + I didn't manage to hack them into working without casting, see code comments.",
     emailFormatAmbiguityIsAccountedFor: `A disclaimer is present in the docs https://valibot.dev/api/email/`,
-    canGenerateJsonSchema: '3rd-party library, https://github.com/gcornut/valibot-json-schema'
+    canGenerateJsonSchema:
+      '3rd-party library, https://github.com/gcornut/valibot-json-schema',
   },
 };
