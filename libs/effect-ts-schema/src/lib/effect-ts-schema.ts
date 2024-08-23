@@ -1,6 +1,6 @@
 import { ParseResult, Schema, TreeFormatter } from '@effect/schema';
 import * as Either from 'effect/Either';
-import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
+import { COLOURS, ISO_DATE_REGEX, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
 import { ParseError } from '@effect/schema/ParseResult';
 
 const NonEmptyStringBrand = Symbol.for('NonEmptyString');
@@ -127,11 +127,14 @@ const FileSystem = Schema.extend(
   FileSystemFileOrDirectory
 );
 
+// check dates with regex before feeding to browser's new Date(), for new Date() isn't uniform across.
+const IsoDate = Schema.compose(Schema.String.pipe(Schema.pattern(ISO_DATE_REGEX)), Schema.DateFromString)
+
 const UserUnentangled = Schema.Struct({
   name: NonEmptyString,
   email: Email,
-  createdAt: Schema.Date,
-  updatedAt: Schema.Date,
+  createdAt: IsoDate,
+  updatedAt: IsoDate,
   subscription: Subscription,
   stripeId: StripeId,
   visits: NonNegativeInteger,
