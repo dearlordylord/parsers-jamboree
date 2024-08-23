@@ -91,8 +91,7 @@ const TemporalConcernUnsortedSchema = v.object({
 const TemporalConcernSchema = v.pipe(
   TemporalConcernUnsortedSchema,
   v.forward(
-    v.partialCheck(
-      [['createdAt'], ['updatedAt']],
+    v.check(
       (input) => input.createdAt <= input.updatedAt,
       'createdAt must be less or equal than updatedAt'
     ),
