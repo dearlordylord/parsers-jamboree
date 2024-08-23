@@ -1,137 +1,95 @@
-import {
-  array,
-  BaseIssue,
-  BaseSchema,
-  brand,
-  check,
-  custom,
-  email,
-  flatten,
-  forward,
-  GenericSchema,
-  InferOutput,
-  integer,
-  intersect,
-  isoTimestamp,
-  lazy,
-  literal,
-  minLength,
-  minValue,
-  number,
-  object,
-  partialCheck,
-  picklist,
-  pipe,
-  regex,
-  safeParse,
-  SafeParseResult,
-  string,
-  transform,
-  union,
-  variant,
-} from 'valibot';
+import * as v from 'valibot';
 import { COLOURS, Result, SUBSCRIPTION_TYPES } from '@parsers-jamboree/common';
 
-const NonEmptyStringSchema = pipe(
-  string(),
-  minLength(1),
-  brand('NonEmptyString')
+const NonEmptyStringSchema = v.pipe(
+  v.string(),
+  v.minLength(1),
+  v.brand('NonEmptyString')
 );
 
-type NonEmptyString = InferOutput<typeof NonEmptyStringSchema>;
+type NonEmptyString = v.InferOutput<typeof NonEmptyStringSchema>;
 
 // email format specifics: https://github.com/fabian-hiller/valibot/issues/204
-const EmailSchema = pipe(NonEmptyStringSchema, email(), brand('Email'));
+const EmailSchema = v.pipe(NonEmptyStringSchema, v.email(), v.brand('Email'));
 
-const UserNameSchema = pipe(NonEmptyStringSchema, brand('UserName'));
+const UserNameSchema = v.pipe(NonEmptyStringSchema, v.brand('UserName'));
 
-const DatetimeSchema = pipe(string(), isoTimestamp());
+const DatetimeSchema = v.pipe(v.string(), v.isoTimestamp());
 
-const SubscriptionSchema = picklist(SUBSCRIPTION_TYPES);
+const SubscriptionSchema = v.picklist(SUBSCRIPTION_TYPES);
 
-const StripeCustomerIdSchema = pipe(
-  string(),
-  regex(/^cus_[a-zA-Z0-9]{14,}$/),
-  brand('StripeId')
+const StripeCustomerIdSchema = v.pipe(
+  v.string(),
+  v.regex(/^cus_[a-zA-Z0-9]{14,}$/),
+  v.transform((i) => i as `cus_${string}`),
+  v.brand('StripeId')
 );
 // we can do custom<`cus_${string}`>((v) => typeof v === 'string' && /cus_[a-zA-Z0-9]{14,}/.test(v)) to narrow the literal type further to cus_${string}
 // but custom() function API is lacking: I have to repeat regex + output type and do string check again manually
-const StripeCustomerIdSchemaOption2 = pipe(
-  string(),
-  custom<`cus_${string}`>(
+const StripeCustomerIdSchemaOption2 = v.pipe(
+  v.custom<`cus_${string}`>(
     (v) => typeof v === 'string' && /cus_[a-zA-Z0-9]{14,}/.test(v)
   ),
-  brand('StripeId')
+  v.brand('StripeId')
 );
 
-// can't also find `special` referenced here https://github.com/fabian-hiller/valibot/issues/291
-// type StripeCustomerLiteral = `cus_${string}`;
-// const StripeCustomerIdSchemaOption3 = special<Key>((key:string) => {
-//   const parts = key.split("-");
-//   const num = parts.unshift();
-//   if (Number.isNaN(Number(num))) return false;
-//   const str = parts.join('-');
-//   if (typeof str !== "string") return false;
-//   return true;
-// });
-
-const NonNegativeIntegerSchema = pipe(
-  number(),
-  integer(),
-  minValue(0),
-  brand('NonNegativeInteger')
+const NonNegativeIntegerSchema = v.pipe(
+  v.number(),
+  v.integer(),
+  v.minValue(0),
+  v.brand('NonNegativeInteger')
 );
 
-const VisitsSchema = pipe(NonNegativeIntegerSchema, brand('Visits'));
+const VisitsSchema = v.pipe(NonNegativeIntegerSchema, v.brand('Visits'));
 
-const HexColourSchema = pipe(
-  string(),
-  regex(/^#[a-fA-F0-9]{6}$/),
-  brand('HexColour')
+const HexColourSchema = v.pipe(
+  v.string(),
+  v.regex(/^#[a-fA-F0-9]{6}$/),
+  v.brand('HexColour')
 );
 
-const ColourSchema = pipe(picklist(COLOURS), brand('Colour'));
+const ColourSchema = v.pipe(v.picklist(COLOURS), v.brand('Colour'));
 
-const uniqArray = <S extends BaseSchema<unknown, unknown, BaseIssue<unknown>>>(
+const uniqArray = <S extends v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>>(
   schema: S
 ) =>
-  pipe(
-    array(schema),
-    check((v) => new Set(v).size === v.length, 'Expected unique items')
+  v.pipe(
+    v.array(schema),
+    v.check((v) => new Set(v).size === v.length, 'Expected unique items')
   );
 
 // default set doesn't work as I would expect https://github.com/fabian-hiller/valibot/issues/685
-const set = <S extends BaseSchema<unknown, unknown, BaseIssue<unknown>>>(
+const set = <S extends v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>>(
   schema: S
 ) =>
-  pipe(
+  v.pipe(
     uniqArray(schema),
-    transform((v) => new Set(v))
+    v.transform((v) => new Set(v))
   );
 
-const FavouriteColoursSchema = set(union([HexColourSchema, ColourSchema]));
+const FavouriteColoursSchema = set(v.union([HexColourSchema, ColourSchema]));
 
 // we have to pass a discriminator explicitly; the lib cannot figure it out
-const ProfileSchema = variant('type', [
-  object({
-    type: literal('listener'),
+const ProfileSchema = v.variant('type', [
+  v.object({
+    type: v.literal('listener'),
     boughtTracks: NonNegativeIntegerSchema,
   }),
-  object({
-    type: literal('artist'),
+  v.object({
+    type: v.literal('artist'),
     publishedTracks: NonNegativeIntegerSchema,
   }),
 ]);
 
-const TemporalConcernUnsortedSchema = object({
+const TemporalConcernUnsortedSchema = v.object({
   createdAt: DatetimeSchema,
   updatedAt: DatetimeSchema,
 });
 
-const TemporalConcernSchema = pipe(
+const TemporalConcernSchema = v.pipe(
   TemporalConcernUnsortedSchema,
-  forward(
-    partialCheck(
+  v.forward(
+    v.partialCheck(
       [['createdAt'], ['updatedAt']],
       (input) => input.createdAt <= input.updatedAt,
       'createdAt must be less or equal than updatedAt'
@@ -140,7 +98,7 @@ const TemporalConcernSchema = pipe(
   )
 );
 
-const FileSystemCommonSchema = object({
+const FileSystemCommonSchema = v.object({
   name: NonEmptyStringSchema,
 });
 
@@ -156,38 +114,38 @@ type FileSystem = (
   readonly name: NonEmptyString;
 };
 
-const FileSystemDirectorySchema: GenericSchema<
+const FileSystemDirectorySchema: v.GenericSchema<
   // undocumented; manually put input type here (or unknown, which would cover most cases)
   Omit<FileSystem, 'name'> & { type: 'directory'; name: string },
   FileSystem & { type: 'directory' }
-> = intersect([
+> = v.intersect([
   FileSystemCommonSchema,
-  pipe(
-    object({
-      type: literal('directory'),
-      children: array(lazy(() => FileSystemSchema)),
+  v.pipe(
+    v.object({
+      type: v.literal('directory'),
+      children: v.array(v.lazy(() => FileSystemSchema)),
     }),
-    check(
+    v.check(
       (v) => new Set(v.children.map((c) => c.name)).size === v.children.length,
       'Expected unique names in the children'
     )
   ),
 ]);
 
-const FileSystemFileSchema = intersect([
+const FileSystemFileSchema = v.intersect([
   FileSystemCommonSchema,
-  object({
-    type: literal('file'),
+  v.object({
+    type: v.literal('file'),
   }),
 ]);
 
-const FileSystemSchema = union([
+const FileSystemSchema = v.union([
   FileSystemDirectorySchema,
   FileSystemFileSchema,
 ]);
 
-const UserSchema = intersect([
-  object({
+const UserSchema = v.intersect([
+  v.object({
     name: UserNameSchema,
     email: EmailSchema,
     subscription: SubscriptionSchema,
@@ -196,15 +154,14 @@ const UserSchema = intersect([
     favouriteColours: FavouriteColoursSchema,
     profile: ProfileSchema,
     fileSystem: FileSystemSchema,
-    // we can check dependent fields with custom() but I don't like the API in its current state
   }),
   TemporalConcernSchema,
 ]);
 
-type User = InferOutput<typeof UserSchema>;
+type User = v.InferOutput<typeof UserSchema>;
 
 export const decodeUser = (u: unknown): Result<unknown, User> =>
-  mapResult(safeParse(UserSchema, u));
+  mapResult(v.safeParse(UserSchema, u));
 
 export const encodeUser = (_u: User): Result<unknown, unknown> => {
   return { _tag: 'left', error: 'the lib cannot do it' };
@@ -213,11 +170,11 @@ export const encodeUser = (_u: User): Result<unknown, unknown> => {
 // utils
 
 const mapResult = (
-  r: SafeParseResult<typeof UserSchema>
+  r: v.SafeParseResult<typeof UserSchema>
 ): Result<string, User> => {
   if (r.success) {
     return { _tag: 'right', value: r.output };
   } else {
-    return { _tag: 'left', error: JSON.stringify(flatten(r.issues), null, 2) };
+    return { _tag: 'left', error: JSON.stringify(v.flatten(r.issues), null, 2) };
   }
 };
