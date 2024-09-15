@@ -7,7 +7,7 @@ import { JAMBOREE_URL } from '@parsers-jamboree/common';
 
 export const TestCase = () => {
   return <div>
-    <h1>Test Case</h1>
+    <h1>Validator test case details</h1>
     <p>The test case data structure type looks like this:</p>
     <div dangerouslySetInnerHTML={{__html: code}}/>
     <h3>The "abstract" features checked are:</h3>
