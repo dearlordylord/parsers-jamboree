@@ -11,6 +11,10 @@ import { igor } from '@parsers-jamboree/checker/checker';
 import { get } from '../utils';
 import { Breaker } from './breaker';
 import { deepEqual } from '@parsers-jamboree/checker/utils';
+import { Lib } from './runtimes';
+import { useIsIframe } from '../iframe';
+import { rogues } from './table';
+import { ExternalLink } from 'lucide-react';
 
 type Props<T, E, EE> = {
   code: string;
@@ -18,14 +22,17 @@ type Props<T, E, EE> = {
   validUser: typeof igor;
   decodeUser: (u: unknown) => Result<E, T>;
   meta: TrustedCompileTimeMeta;
+  library: Lib;
 };
 
 export const ParserComponent = <T, E, EE>({
   encodeUser,
   validUser,
   code,
+  library,
   ...rest
 }: Props<T, E, EE>): React.ReactElement => {
+  const isIframe = useIsIframe();
   const defaultInput = JSON.stringify(validUser, null, 2);
   const [input, setInput] = useState(defaultInput);
   const parsedInputJson = useMemo((): Result<unknown, unknown> => {
@@ -94,8 +101,13 @@ export const ParserComponent = <T, E, EE>({
   const inputId = useId();
   return (
     <div>
-      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-        <div style={{ flex: '1 1 auto' }}>
+      {isIframe ? null : <div className="flex flex-row justify-center">
+        <div className="flex flex-col"><h1>{rogues[library].label}</h1><p><a className="flex items-center" target="_blank"
+                                                   rel="noreferrer" href={rogues[library].link}>{rogues[library].link}
+          <ExternalLink className="ml-1 w-4 h-4"/></a></p></div>
+      </div>}
+      <div style={{display: 'flex', flexWrap: 'wrap', paddingTop: '1rem'}}>
+        <div style={{flex: '1 1 auto'}}>
           <h2>Feature test results</h2>
           <Breaker
             decodeUser={rest.decodeUser}
@@ -117,17 +129,17 @@ export const ParserComponent = <T, E, EE>({
                   <button type="submit">Reset input</button>
                 ) : null}
                 <div>
-                  <Highlighter content={input} language="json" />
-                  {/*<Editor*/}
-                  {/*  theme="vs-dark"*/}
-                  {/*  height="300px"*/}
-                  {/*  width="500px"*/}
-                  {/*  language="json"*/}
-                  {/*  value={input}*/}
-                  {/*  onChange={(e) => {*/}
-                  {/*    setInput(e || '');*/}
-                  {/*  }}*/}
-                  {/*/>*/}
+                  {isIframe ? /*crashes the blog post by multiple editors in iframes*/<Highlighter content={input} language="json" /> :
+                  <Editor
+                    theme="vs-dark"
+                    height="300px"
+                    width="500px"
+                    language="json"
+                    value={input}
+                    onChange={(e) => {
+                      setInput(e || '');
+                    }}
+                  />}
                 </div>
               </form>
             </div>

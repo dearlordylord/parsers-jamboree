@@ -17,6 +17,7 @@ export const RescriptSchemaPage = (): React.ReactElement => {
         decodeUser={decodeUser}
         validUser={igor}
         meta={meta}
+        library="rescript-schema"
       />
     </div>
   );

@@ -14,6 +14,7 @@ export const RuntypesPage = (): React.ReactElement => {
         decodeUser={decodeUser}
         validUser={igor}
         meta={meta}
+        library="runtypes"
       />
     </div>
   );

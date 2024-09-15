@@ -14,6 +14,7 @@ export const ValibotPage = (): React.ReactElement => {
         decodeUser={decodeUser}
         validUser={igor}
         meta={meta}
+        library="valibot"
       />
     </div>
   );

@@ -14,6 +14,7 @@ export const ZodPage = (): React.ReactElement => {
         decodeUser={decodeUser}
         validUser={igor}
         meta={meta}
+        library="zod"
       />
     </div>
   );

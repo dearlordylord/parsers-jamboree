@@ -14,6 +14,7 @@ export const DecodersPage = (): React.ReactElement => {
         decodeUser={decodeUser}
         validUser={igor}
         meta={meta}
+        library="decoders"
       />
     </div>
   );

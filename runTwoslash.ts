@@ -37,6 +37,7 @@ const sources: {
   zod: zodPath,
   'rescript-schema': rescriptSchemaPath,
   decoders: decodersPath,
+  commonInterface: './libs/common/src/lib/interface.ts',
 };
 
 const rewriteCommonLibPath = (code: string) =>

@@ -3,13 +3,15 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import Icons from 'unplugin-icons/vite';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
+import vercel from 'vite-plugin-vercel';
+
 
 export default defineConfig({
   root: __dirname,
   cacheDir: '../../node_modules/.vite/apps/jamboree',
 
   server: {
-    port: 4200,
+    port: process.env.PORT as unknown as number,
     host: 'localhost',
   },
 
@@ -24,6 +26,7 @@ export default defineConfig({
     Icons({
       compiler: 'jsx',
     }),
+    vercel(),
   ],
 
   // Uncomment this if you are using workers.

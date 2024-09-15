@@ -14,6 +14,7 @@ export const AjvPage = (): React.ReactElement => {
         decodeUser={decodeUser}
         validUser={igor}
         meta={meta}
+        library="ajv"
       />
     </div>
   );

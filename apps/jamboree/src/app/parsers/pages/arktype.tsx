@@ -14,6 +14,7 @@ export const ArktypePage = (): React.ReactElement => {
         decodeUser={decodeUser}
         validUser={igor}
         meta={meta}
+        library="arktype"
       />
     </div>
   );

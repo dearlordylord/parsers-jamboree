@@ -14,6 +14,7 @@ export const TypeboxPage = (): React.ReactElement => {
         decodeUser={decodeUser}
         validUser={igor}
         meta={meta}
+        library="typebox"
       />
     </div>
   );

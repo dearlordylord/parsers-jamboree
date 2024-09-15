@@ -24,6 +24,7 @@ export const SchemataPage = (): React.ReactElement => {
         decodeUser={decodeUser}
         validUser={igor}
         meta={meta}
+        library="schemata-ts"
       />
     </div>
   );

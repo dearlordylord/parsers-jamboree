@@ -4,9 +4,9 @@ import { Objects, Pipe } from 'hotscript';
 import { Match } from 'hotscript/dist/internals/match/Match';
 import * as A from 'fp-ts/Array';
 import {
-  chain,
+  chain, Feature,
   Result,
-  TrustedCompileTimeMeta,
+  TrustedCompileTimeMeta
 } from '@parsers-jamboree/common';
 import { deepEqual } from './utils';
 import { contramap, Ord as GOrd } from 'fp-ts/Ord';
@@ -123,24 +123,52 @@ export const BREAKERS = {
   addFileSystemDupeFile,
 } as const;
 
-export const BREAKER_DESCRIPTIONS: {
+// probably can do in purely types but "good enough" for now
+const assertUnique = <T>(a: T[]): T[] => {
+  const set = new Set(a);
+  if (set.size !== a.length) {
+    throw new Error('Expected unique items');
+  }
+  return a;
+};
+
+const makeSet = <T>(a: T[]): Set<T> => new Set(assertUnique(a));
+
+export const BREAKERS_FEATURES = {
+  switchDates: makeSet(['transformations']),
+  prefixCustomerId: makeSet(['transformations', 'nominal']),
+  addTwoAtsToEmail: makeSet(['transformations', 'nominal']),
+  clearName: makeSet(['transformations', 'nominal']),
+  addFavouriteTiger: makeSet(['transformations', 'nominal']),
+  addFavouriteRed: makeSet(['transformations', 'nominal']),
+  setSubscriptionTypeBanana: makeSet(['transformations', 'nominal']),
+  setHalfVisits: makeSet(['transformations', 'nominal']),
+  setCreatedAtCyborgWar: makeSet(['transformations']),
+  setProfileArtist: makeSet(['adt', 'nominal']),
+  addFileSystemUFOType: makeSet(['nominal', 'adt', 'recursion']),
+  addFileSystemDupeFile: makeSet(['transformations', 'adt', 'recursion']),
+} satisfies {
+  [K in keyof typeof BREAKERS]: Set<Feature>;
+};
+
+export const RUNTIME_BREAKER_DESCRIPTIONS: {
   [K in keyof typeof BREAKERS]: string;
 } = {
   switchDates: 'Switches the createdAt and updatedAt fields',
   prefixCustomerId: 'Adds an invalid prefix to the stripeId field',
   addTwoAtsToEmail: 'Renders the email invalid by adding two @s',
   clearName: 'Clears the name field',
-  addFavouriteTiger: 'Adds an invalid colour to the favouriteColours field.',
+  addFavouriteTiger: 'Adds an invalid colour to the favouriteColours field',
   // Although in some cases it's ok, other times I'd like to have no garbage in my database. Having duplicated values in a collection with "set" semantics means that one side of interaction doesn't really know what it's doing, and this is a potential timebomb better to fix the earliest.
-  addFavouriteRed: `Adds a duplicated valid colour to the favouriteColours field.`,
+  addFavouriteRed: `Adds a duplicated valid colour to the favouriteColours field`,
   setSubscriptionTypeBanana: 'Sets the subscription field to banana',
   setHalfVisits: 'Renders the visits field to be a float instead of an integer',
   setCreatedAtCyborgWar: 'Sets invalid createdAt date',
   setProfileArtist: 'Sets the valid profile field to an invalid structure',
   addFileSystemUFOType:
-    'An enum test not unlike the TIger test, but in composition with recursive data structures.',
+    'An enum test not unlike the Tiger test, but in composition with recursive data structures',
   addFileSystemDupeFile:
-    'Adds a duplicated value to the tree. My tree has the “unique list” semantics, so that shouldn’t be possible.',
+    'Adds a duplicated value to the tree. My tree has the “unique list” semantics, so that shouldn’t be possible',
 };
 
 const COMPILE_TIME_META_DESCRIPTIONS: {
@@ -149,11 +177,11 @@ const COMPILE_TIME_META_DESCRIPTIONS: {
   branded: 'Branded types are supported',
   typedErrors: 'Typed errors are supported',
   templateLiterals: 'Template literals are supported',
-  emailFormatAmbiguityIsAccountedFor: `Email format ambiguity is accounted for either in API or in Docs. The library doesn't perpetuate irresponsible approach to email validation.`,
+  emailFormatAmbiguityIsAccountedFor: `Email format ambiguity is accounted for either in API or in Docs. The library doesn't promise not being able to deliver`,
   acceptsTypedInput:
-    'The library accepts not only unknown/any types as validation input, but more refined "intermediate" types as well.',
+    'The library accepts not only unknown/any types as validation input, but more refined "intermediate" types as well',
   canGenerateJsonSchema:
-    'Whether the schema can be serialized to cross-system communication. Became more relevant with OpenAI introducing structured outputs.',
+    'Whether the schema itself can be serialized to cross-system communication. Became more relevant with OpenAI introducing structured outputs',
 };
 
 export type TesterArgs = {
@@ -166,6 +194,19 @@ export type TesterArgs = {
 const encodedEqualsInputSpecialBreakerKey = 'encodedEqualsInput' as const;
 const transformationsPossibleSpecialBreakerKey =
   'transformationsPossible' as const;
+
+const EXTRA_BREAKER_DESCRIPTIONS = {
+  encodedEqualsInput:
+    'Can encode the value into another value (mainly, back to a serializable format), vs. only decoding it',
+  transformationsPossible:
+    'Transformations are possible',
+} as const;
+
+export const BREAKER_DESCRIPTIONS = {
+  ...RUNTIME_BREAKER_DESCRIPTIONS,
+  ...COMPILE_TIME_META_DESCRIPTIONS,
+  ...EXTRA_BREAKER_DESCRIPTIONS,
+} as const;
 
 export type BreakerKey =
   | keyof typeof BREAKERS
@@ -198,7 +239,7 @@ export const runTesters = ({
     ),
     A.map(([k, f]) => ({
       key: k,
-      title: BREAKER_DESCRIPTIONS[k as keyof typeof BREAKERS],
+      title: RUNTIME_BREAKER_DESCRIPTIONS[k as keyof typeof BREAKERS],
       customTitle: meta.explanations
         ? meta.explanations[k as keyof TrustedCompileTimeMeta['items']]
         : undefined,

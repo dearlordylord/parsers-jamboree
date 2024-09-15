@@ -1,9 +1,9 @@
 import {
   SUBSCRIPTION_TYPE_FREE,
-  SUBSCRIPTION_TYPE_PRO,
+  SUBSCRIPTION_TYPE_PRO, User
 } from '@parsers-jamboree/common';
 
-export const igor = Object.freeze({
+export const igor: User = Object.freeze({
   name: 'igor',
   email: 'igor@loskutoff.com',
   createdAt: '1990-01-01T00:00:00.000Z',

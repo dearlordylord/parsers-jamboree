@@ -14,7 +14,9 @@ export const Highlighter = ({
     <pre className="hljs">
       <code
         dangerouslySetInnerHTML={{
-          __html: hljs.highlight(language, content).value,
+          __html: hljs.highlight(content, {
+            language,
+          }).value,
         }}
       />
     </pre>

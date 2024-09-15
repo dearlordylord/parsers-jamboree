@@ -18,6 +18,7 @@ export const SuperstructPage = (): React.ReactElement => {
         decodeUser={decodeUser}
         validUser={igor}
         meta={meta}
+        library="superstruct"
       />
     </div>
   );

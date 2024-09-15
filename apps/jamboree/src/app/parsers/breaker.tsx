@@ -4,7 +4,7 @@ import { igor } from '@parsers-jamboree/checker/checker';
 import IconHeart from '~icons/mdi/heart';
 import IconHeartBroken from '~icons/mdi/heart-broken';
 import { runTesters } from '@parsers-jamboree/checker/breaker';
-import { FeatureNameAndExplanation } from './featureNameAndExplanation';
+import { TestNameAndExplanation } from './testNameAndExplanation';
 
 type Props = {
   decodeUser: (u: unknown) => Result<unknown, unknown>;
@@ -31,7 +31,7 @@ export const Breaker = ({
             return (
               <tr key={key}>
                 <td>
-                  <FeatureNameAndExplanation
+                  <TestNameAndExplanation
                     name={key}
                     explanation={title}
                     customExplanation={customTitle}

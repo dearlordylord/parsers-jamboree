@@ -18,8 +18,9 @@ import IconHeart from '~icons/mdi/heart';
 import IconHeartBroken from '~icons/mdi/heart-broken';
 import { libRuntimes, LIBS } from './runtimes';
 import { headStrict } from '../utils';
-import { FeatureNameAndExplanation } from './featureNameAndExplanation';
+import { TestNameAndExplanation } from './testNameAndExplanation';
 import { useIsIframe } from '../iframe';
+import { ExternalLink } from 'lucide-react';
 
 export const parserTableColumn = (lib: (typeof LIBS)[number]) => [
   ...runTesters(libRuntimes[lib]).map(({ key, title, success }) => ({
@@ -114,20 +115,70 @@ export const ParserTable = (): React.ReactElement => {
   // assume format is stable
   const firstColumn = headStrict(results);
   const isIframe = useIsIframe();
+  /*
+  <div className="overflow-x-auto">
+      <table className="w-full border-collapse shadow-lg rounded-lg">
+        <thead>
+        <tr className="bg-gray-100">
+          <th className="p-3 text-left font-semibold text-gray-600"></th>
+          {LIBS.map((lib) => (
+            <th key={lib} className="p-3 text-left font-semibold text-gray-600">
+              {isIframe ? (
+                <a href={`${rogues[lib].link}`} target="_blank" rel="noopener noreferrer"
+                   className="flex items-center text-blue-600 hover:text-blue-800">
+                  {rogues[lib].label}
+                  <ExternalLink className="ml-1 w-4 h-4"/>
+                </a>
+              ) : (
+                <Link to={`/${lib}`} className="flex items-center text-blue-600 hover:text-blue-800">
+                  {rogues[lib].label}
+                  <ExternalLink className="ml-1 w-4 h-4"/>
+                </Link>
+              )}
+            </th>
+          ))}
+        </tr>
+        </thead>
+        <tbody>
+        {firstColumn.map(({name, title}, i) => (
+          <tr key={`${name}-${i}`} className="hover:bg-amber-950 transition-colors duration-150">
+            <td className="p-3 border-t">
+              <TestNameAndExplanation name={name} explanation={title}/>
+            </td>
+            {results.map((row, j) => (
+              <td key={`${i}-${j}`} className="p-3 border-t text-center">
+                {isIframe ? (
+                  <a href={`${rogues[LIBS[j]].link}`} target="_blank" rel="noopener noreferrer"
+                     className="text-red-500 hover:text-red-700">
+                    {row[i].c}
+                  </a>
+                ) : (
+                  <Link to={`/${LIBS[j]}`} className="text-red-500 hover:text-red-700">
+                    {row[i].c}
+                  </Link>
+                )}
+              </td>
+            ))}
+          </tr>
+        ))}
+        </tbody>
+      </table>
+    </div>
+   */
   return (
-    <div>
-      <table>
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse shadow-lg rounded-lg">
         <thead>
           <tr key="header">
-            <th></th>
+            <th className="p-3 text-left font-semibold"></th>
             {LIBS.map((lib) => (
-              <th key={lib}>
+              <th key={lib} className="p-3 text-left font-semibold">
                 {isIframe ? (
                   <Link target="_blank" to={`${rogues[lib].link}`}>
                     {rogues[lib].label}
                   </Link>
                 ) : (
-                  <Link to={`/${lib}`}>{rogues[lib].label}</Link>
+                  <Link to={`/${lib}`} className="flex items-center">{rogues[lib].label}<ExternalLink className="ml-1 w-4 h-4"/></Link>
                 )}
               </th>
             ))}
@@ -135,12 +186,12 @@ export const ParserTable = (): React.ReactElement => {
         </thead>
         <tbody>
           {firstColumn.map(({ name, title }, i) => (
-            <tr key={`${name}-${i}`}>
+            <tr key={`${name}-${i}`} className={i % 2 === 0 ? 'bg-amber-950' : ''}>
               <td>
-                <FeatureNameAndExplanation name={name} explanation={title} />
+                <TestNameAndExplanation name={name} explanation={title} />
               </td>
-              {results.map((row) => (
-                <td key={i}>{row[i].c}</td>
+              {results.map((row, j) => (
+                <td key={i}><div className="flex justify-center"><Link to={`/${LIBS[j]}`} className="">{row[i].c}</Link></div></td>
               ))}
             </tr>
           ))}

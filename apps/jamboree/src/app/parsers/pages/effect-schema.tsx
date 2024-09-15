@@ -18,6 +18,7 @@ export const EffectSchemaPage = (): React.ReactElement => {
         decodeUser={decodeUser}
         validUser={igor}
         meta={meta}
+        library="effect-schema"
       />
     </div>
   );

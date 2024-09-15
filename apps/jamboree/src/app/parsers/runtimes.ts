@@ -48,6 +48,8 @@ export const LIBS = pipe(
   RA.sort(Ord)
 );
 
+export type Lib = typeof LIBS[number];
+
 export const libRuntimes: {
   [K in (typeof LIBS)[number]]: TesterArgs;
 } = {

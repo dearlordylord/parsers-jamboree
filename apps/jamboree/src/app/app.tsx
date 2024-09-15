@@ -5,63 +5,52 @@ import { Route, Routes, Link } from 'react-router-dom';
 import React from 'react';
 import { pages, ParserTable, rogues } from './parsers/table';
 import { LIBS } from './parsers/runtimes';
+import { Index } from './index';
+import { ABOUT_ROUTE, SUMMARY_ROUTE, TEST_CASE_ROUTE } from './constants';
+import { TestCase } from './testCase';
+import { About } from './about';
+import { Navigation } from './navigation';
+import { Layout } from './layout';
 
 export function App() {
   return (
     <div>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div>
-              <br />
-              <hr />
-              <br />
-              <div role="navigation">
-                <ul>
-                  <li>
-                    <Link to="/">Home</Link>
-                  </li>
-                  <li>
-                    <Link to="/summary">Summary</Link>
-                  </li>
-                  {LIBS.map((name) => (
-                    <li key={name}>
-                      <Link to={`/${name}`}>{rogues[name].label}</Link>
-                      <span> </span>
-                      <span style={{ fontSize: '0.5em' }}>
-                        <a
-                          href={rogues[name].link}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {rogues[name].link}
-                        </a>
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          }
-        />
-        <Route
-          path="/summary"
-          element={
-            <div>
-              <ParserTable />
-            </div>
-          }
-        />
-        {Object.entries(rogues).map(([name, { label, link }]) => (
+      <Navigation />
+      <Layout>
+        <Routes>
           <Route
-            key={name}
-            path={`/${name}`}
-            element={React.createElement(pages[name as (typeof LIBS)[number]])}
+            path="/"
+            element={
+              <Index />
+            }
           />
-        ))}
-      </Routes>
-      {/* END: routes */}
+          <Route
+            path={`/${SUMMARY_ROUTE}`}
+            element={
+              <ParserTable />
+            }
+          />
+          <Route
+            path={`/${TEST_CASE_ROUTE}`}
+            element={
+              <TestCase />
+            }
+          />
+          <Route
+            path={`/${ABOUT_ROUTE}`}
+            element={
+              <About />
+            }
+          />
+          {Object.entries(rogues).map(([name, { label, link }]) => (
+            <Route
+              key={name}
+              path={`/${name}`}
+              element={React.createElement(pages[name as (typeof LIBS)[number]])}
+            />
+          ))}
+        </Routes>
+      </Layout>
     </div>
   );
 }

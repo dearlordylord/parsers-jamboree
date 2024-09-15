@@ -14,6 +14,7 @@ export const ValitaPage = (): React.ReactElement => {
         decodeUser={decodeUser}
         validUser={igor}
         meta={meta}
+        library="valita"
       />
     </div>
   );
