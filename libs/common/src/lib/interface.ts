@@ -28,16 +28,21 @@ type FileSystemItem = {
 type Profile =
   | {
   type: 'listener';
-  boughtTracks: number;
+  boughtTracks: NonNegativeInteger;
 }
   | {
   type: 'artist';
-  publishedTracks: number;
+  publishedTracks: NonNegativeInteger;
 };
 
-type UserName = string;
-type Email = string;
-type StripeId = string;
-type Visits = number;
-type Colour = string;
+// every type here is to be checked and nominal-typed by validators
+type NonEmptyString = string;
+type UserName = NonEmptyString;
+type Email = NonEmptyString;
+type StripeId = `cus_${string}`;
+type NonNegativeInteger = number;
+type Visits = NonNegativeInteger;
+type PresetColours = 'red' | 'green' | 'blue';
+type HexColour = `#${string}`;
+type Colour = PresetColours | HexColour;
 type FileName = string;
