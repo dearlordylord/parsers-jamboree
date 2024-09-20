@@ -3,10 +3,12 @@ No size/performance comparisons.
 
 Or (another?) "Awesome Typescript Validators"
 
-Addition to the article: https://monadical.com/posts/typescript-validators-jamboree.html (see .md, keyword "jamboree", in my other repos is link is dead)
+Addition to the article: https://monadical.com/posts/typescript-validators-jamboree.html (see .md, keyword "jamboree", if my other repos is link is dead)
 
-Application with tests and charts: https://parsers-jamboree.apps.loskutoff.com/summary
+Application with tests and charts: https://www.typescript-validators.com
+
+`npx nx serve astro-jamboree` - dev
+
+`npx nx build astro-jamboree --prod` - build (also generates highlighted syntax)
 
 `npx tsx --tsconfig=tsconfig.base.json ./runTwoslash.ts` - generate syntax highlighting
-`npx nx serve jamboree` - dev
-`npx nx build jamboree --prod` - build
