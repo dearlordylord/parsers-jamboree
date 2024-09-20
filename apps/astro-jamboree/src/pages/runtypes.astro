@@ -1,0 +1,9 @@
+---
+const isIframe = Astro.url.searchParams.has('iframe');
+import Layout from '../layouts/Layout.astro';
+import { RuntypesPage } from '../app/app/parsers/pages/runtypes';
+---
+
+<Layout title="Runtypes validator feature tests">
+  <RuntypesPage client:only="react" isIframe={isIframe} />
+</Layout>

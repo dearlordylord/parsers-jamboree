@@ -1,0 +1,9 @@
+---
+const isIframe = Astro.url.searchParams.has('iframe');
+import Layout from '../layouts/Layout.astro';
+import { ValibotPage } from '../app/app/parsers/pages/valibot';
+---
+
+<Layout title="Valibot validator feature tests">
+  <ValibotPage client:only="react" isIframe={isIframe} />
+</Layout>

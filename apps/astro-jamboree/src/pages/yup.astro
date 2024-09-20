@@ -1,0 +1,9 @@
+---
+const isIframe = Astro.url.searchParams.has('iframe');
+import Layout from '../layouts/Layout.astro';
+import { YupPage } from '../app/app/parsers/pages/yup';
+---
+
+<Layout title="Yup validator feature tests">
+  <YupPage client:only="react" isIframe={isIframe} />
+</Layout>

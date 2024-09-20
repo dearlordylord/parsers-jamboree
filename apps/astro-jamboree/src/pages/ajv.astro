@@ -1,0 +1,9 @@
+---
+const isIframe = Astro.url.searchParams.has('iframe');
+import Layout from '../layouts/Layout.astro';
+import { AjvPage } from '../app/app/parsers/pages/ajv';
+---
+
+<Layout title="Ajv validator feature tests">
+  <AjvPage client:only="react" isIframe={isIframe} />
+</Layout>

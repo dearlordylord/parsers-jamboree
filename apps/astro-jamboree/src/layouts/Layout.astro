@@ -1,0 +1,38 @@
+---
+import { Navigation } from '../app/app/navigation';
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+import '../app/styles.css';
+import '@coreui/coreui/dist/css/coreui.min.css';
+import 'highlight.js/styles/github-dark-dimmed.css';
+
+import { Navigation } from '../app/app/navigation.tsx';
+---
+
+<!doctype html>
+<html lang="en" data-coreui-theme="dark">
+	<head>
+		<meta charset="UTF-8" />
+    <meta name="description" content="Typescript validators detailed feature comparison">
+		<meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+  </head>
+
+	<body>
+    <Navigation />
+    <div class="flex flex-col min-h-screen">
+      <div class="flex-1 bg-gray-900 text-white p-4">
+        <slot />
+      </div>
+    </div>
+	</body>
+</html>
+
+<style is:global>
+
+</style>

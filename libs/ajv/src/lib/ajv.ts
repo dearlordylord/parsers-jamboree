@@ -3,9 +3,9 @@ import {
   COLOURS,
   PROFILE_TYPE_ARTIST,
   PROFILE_TYPE_LISTENER,
-  Result,
   SUBSCRIPTION_TYPES,
 } from '@parsers-jamboree/common';
+import type { Result } from '@parsers-jamboree/common';
 
 // formats don't seem to be type-checked; skipping
 // import addFormats from "ajv-formats"

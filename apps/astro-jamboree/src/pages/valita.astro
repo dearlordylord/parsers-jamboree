@@ -1,0 +1,9 @@
+---
+const isIframe = Astro.url.searchParams.has('iframe');
+import Layout from '../layouts/Layout.astro';
+import { ValitaPage } from '../app/app/parsers/pages/valita';
+---
+
+<Layout title="Valita validator feature tests">
+  <ValitaPage client:only="react" isIframe={isIframe} />
+</Layout>

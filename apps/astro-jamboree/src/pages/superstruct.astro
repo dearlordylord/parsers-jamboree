@@ -1,0 +1,9 @@
+---
+const isIframe = Astro.url.searchParams.has('iframe');
+import Layout from '../layouts/Layout.astro';
+import { SuperstructPage } from '../app/app/parsers/pages/superstruct';
+---
+
+<Layout title="Superstruct validator feature tests">
+  <SuperstructPage client:only="react" isIframe={isIframe} />
+</Layout>

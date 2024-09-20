@@ -1,0 +1,9 @@
+---
+const isIframe = Astro.url.searchParams.has('iframe');
+import Layout from '../layouts/Layout.astro';
+import { EffectSchemaPage } from '../app/app/parsers/pages/effect-schema';
+---
+
+<Layout title="Effect-schema validator feature tests">
+  <EffectSchemaPage client:only="react" isIframe={isIframe} />
+</Layout>

@@ -1,4 +1,4 @@
-import { TrustedCompileTimeMeta } from '@parsers-jamboree/common';
+import type { TrustedCompileTimeMeta } from '@parsers-jamboree/common';
 
 export const meta: TrustedCompileTimeMeta = {
   items: {

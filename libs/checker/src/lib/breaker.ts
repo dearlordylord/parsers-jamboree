@@ -1,17 +1,17 @@
 import { igor } from './checker';
-import { constant, pipe } from 'fp-ts/function';
+import { constant, pipe } from 'fp-ts/lib/function.js';
 import { Objects, Pipe } from 'hotscript';
 import { Match } from 'hotscript/dist/internals/match/Match';
-import * as A from 'fp-ts/Array';
+import * as A from 'fp-ts/lib/Array.js';
 import {
   chain, Feature,
   Result,
   TrustedCompileTimeMeta
 } from '@parsers-jamboree/common';
 import { deepEqual } from './utils';
-import { contramap, Ord as GOrd } from 'fp-ts/Ord';
-import { Ord } from 'fp-ts/string';
-import { toEntries } from 'fp-ts/Record';
+import { contramap, Ord as GOrd } from 'fp-ts/lib/Ord.js';
+import { Ord } from 'fp-ts/lib/string.js';
+import { toEntries } from 'fp-ts/lib/Record.js';
 
 type Breaker<T> = (t: T) => T;
 type Igor = typeof igor;

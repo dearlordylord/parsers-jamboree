@@ -1,0 +1,11 @@
+---
+import {Index} from '../app/app/index.tsx';
+const isIframe = Astro.url.searchParams.has('iframe');
+import Layout from '../layouts/Layout.astro';
+export const prerender = true;
+---
+
+<Layout title="Typescript validators">
+  <Index isIframe={isIframe} />
+</Layout>
+

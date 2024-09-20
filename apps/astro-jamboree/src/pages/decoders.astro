@@ -1,0 +1,9 @@
+---
+const isIframe = Astro.url.searchParams.has('iframe');
+import Layout from '../layouts/Layout.astro';
+import { DecodersPage } from '../app/app/parsers/pages/decoders';
+---
+
+<Layout title="Decoders validator feature tests">
+  <DecodersPage client:only="react" isIframe={isIframe} />
+</Layout>

@@ -54,6 +54,6 @@ Object.entries(sources).forEach(([lib, path]) => {
       })
     )
     .then((html) => {
-      return writeFile(`./apps/jamboree/src/generated/${lib}.html`, html);
+      return writeFile(`./apps/jamboree-astro/src/app/generated/${lib}.html`, html);
     });
 });

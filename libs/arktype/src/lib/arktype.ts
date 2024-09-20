@@ -2,20 +2,19 @@ import { ArkErrors, scope, type } from 'arktype';
 import {
   COLOURS,
   ISO_DATE_REGEX,
-  Result,
   SUBSCRIPTION_TYPES,
 } from '@parsers-jamboree/common';
-import { Objects, Pipe, Strings, Tuples } from 'hotscript';
-import Mutable = Objects.Mutable;
+import type { Result } from '@parsers-jamboree/common';
+import hs from 'hotscript';
 
 // had to use hotscript to type the literal union imported from a const array
-type TupleToLiteral<T extends readonly unknown[]> = Pipe<
+type TupleToLiteral<T extends readonly unknown[]> = hs.Pipe<
   T,
   [
-    Mutable,
-    Tuples.Map<Strings.Prepend<"'">>,
-    Tuples.Map<Strings.Append<"'">>,
-    Tuples.Join<'|'>
+    hs.Objects.Mutable,
+    hs.Tuples.Map<hs.Strings.Prepend<"'">>,
+    hs.Tuples.Map<hs.Strings.Append<"'">>,
+    hs.Tuples.Join<'|'>
   ]
 >;
 

@@ -1,0 +1,9 @@
+---
+const isIframe = Astro.url.searchParams.has('iframe');
+import Layout from '../layouts/Layout.astro';
+import { ZodPage } from '../app/app/parsers/pages/zod';
+---
+
+<Layout title="Zod validator feature tests">
+  <ZodPage client:only="react" isIframe={isIframe} />
+</Layout>
