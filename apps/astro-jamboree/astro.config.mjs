@@ -3,8 +3,6 @@ import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
-import vercel from '@astrojs/vercel/static';
-
 //import Icons from "unplugin-icons/vite";
 
 // https://astro.build/config
@@ -14,11 +12,6 @@ export default defineConfig({
   integrations: [react(), tailwind({
     configFile: './apps/astro-jamboree/tailwind.config.mjs',
   }), mdx(), sitemap()],
-  adapter: vercel({
-    webAnalytics: {
-      enabled: true,
-    },
-  }),
   // output: "server",
   vite: {
     ssr: {
