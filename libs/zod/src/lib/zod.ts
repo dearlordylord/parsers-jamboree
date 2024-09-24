@@ -50,6 +50,7 @@ export const profileSchema = z.discriminatedUnion('type', [
 ]);
 
 // recursive structures don't seem to work https://github.com/colinhacks/zod/issues/3628
+// there's a new solution to it: https://github.com/colinhacks/zod/issues/1500#issuecomment-2324304993 but it doesn't seem to work
 
 // type FileSystem = (
 //   | {
